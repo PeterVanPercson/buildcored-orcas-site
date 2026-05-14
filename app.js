@@ -516,6 +516,33 @@
     const input    = document.getElementById('adminImageInput');
     const preview  = document.getElementById('adminImagePreview');
     const nameEl   = document.getElementById('adminImageName');
+    const dropZone = document.getElementById('adminImageDrop');
+    const pickBtn  = document.getElementById('adminImagePick');
+
+    // "Pick a file" button opens the file picker
+    pickBtn?.addEventListener('click', () => input.click());
+
+    // Drag-drop on the image area
+    if (dropZone) {
+      ['dragenter', 'dragover'].forEach(ev => dropZone.addEventListener(ev, e => {
+        e.preventDefault();
+        dropZone.classList.add('is-dragging');
+      }));
+      ['dragleave', 'drop'].forEach(ev => dropZone.addEventListener(ev, e => {
+        e.preventDefault();
+        if (ev === 'dragleave' && dropZone.contains(e.relatedTarget)) return;
+        dropZone.classList.remove('is-dragging');
+      }));
+      dropZone.addEventListener('drop', e => {
+        const f = e.dataTransfer?.files?.[0];
+        if (!f || !f.type.startsWith('image/')) return;
+        // Transfer the file to the input and fire change
+        const dt = new DataTransfer();
+        dt.items.add(f);
+        input.files = dt.files;
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+    }
 
     input.addEventListener('change', async () => {
       if (!editingId) return;

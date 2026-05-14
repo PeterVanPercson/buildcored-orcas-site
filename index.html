@@ -351,69 +351,99 @@
         <div class="admin-form-hint">Edits save automatically. When Supabase is wired up they save live; in fallback mode they save to your browser and export to JSON.</div>
       </div>
       <div class="admin-form-grid" id="adminFormGrid" hidden>
-        <label class="admin-field">
-          <span>Title</span>
-          <input name="title" type="text" required />
+
+        <!-- ── 1. Image (most visual, biggest impact) ─────────────────────── -->
+        <label class="admin-field admin-field-wide admin-field-image" id="adminImageDrop">
+          <span class="admin-section-label">① Cover image</span>
+          <div class="admin-image-drop">
+            <div class="admin-image-preview" id="adminImagePreview"></div>
+            <div class="admin-image-cta">
+              <input name="image" type="file" accept="image/*" id="adminImageInput" hidden />
+              <button type="button" class="btn-admin" id="adminImagePick">Pick a file</button>
+              <span class="admin-image-hint">or drag & drop · JPG / PNG / WEBP · max 5MB</span>
+              <button type="button" class="btn-admin btn-admin-ghost" id="adminImageClear">Clear</button>
+            </div>
+            <span class="admin-image-name" id="adminImageName" hidden>No file chosen</span>
+          </div>
         </label>
-        <label class="admin-field admin-field-wide">
-          <span>Description</span>
-          <textarea name="description" rows="2" required></textarea>
-        </label>
+
+        <!-- ── 2. Essentials (builder + links) ────────────────────────────── -->
+        <div class="admin-section admin-field-wide">
+          <span class="admin-section-label">② The submission</span>
+        </div>
         <label class="admin-field">
-          <span>Builder name</span>
+          <span>Builder name <em class="req">required</em></span>
           <input name="builder" type="text" placeholder="e.g. Alex Kim" />
         </label>
         <label class="admin-field">
-          <span>Builder URL</span>
-          <input name="builderUrl" type="url" placeholder="https://" />
+          <span>Builder URL <em class="opt">optional</em></span>
+          <input name="builderUrl" type="url" placeholder="https://twitter.com/alexk" />
         </label>
         <label class="admin-field">
-          <span>GitHub URL</span>
-          <input name="githubUrl" type="url" placeholder="https://github.com/..." />
+          <span>GitHub URL <em class="req">required</em></span>
+          <input name="githubUrl" type="url" placeholder="https://github.com/alexk/rocklook" />
         </label>
         <label class="admin-field">
-          <span>Demo URL</span>
-          <input name="demoUrl" type="url" placeholder="https://..." />
-        </label>
-        <label class="admin-field">
-          <span>Difficulty</span>
-          <select name="difficulty">
-            <option value="easy">Easy</option>
-            <option value="moderate">Moderate</option>
-            <option value="advanced">Advanced</option>
-            <option value="expert">Expert</option>
-          </select>
+          <span>Demo URL <em class="opt">optional</em></span>
+          <input name="demoUrl" type="url" placeholder="https://youtu.be/... or live demo" />
         </label>
         <label class="admin-field admin-field-wide">
-          <span>Tags / Stack <em>(comma-separated)</em></span>
-          <input name="tags" type="text" placeholder="Python, OpenCV, MediaPipe, Computer Vision" />
+          <span>Tags <em class="opt">comma-separated, max 4 shown on card</em></span>
+          <input name="tags" type="text" placeholder="Python, OpenCV, MediaPipe" />
         </label>
-        <label class="admin-field admin-field-toggle">
-          <span>Shipped</span>
+
+        <!-- ── 3. Publishing controls ─────────────────────────────────────── -->
+        <div class="admin-section admin-field-wide">
+          <span class="admin-section-label">③ Publish</span>
+        </div>
+        <label class="admin-field admin-field-toggle admin-field-toggle-primary admin-field-wide">
           <input name="shipped" type="checkbox" />
-          <em>Show on public site</em>
+          <span class="admin-toggle-text">
+            <strong>Shipped</strong>
+            <em>Check this to show the project on the public site. Uncheck to keep it as a draft.</em>
+          </span>
         </label>
         <label class="admin-field admin-field-toggle">
-          <span>Featured</span>
           <input name="featured" type="checkbox" />
-          <em>Pin to top with a featured badge</em>
+          <span class="admin-toggle-text">
+            <strong>Featured</strong>
+            <em>Star badge on the card</em>
+          </span>
         </label>
         <label class="admin-field admin-field-toggle">
-          <span>Day Winner</span>
           <input name="winner" type="checkbox" />
-          <em>Mark as the winning entry for this day</em>
+          <span class="admin-toggle-text">
+            <strong>Day winner</strong>
+            <em>Trophy + Day-X-Winner pill</em>
+          </span>
         </label>
-        <label class="admin-field admin-field-wide admin-field-image">
-          <span>Cover image</span>
-          <div class="admin-image-row">
-            <input name="image" type="file" accept="image/*" id="adminImageInput" />
-            <span class="admin-image-name" id="adminImageName">No file chosen</span>
-            <button type="button" class="btn-admin btn-admin-ghost" id="adminImageClear">Clear</button>
+
+        <!-- ── 4. Override defaults (collapsed) ───────────────────────────── -->
+        <details class="admin-advanced admin-field-wide">
+          <summary>Override defaults <em>(only if you need to edit the day's catalog metadata)</em></summary>
+          <div class="admin-advanced-grid">
+            <label class="admin-field">
+              <span>Title</span>
+              <input name="title" type="text" required />
+            </label>
+            <label class="admin-field">
+              <span>Difficulty</span>
+              <select name="difficulty">
+                <option value="easy">Easy</option>
+                <option value="moderate">Moderate</option>
+                <option value="advanced">Advanced</option>
+                <option value="expert">Expert</option>
+              </select>
+            </label>
+            <label class="admin-field admin-field-wide">
+              <span>Description</span>
+              <textarea name="description" rows="2" required></textarea>
+            </label>
           </div>
-          <div class="admin-image-preview" id="adminImagePreview"></div>
-        </label>
+        </details>
+
         <div class="admin-form-foot admin-field-wide">
-          <button type="button" class="btn-admin btn-admin-danger" id="adminRevert">Revert this project</button>
+          <button type="button" class="btn-admin btn-admin-danger" id="adminRevert">Revert</button>
           <span class="admin-saved" id="adminSaved" aria-live="polite">Saved.</span>
         </div>
       </div>
