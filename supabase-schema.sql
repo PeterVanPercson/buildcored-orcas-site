@@ -1,6 +1,6 @@
 -- ═══════════════════════════════════════════════════════════════════════════
 -- Buildcored Orcas v1.5 — site schema + seed
--- Run ONCE in: https://supabase.com/dashboard/project/pfvvangcpvjcmahrgvwv/sql/new
+-- Run ONCE in: https://supabase.com/dashboard/project/vktsagmwyqiiicjmhzek/sql/new
 -- Idempotent — safe to re-run.
 -- ═══════════════════════════════════════════════════════════════════════════
 

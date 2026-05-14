@@ -6,8 +6,8 @@
    no auth, no newsletter).
    ═══════════════════════════════════════════════════════════════════════════ */
 window.BC_CONFIG = {
-  SUPABASE_URL:      'https://pfvvangcpvjcmahrgvwv.supabase.co',
-  SUPABASE_ANON_KEY: '',  // ← paste anon key here (Supabase → Settings → API → anon public)
+  SUPABASE_URL:      'https://vktsagmwyqiiicjmhzek.supabase.co',
+  SUPABASE_ANON_KEY: 'sb_publishable_Q6kU50lUbr7oBNy7Ir9LyQ_8VrTdeY8',
   ADMIN_EMAIL:       'team@buildcored.com',
   NEWSLETTER_FROM:   'Buildcored <team@buildcored.com>',
 };

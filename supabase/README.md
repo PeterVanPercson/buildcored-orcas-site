@@ -1,10 +1,10 @@
 # Supabase setup — buildcored.com
 
-One-time setup for the new Supabase project (`pfvvangcpvjcmahrgvwv`).
+One-time setup for the new Supabase project (`vktsagmwyqiiicjmhzek`).
 
 ## 1. Run the SQL
 
-Open https://supabase.com/dashboard/project/pfvvangcpvjcmahrgvwv/sql/new and paste all of `../supabase-schema.sql` then **Run**. This creates the tables, RLS policies, and seeds the 30 Orcas projects.
+Open https://supabase.com/dashboard/project/vktsagmwyqiiicjmhzek/sql/new and paste all of `../supabase-schema.sql` then **Run**. This creates the tables, RLS policies, and seeds the 30 Orcas projects.
 
 ## 2. Create the storage bucket
 
@@ -26,7 +26,7 @@ brew install supabase/tap/supabase
 
 # from the Orcas (4) folder
 supabase login                                  # browser OAuth
-supabase link --project-ref pfvvangcpvjcmahrgvwv
+supabase link --project-ref vktsagmwyqiiicjmhzek
 supabase secrets set RESEND_API_KEY=re_xxxxxxxxx        # from resend.com
 supabase secrets set NEWSLETTER_FROM='Buildcored <team@buildcored.com>'   # optional, defaults to this
 supabase functions deploy newsletter-confirm
