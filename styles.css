@@ -1809,6 +1809,110 @@ body.admin-open { overflow: hidden; }
 }
 .admin-saved.is-on { opacity: 1; color: #6ee2a1; }
 
+/* Admin form wrapper holds auth gate + form */
+.admin-form-wrap {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+.admin-form-wrap .admin-form { overflow-y: visible; padding-top: 0; }
+
+/* Auth gate */
+.admin-auth {
+  padding: 18px 28px 0;
+  border-bottom: 1px solid var(--line-1);
+  padding-bottom: 18px;
+  margin-bottom: 6px;
+}
+.admin-auth[hidden] { display: none; }
+.admin-auth-signed-out[hidden],
+.admin-auth-signed-in[hidden] { display: none; }
+.admin-auth-msg {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  margin-bottom: 12px;
+}
+.admin-auth-form {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.admin-auth-form input {
+  font: inherit;
+  font-size: 14px;
+  color: var(--ink-0);
+  background: var(--bg-2);
+  border: 1px solid var(--line-2);
+  border-radius: 8px;
+  padding: 9px 12px;
+  min-width: 220px;
+  flex: 1;
+  transition: border-color 160ms;
+}
+.admin-auth-form input:focus { outline: none; border-color: var(--gull); }
+.admin-auth-status {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--ink-2);
+  margin-top: 8px;
+  min-height: 1em;
+}
+.admin-auth-signed-in {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.admin-auth-who {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
+  color: var(--ink-1);
+}
+.admin-auth-who em { font-style: normal; color: var(--gull); }
+
+/* Newsletter form (in Apply section) */
+.newsletter-form {
+  display: flex;
+  gap: 10px;
+  margin-top: 22px;
+  max-width: 460px;
+  flex-wrap: wrap;
+}
+.newsletter-form input {
+  font: inherit;
+  font-size: 15px;
+  color: var(--ink-0);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--line-3);
+  border-radius: 999px;
+  padding: 12px 18px;
+  min-width: 240px;
+  flex: 1;
+  transition: border-color 160ms, background 160ms;
+}
+.newsletter-form input::placeholder { color: var(--ink-3); }
+.newsletter-form input:focus {
+  outline: none;
+  border-color: var(--gull);
+  background: rgba(255, 255, 255, 0.08);
+}
+.newsletter-form .btn-dark { white-space: nowrap; }
+.newsletter-status {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  color: var(--ink-2);
+  margin-top: 12px;
+  min-height: 1em;
+}
+
 /* ═══ Notes (Engineering Series Substack) ════════════════════════════════ */
 .notes {
   background: var(--paper);

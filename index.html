@@ -342,10 +342,25 @@
   </div>
   <div class="admin-body">
     <aside class="admin-list" id="adminList" aria-label="Projects"></aside>
-    <form class="admin-form" id="adminForm" autocomplete="off">
+    <div class="admin-form-wrap">
+      <div class="admin-auth" id="adminAuth">
+        <div class="admin-auth-signed-out" id="adminAuthSignedOut" hidden>
+          <p class="admin-auth-msg">Sign in with your admin email to edit projects.</p>
+          <form class="admin-auth-form" id="adminAuthForm">
+            <input type="email" name="email" placeholder="you@example.com" required />
+            <button type="submit" class="btn-admin">Send magic link</button>
+          </form>
+          <p class="admin-auth-status" id="adminAuthStatus" aria-live="polite"></p>
+        </div>
+        <div class="admin-auth-signed-in" id="adminAuthSignedIn" hidden>
+          <span class="admin-auth-who" id="adminAuthWho"></span>
+          <button type="button" class="btn-admin btn-admin-ghost" id="adminSignOut">Sign out</button>
+        </div>
+      </div>
+      <form class="admin-form" id="adminForm" autocomplete="off">
       <div class="admin-form-head">
         <h3 id="adminFormTitle">Pick a project</h3>
-        <div class="admin-form-hint">Edits save automatically to your browser. Click <em>Export</em> to download a JSON you commit.</div>
+        <div class="admin-form-hint">Edits save automatically. When Supabase is wired up they save live; in fallback mode they save to your browser and export to JSON.</div>
       </div>
       <div class="admin-form-grid" id="adminFormGrid" hidden>
         <label class="admin-field">
@@ -414,7 +429,8 @@
           <span class="admin-saved" id="adminSaved" aria-live="polite">Saved.</span>
         </div>
       </div>
-    </form>
+      </form>
+    </div>
   </div>
 </div>
 
@@ -563,20 +579,25 @@
 <!-- ═══ Apply / Next ══════════════════════════════════════════════════════ -->
 <section class="apply" id="apply" data-screen-label="07 Apply">
   <div class="container apply-inner">
-    <div>
+    <div class="apply-copy">
       <h2 class="apply-head">
         Next cohort.<br><em>Pre-apply.</em>
       </h2>
       <p class="apply-sub">Orcas v1.5 wrapped — 30 projects shipped. Want the next one? Free, daily, no hardware. Mac, Windows, Linux — all AI runs locally.</p>
+      <form class="newsletter-form" id="newsletterForm" data-source="apply" autocomplete="off">
+        <input type="email" name="email" placeholder="you@example.com" required aria-label="Email address" />
+        <button type="submit" class="btn-dark">
+          Notify me
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M2.5 7H11.5M11.5 7L7 2.5M11.5 7L7 11.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </form>
+      <p class="newsletter-status" id="newsletterStatus" aria-live="polite"></p>
     </div>
     <div class="apply-cta">
-      <a href="mailto:hi@buildcored.com?subject=Pre-apply%20for%20next%20Orcas%20cohort" class="btn-dark">
-        Pre-apply for v2.0
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-          <path d="M2.5 7H11.5M11.5 7L7 2.5M11.5 7L7 11.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-        </svg>
-      </a>
       <a href="#projects" class="btn-outline-dark">See the v1.5 projects</a>
+      <a href="https://github.com/PeterVanPercson/buildcored-orcas" class="btn-outline-dark" target="_blank" rel="noopener">View curriculum</a>
     </div>
   </div>
 </section>
@@ -627,6 +648,7 @@
 </footer>
 
 <script src="orca-animation.js"></script>
+<script src="supabase-config.js"></script>
 <script src="app.js"></script>
 <script>
   // ─── Brand intro → page reveal ─────────────────────────────────────────

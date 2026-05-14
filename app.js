@@ -1,35 +1,81 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   Project DB — fetch projects.json, render gallery, run admin (#admin).
-   Local edits live in localStorage; Export downloads a fresh projects.json
-   plus any newly-uploaded image files for the admin to commit to /uploads/.
+   Buildcored — Project DB + Admin + Newsletter (Supabase-backed)
+   ─────────────────────────────────────────────────────────────────────────
+   - If supabase-config.js has SUPABASE_ANON_KEY set → live mode: reads from
+     Supabase, magic-link auth gates admin writes, images go to Storage.
+   - If not configured → fallback mode: reads projects.json, admin edits
+     stay in localStorage and export to JSON for git-commit.
    ═══════════════════════════════════════════════════════════════════════════ */
 
 (() => {
-  const LS_KEY = 'bc-projects-overrides-v1';
-  const LS_IMG_KEY = 'bc-projects-new-images-v1';
+  const LS_KEY      = 'bc-projects-overrides-v1';
+  const LS_IMG_KEY  = 'bc-projects-new-images-v1';
+  const CFG         = window.BC_CONFIG || {};
+  const HAS_SB      = !!(CFG.SUPABASE_ANON_KEY && CFG.SUPABASE_URL);
 
-  /** @type {{version:number,updatedAt:string,projects:any[]}} */
-  let dbBase = null;     // canonical projects.json content from server
-  let db = null;         // merged: server + localStorage overrides
-  let overrides = {};    // { [id]: partial project }
-  let newImages = {};    // { [filename]: dataURL } — uploaded but not yet committed
+  /** @type {any} Supabase client, lazily loaded */
+  let sb = null;
+  let currentUser = null;
+
+  let dbBase = null;     // canonical projects (server source of truth)
+  let db = null;         // dbBase with local overrides merged
+  let overrides = {};
+  let newImages = {};
   let activeFilter = 'all';
   let editingId = null;
 
   // ─────────────────────────────────────────────────────────────────────────
-  // Storage helpers
+  // Boot
+  // ─────────────────────────────────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', async () => {
+    bindFilters();
+    bindModal();
+    bindAdminForm();
+    bindRouting();
+    bindNewsletter();
+
+    if (HAS_SB) {
+      try {
+        const mod = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+        sb = mod.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_ANON_KEY, {
+          auth: { persistSession: true, autoRefreshToken: true },
+        });
+        const { data: { session } } = await sb.auth.getSession();
+        currentUser = session?.user || null;
+        sb.auth.onAuthStateChange((event, s) => {
+          currentUser = s?.user || null;
+          updateAuthUI();
+          if (event === 'SIGNED_IN') renderAdminList();
+        });
+        updateAuthUI();
+      } catch (err) {
+        console.error('[supabase] init failed, falling back to projects.json', err);
+        sb = null;
+      }
+    }
+
+    try {
+      loadLocal();
+      await load();
+      if (location.hash === '#admin') openAdmin();
+    } catch (err) {
+      console.error('[projects] load failed', err);
+      const host = document.getElementById('projectsDB');
+      if (host) host.innerHTML = `<div class="db-empty db-empty-error">Couldn't load projects. ${escapeHtml(err.message || err)}</div>`;
+    }
+  });
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Storage helpers (local overrides for fallback mode)
   // ─────────────────────────────────────────────────────────────────────────
   function loadLocal() {
-    try { overrides = JSON.parse(localStorage.getItem(LS_KEY) || '{}'); }
-    catch { overrides = {}; }
-    try { newImages = JSON.parse(localStorage.getItem(LS_IMG_KEY) || '{}'); }
-    catch { newImages = {}; }
+    try { overrides = JSON.parse(localStorage.getItem(LS_KEY) || '{}'); } catch { overrides = {}; }
+    try { newImages = JSON.parse(localStorage.getItem(LS_IMG_KEY) || '{}'); } catch { newImages = {}; }
   }
   function saveLocal() {
     localStorage.setItem(LS_KEY, JSON.stringify(overrides));
     localStorage.setItem(LS_IMG_KEY, JSON.stringify(newImages));
   }
-
   function merge() {
     db = {
       version: dbBase.version,
@@ -39,49 +85,99 @@
   }
 
   // ─────────────────────────────────────────────────────────────────────────
+  // Supabase row <-> local project mapping (snake_case <-> camelCase)
+  // ─────────────────────────────────────────────────────────────────────────
+  function rowToProject(row) {
+    return {
+      id: row.id,
+      day: row.day,
+      week: row.week,
+      category: row.category,
+      title: row.title,
+      description: row.description,
+      difficulty: row.difficulty,
+      builder: row.builder || '',
+      builderUrl: row.builder_url || '',
+      image: row.image || '',
+      githubUrl: row.github_url || '',
+      demoUrl: row.demo_url || '',
+      shipped: !!row.shipped,
+      featured: !!row.featured,
+      winner: !!row.winner,
+      tags: row.tags || [],
+    };
+  }
+  function projectToRow(p) {
+    return {
+      id: p.id,
+      day: p.day,
+      week: p.week,
+      category: p.category,
+      title: p.title,
+      description: p.description,
+      difficulty: p.difficulty,
+      builder: p.builder || '',
+      builder_url: p.builderUrl || '',
+      image: p.image || '',
+      github_url: p.githubUrl || '',
+      demo_url: p.demoUrl || '',
+      shipped: !!p.shipped,
+      featured: !!p.featured,
+      winner: !!p.winner,
+      tags: p.tags || [],
+    };
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
   // Load
   // ─────────────────────────────────────────────────────────────────────────
   async function load() {
-    const r = await fetch('projects.json?t=' + Date.now(), { cache: 'no-cache' });
-    if (!r.ok) throw new Error('projects.json missing');
-    dbBase = await r.json();
-    loadLocal();
+    if (sb) {
+      const { data, error } = await sb.from('projects').select('*').order('day', { ascending: true });
+      if (error) throw error;
+      dbBase = {
+        version: 1,
+        updatedAt: new Date().toISOString().slice(0, 10),
+        projects: (data || []).map(rowToProject),
+      };
+    } else {
+      const r = await fetch('projects.json?t=' + Date.now(), { cache: 'no-cache' });
+      if (!r.ok) throw new Error('projects.json missing');
+      dbBase = await r.json();
+    }
     merge();
     renderGallery();
     updateShippedCount();
-    if (location.hash === '#admin') openAdmin();
   }
 
   // ─────────────────────────────────────────────────────────────────────────
-  // Gallery
+  // Image URL resolution
   // ─────────────────────────────────────────────────────────────────────────
   function resolveImage(project) {
     if (!project.image) return '';
-    // If admin uploaded a new image this session, prefer the data URL preview.
     if (newImages[project.image]) return newImages[project.image];
+    if (sb) return `${CFG.SUPABASE_URL}/storage/v1/object/public/project-images/${project.image}`;
     return 'uploads/' + project.image;
   }
 
+  // ─────────────────────────────────────────────────────────────────────────
+  // Render helpers
+  // ─────────────────────────────────────────────────────────────────────────
   function escapeHtml(s) {
     return String(s ?? '').replace(/[&<>"']/g, c => ({
       '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
     })[c]);
   }
-
-  function diffLabel(d) {
-    return d ? d[0].toUpperCase() + d.slice(1) : '';
-  }
+  function diffLabel(d) { return d ? d[0].toUpperCase() + d.slice(1) : ''; }
 
   function tagPills(tags, max = 4) {
     if (!Array.isArray(tags) || tags.length === 0) return '';
     const shown = tags.slice(0, max);
     const extra = tags.length - shown.length;
-    return `
-      <div class="pcard-tags">
-        ${shown.map(t => `<span class="pcard-tag">${escapeHtml(t)}</span>`).join('')}
-        ${extra > 0 ? `<span class="pcard-tag pcard-tag-extra">+${extra}</span>` : ''}
-      </div>
-    `;
+    return `<div class="pcard-tags">
+      ${shown.map(t => `<span class="pcard-tag">${escapeHtml(t)}</span>`).join('')}
+      ${extra > 0 ? `<span class="pcard-tag pcard-tag-extra">+${extra}</span>` : ''}
+    </div>`;
   }
 
   function createCard(p) {
@@ -91,7 +187,7 @@
     const classes = ['project-card-db', 'reveal', 'in'];
     classes.push(isShipped ? 'is-shipped' : 'is-pending');
     if (p.featured) classes.push('is-featured');
-    if (p.winner) classes.push('is-winner');
+    if (p.winner)   classes.push('is-winner');
     card.className = classes.join(' ');
     card.dataset.week = String(p.week);
     card.dataset.id = p.id;
@@ -103,14 +199,14 @@
         ${img
           ? `<img src="${escapeHtml(img)}" alt="" loading="lazy" />`
           : `<div class="pcard-media-empty" aria-hidden="true">
-               <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                 <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.2"/>
-                 <path d="M3 16l5-4 4 3 3-2 6 5" stroke="currentColor" stroke-width="1.2" fill="none"/>
-                 <circle cx="9" cy="10" r="1.5" stroke="currentColor" stroke-width="1.2"/>
-               </svg>
-             </div>`}
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.2"/>
+                <path d="M3 16l5-4 4 3 3-2 6 5" stroke="currentColor" stroke-width="1.2" fill="none"/>
+                <circle cx="9" cy="10" r="1.5" stroke="currentColor" stroke-width="1.2"/>
+              </svg>
+            </div>`}
         ${p.featured
-          ? `<span class="pcard-featured" aria-label="Featured"><svg width="11" height="11" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 .5l1.94 4.13 4.56.6-3.36 3.13.85 4.49L7 10.65 2.99 12.85l.85-4.49L.5 5.23l4.56-.6L7 .5z"/></svg> Featured</span>`
+          ? `<span class="pcard-featured"><svg width="11" height="11" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 .5l1.94 4.13 4.56.6-3.36 3.13.85 4.49L7 10.65 2.99 12.85l.85-4.49L.5 5.23l4.56-.6L7 .5z"/></svg> Featured</span>`
           : `<span class="pcard-day">D·${String(p.day).padStart(2, '0')}</span>`}
         ${isShipped
           ? (p.winner ? `<span class="pcard-ship pcard-ship-winner">🏆 Day ${p.day} Winner</span>` : `<span class="pcard-ship">Shipped</span>`)
@@ -159,9 +255,6 @@
     if (el) el.textContent = String(db.projects.filter(p => p.shipped).length);
   }
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // Filters
-  // ─────────────────────────────────────────────────────────────────────────
   function bindFilters() {
     document.querySelectorAll('.db-filter').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -174,7 +267,7 @@
   }
 
   // ─────────────────────────────────────────────────────────────────────────
-  // Modal (project detail)
+  // Modal
   // ─────────────────────────────────────────────────────────────────────────
   function openModal(id) {
     const p = db.projects.find(x => x.id === id);
@@ -184,9 +277,7 @@
     body.innerHTML = `
       <div class="pmodal-grid">
         <div class="pmodal-media">
-          ${img
-            ? `<img src="${escapeHtml(img)}" alt="${escapeHtml(p.title)}" />`
-            : `<div class="pcard-media-empty" aria-hidden="true">No image yet</div>`}
+          ${img ? `<img src="${escapeHtml(img)}" alt="${escapeHtml(p.title)}" />` : `<div class="pcard-media-empty" aria-hidden="true">No image yet</div>`}
         </div>
         <div class="pmodal-body">
           <div class="pmodal-meta">
@@ -197,9 +288,7 @@
           </div>
           <h2 class="pmodal-title">${escapeHtml(p.title)}</h2>
           ${p.builder
-            ? `<div class="pmodal-builder-line">by ${p.builderUrl
-                ? `<a href="${escapeHtml(p.builderUrl)}" target="_blank" rel="noopener">${escapeHtml(p.builder)}</a>`
-                : escapeHtml(p.builder)}</div>`
+            ? `<div class="pmodal-builder-line">by ${p.builderUrl ? `<a href="${escapeHtml(p.builderUrl)}" target="_blank" rel="noopener">${escapeHtml(p.builder)}</a>` : escapeHtml(p.builder)}</div>`
             : ''}
           ${p.winner ? `<div class="pmodal-winner">Day ${p.day} Winner <span aria-hidden="true">🏆</span></div>` : ''}
           <p class="pmodal-desc">${escapeHtml(p.description)}</p>
@@ -215,27 +304,67 @@
               </div>`
             : `<div class="pmodal-foot pmodal-foot-pending">Awaiting submission for this project.</div>`}
         </div>
-      </div>
-    `;
+      </div>`;
     const modal = document.getElementById('projectModal');
     modal.classList.add('open');
     modal.setAttribute('aria-hidden', 'false');
     document.body.classList.add('modal-open');
   }
-
   function closeModal() {
     const modal = document.getElementById('projectModal');
     modal.classList.remove('open');
     modal.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('modal-open');
   }
-
   function bindModal() {
     document.getElementById('projectModalClose')?.addEventListener('click', closeModal);
     document.getElementById('projectModalBackdrop')?.addEventListener('click', closeModal);
     document.addEventListener('keydown', e => {
-      if (e.key === 'Escape' && document.getElementById('projectModal').classList.contains('open')) closeModal();
+      if (e.key === 'Escape' && document.getElementById('projectModal')?.classList.contains('open')) closeModal();
     });
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Auth (Supabase magic link)
+  // ─────────────────────────────────────────────────────────────────────────
+  function isAdmin() {
+    if (!sb || !currentUser) return false;
+    if (!CFG.ADMIN_EMAIL) return false;
+    return currentUser.email?.toLowerCase() === CFG.ADMIN_EMAIL.toLowerCase();
+  }
+
+  function updateAuthUI() {
+    const signedOut = document.getElementById('adminAuthSignedOut');
+    const signedIn  = document.getElementById('adminAuthSignedIn');
+    const who       = document.getElementById('adminAuthWho');
+    const formGrid  = document.getElementById('adminFormGrid');
+    const formTitle = document.getElementById('adminFormTitle');
+    if (!signedOut) return;
+
+    if (!sb) {
+      // Fallback mode — show the local-export hint, don't show auth controls
+      signedOut.hidden = true;
+      signedIn.hidden  = true;
+      return;
+    }
+
+    if (currentUser && isAdmin()) {
+      signedOut.hidden = true;
+      signedIn.hidden  = false;
+      who.innerHTML    = `signed in as <em>${escapeHtml(currentUser.email)}</em>`;
+    } else if (currentUser) {
+      // Signed in but not admin
+      signedOut.hidden = true;
+      signedIn.hidden  = false;
+      who.innerHTML    = `signed in as <em>${escapeHtml(currentUser.email)}</em> — not the admin`;
+      if (formGrid) formGrid.hidden = true;
+      if (formTitle) formTitle.textContent = 'You\'re signed in, but not as the admin.';
+    } else {
+      signedOut.hidden = false;
+      signedIn.hidden  = true;
+      if (formGrid) formGrid.hidden = true;
+      if (formTitle) formTitle.textContent = 'Sign in to edit projects';
+    }
   }
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -246,6 +375,7 @@
     if (!panel) return;
     panel.hidden = false;
     document.body.classList.add('admin-open');
+    updateAuthUI();
     renderAdminList();
   }
   function closeAdmin() {
@@ -259,15 +389,14 @@
   function renderAdminList() {
     const list = document.getElementById('adminList');
     if (!list) return;
-    const items = db.projects.map(p => {
-      const dirty = !!overrides[p.id];
+    list.innerHTML = db.projects.map(p => {
+      const dirty = !sb && !!overrides[p.id];
       return `<button type="button" class="admin-list-item${editingId === p.id ? ' is-active' : ''}${p.shipped ? ' is-shipped' : ''}${dirty ? ' is-dirty' : ''}" data-id="${p.id}">
-        <span class="admin-list-d">D·${String(p.day).padStart(2, '0')}</span>
+        <span class="admin-list-d">D·${String(p.day).padStart(2,'0')}</span>
         <span class="admin-list-title">${escapeHtml(p.title)}</span>
         <span class="admin-list-status">${p.shipped ? '●' : '○'}</span>
       </button>`;
     }).join('');
-    list.innerHTML = items;
     list.querySelectorAll('.admin-list-item').forEach(btn => {
       btn.addEventListener('click', () => loadIntoForm(btn.dataset.id));
     });
@@ -278,22 +407,23 @@
     const p = db.projects.find(x => x.id === id);
     if (!p) return;
     document.getElementById('adminFormTitle').textContent = `Day ${p.day} · ${p.title}`;
-    document.getElementById('adminFormGrid').hidden = false;
+    const grid = document.getElementById('adminFormGrid');
+    if (sb && !isAdmin()) { grid.hidden = true; updateAuthUI(); return; }
+    grid.hidden = false;
     const f = document.getElementById('adminForm');
-    f.title.value = p.title || '';
+    f.title.value       = p.title || '';
     f.description.value = p.description || '';
-    f.builder.value = p.builder || '';
-    f.builderUrl.value = p.builderUrl || '';
-    f.githubUrl.value = p.githubUrl || '';
-    f.demoUrl.value = p.demoUrl || '';
-    f.difficulty.value = p.difficulty || 'moderate';
-    f.tags.value = Array.isArray(p.tags) ? p.tags.join(', ') : '';
-    f.shipped.checked = !!p.shipped;
-    f.featured.checked = !!p.featured;
-    f.winner.checked = !!p.winner;
-    // Image preview
+    f.builder.value     = p.builder || '';
+    f.builderUrl.value  = p.builderUrl || '';
+    f.githubUrl.value   = p.githubUrl || '';
+    f.demoUrl.value     = p.demoUrl || '';
+    f.difficulty.value  = p.difficulty || 'moderate';
+    f.tags.value        = Array.isArray(p.tags) ? p.tags.join(', ') : '';
+    f.shipped.checked   = !!p.shipped;
+    f.featured.checked  = !!p.featured;
+    f.winner.checked    = !!p.winner;
     const preview = document.getElementById('adminImagePreview');
-    const name = document.getElementById('adminImageName');
+    const name    = document.getElementById('adminImageName');
     if (p.image) {
       preview.innerHTML = `<img src="${escapeHtml(resolveImage(p))}" alt="" />`;
       name.textContent = p.image + (newImages[p.image] ? ' · new, not yet committed' : '');
@@ -309,22 +439,36 @@
   function readForm() {
     const f = document.getElementById('adminForm');
     return {
-      title: f.title.value.trim(),
+      title:       f.title.value.trim(),
       description: f.description.value.trim(),
-      builder: f.builder.value.trim(),
-      builderUrl: f.builderUrl.value.trim(),
-      githubUrl: f.githubUrl.value.trim(),
-      demoUrl: f.demoUrl.value.trim(),
-      difficulty: f.difficulty.value,
-      tags: f.tags.value.split(',').map(s => s.trim()).filter(Boolean),
-      shipped: f.shipped.checked,
-      featured: f.featured.checked,
-      winner: f.winner.checked,
+      builder:     f.builder.value.trim(),
+      builderUrl:  f.builderUrl.value.trim(),
+      githubUrl:   f.githubUrl.value.trim(),
+      demoUrl:     f.demoUrl.value.trim(),
+      difficulty:  f.difficulty.value,
+      tags:        f.tags.value.split(',').map(s => s.trim()).filter(Boolean),
+      shipped:     f.shipped.checked,
+      featured:    f.featured.checked,
+      winner:      f.winner.checked,
     };
   }
 
-  // Compute the diff from the canonical base for a given id; store ONLY changed fields.
-  function commitOverride(id, patch) {
+  // saveProject — Supabase or fallback to local override
+  async function saveProject(id, patch) {
+    if (sb) {
+      if (!isAdmin()) { setSaved('Sign in as the admin to save.'); return; }
+      const current = db.projects.find(p => p.id === id);
+      const updated = { ...current, ...patch };
+      const { error } = await sb.from('projects').upsert(projectToRow(updated));
+      if (error) { console.error(error); setSaved('Save failed: ' + error.message); return; }
+      Object.assign(current, patch);
+      renderGallery();
+      updateShippedCount();
+      renderAdminList();
+      setSaved('Saved.');
+      return;
+    }
+    // Fallback: local override (existing behavior)
     const base = dbBase.projects.find(x => x.id === id);
     if (!base) return;
     const current = { ...base, ...(overrides[id] || {}), ...patch };
@@ -343,6 +487,7 @@
     renderGallery();
     updateShippedCount();
     renderAdminList();
+    setSaved('Saved locally — export when ready.');
   }
 
   function setSaved(msg) {
@@ -351,64 +496,81 @@
     el.textContent = msg;
     el.classList.add('is-on');
     clearTimeout(setSaved._t);
-    setSaved._t = setTimeout(() => el.classList.remove('is-on'), 1200);
+    setSaved._t = setTimeout(() => el.classList.remove('is-on'), 1800);
   }
 
   function bindAdminForm() {
     const f = document.getElementById('adminForm');
     if (!f) return;
 
-    // Autosave on input
-    f.addEventListener('input', e => {
-      if (!editingId) return;
-      if (e.target.name === 'image') return; // handled separately
-      commitOverride(editingId, readForm());
-      setSaved('Saved.');
-    });
-    f.addEventListener('change', e => {
+    // Autosave
+    const onChange = e => {
       if (!editingId) return;
       if (e.target.name === 'image') return;
-      commitOverride(editingId, readForm());
-      setSaved('Saved.');
-    });
+      saveProject(editingId, readForm());
+    };
+    f.addEventListener('input', onChange);
+    f.addEventListener('change', onChange);
 
-    // Image upload
-    const input = document.getElementById('adminImageInput');
-    const preview = document.getElementById('adminImagePreview');
-    const nameEl = document.getElementById('adminImageName');
+    // Image
+    const input    = document.getElementById('adminImageInput');
+    const preview  = document.getElementById('adminImagePreview');
+    const nameEl   = document.getElementById('adminImageName');
 
-    input.addEventListener('change', () => {
+    input.addEventListener('change', async () => {
       if (!editingId) return;
       const file = input.files && input.files[0];
       if (!file) return;
       const p = db.projects.find(x => x.id === editingId);
       const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
       const filename = `${p.id}.${ext}`;
-      const reader = new FileReader();
-      reader.onload = () => {
-        newImages[filename] = reader.result;
-        commitOverride(editingId, { image: filename });
-        preview.innerHTML = `<img src="${reader.result}" alt="" />`;
-        nameEl.textContent = filename + ' · new, not yet committed';
-        setSaved('Image attached. Use "Download new images" to get the file for /uploads/.');
-      };
-      reader.readAsDataURL(file);
+
+      if (sb && isAdmin()) {
+        // Direct upload to Supabase Storage
+        const { error } = await sb.storage.from('project-images').upload(filename, file, {
+          upsert: true, contentType: file.type || 'image/jpeg', cacheControl: '3600',
+        });
+        if (error) { setSaved('Upload failed: ' + error.message); console.error(error); return; }
+        await saveProject(editingId, { image: filename });
+        const url = `${CFG.SUPABASE_URL}/storage/v1/object/public/project-images/${filename}?t=${Date.now()}`;
+        preview.innerHTML = `<img src="${url}" alt="" />`;
+        nameEl.textContent = filename + ' · uploaded';
+        setSaved('Image uploaded to Storage.');
+      } else {
+        // Fallback: data URL in localStorage + download-on-export later
+        const reader = new FileReader();
+        reader.onload = async () => {
+          newImages[filename] = reader.result;
+          await saveProject(editingId, { image: filename });
+          preview.innerHTML = `<img src="${reader.result}" alt="" />`;
+          nameEl.textContent = filename + ' · new, not yet committed';
+          saveLocal();
+          setSaved('Image attached. Use "Download new images" to get the file for /uploads/.');
+        };
+        reader.readAsDataURL(file);
+      }
     });
 
-    document.getElementById('adminImageClear').addEventListener('click', () => {
+    document.getElementById('adminImageClear').addEventListener('click', async () => {
       if (!editingId) return;
       const p = db.projects.find(x => x.id === editingId);
-      if (p.image && newImages[p.image]) delete newImages[p.image];
-      commitOverride(editingId, { image: '' });
+      const filename = p.image;
+
+      if (sb && isAdmin() && filename) {
+        await sb.storage.from('project-images').remove([filename]).catch(()=>{});
+      }
+      if (filename && newImages[filename]) delete newImages[filename];
+      saveLocal();
+      await saveProject(editingId, { image: '' });
       preview.innerHTML = '';
       nameEl.textContent = 'No file chosen';
       input.value = '';
-      saveLocal();
       setSaved('Image cleared.');
     });
 
     document.getElementById('adminRevert').addEventListener('click', () => {
       if (!editingId) return;
+      if (sb) { setSaved('Revert is only for local-mode edits.'); return; }
       const p = db.projects.find(x => x.id === editingId);
       if (p.image && newImages[p.image]) delete newImages[p.image];
       delete overrides[editingId];
@@ -423,7 +585,7 @@
     document.getElementById('adminExport').addEventListener('click', exportJson);
     document.getElementById('adminDownloadImages').addEventListener('click', downloadNewImages);
     document.getElementById('adminReset').addEventListener('click', () => {
-      if (!confirm('Discard ALL local changes (overrides + uploaded images)? This cannot be undone unless you exported them.')) return;
+      if (!confirm('Discard ALL local-only changes? (Has no effect on Supabase data.)')) return;
       overrides = {}; newImages = {};
       saveLocal();
       merge();
@@ -438,32 +600,50 @@
       history.replaceState(null, '', location.pathname);
       closeAdmin();
     });
+
+    // Auth — magic link + sign out
+    const authForm = document.getElementById('adminAuthForm');
+    authForm?.addEventListener('submit', async e => {
+      e.preventDefault();
+      if (!sb) return;
+      const email = authForm.email.value.trim();
+      if (!email) return;
+      const status = document.getElementById('adminAuthStatus');
+      status.textContent = 'Sending magic link…';
+      const { error } = await sb.auth.signInWithOtp({
+        email,
+        options: { emailRedirectTo: location.origin + location.pathname + '#admin' },
+      });
+      if (error) { status.textContent = 'Failed: ' + error.message; return; }
+      status.textContent = `Check ${email} for the sign-in link.`;
+    });
+    document.getElementById('adminSignOut')?.addEventListener('click', async () => {
+      if (!sb) return;
+      await sb.auth.signOut();
+      setSaved('Signed out.');
+    });
   }
 
   // ─────────────────────────────────────────────────────────────────────────
-  // Export
+  // Export (fallback mode)
   // ─────────────────────────────────────────────────────────────────────────
   function exportJson() {
+    if (sb) { setSaved('Already saving to Supabase — no export needed.'); return; }
     const out = {
-      version: dbBase.version,
-      updatedAt: new Date().toISOString().slice(0, 10),
-      projects: db.projects.map(p => {
-        // Only include the fields that exist in the schema, in stable order.
-        return {
-          id: p.id, day: p.day, week: p.week, category: p.category,
-          title: p.title, description: p.description, difficulty: p.difficulty,
-          builder: p.builder || '', builderUrl: p.builderUrl || '',
-          image: p.image || '', githubUrl: p.githubUrl || '', demoUrl: p.demoUrl || '',
-          shipped: !!p.shipped,
-          tags: Array.isArray(p.tags) ? p.tags : [],
-          featured: !!p.featured,
-          winner: !!p.winner,
-        };
-      }),
+      version: dbBase.version, updatedAt: new Date().toISOString().slice(0, 10),
+      projects: db.projects.map(p => ({
+        id: p.id, day: p.day, week: p.week, category: p.category,
+        title: p.title, description: p.description, difficulty: p.difficulty,
+        builder: p.builder || '', builderUrl: p.builderUrl || '',
+        image: p.image || '', githubUrl: p.githubUrl || '', demoUrl: p.demoUrl || '',
+        shipped: !!p.shipped,
+        tags: Array.isArray(p.tags) ? p.tags : [],
+        featured: !!p.featured, winner: !!p.winner,
+      })),
     };
     const blob = new Blob([JSON.stringify(out, null, 2) + '\n'], { type: 'application/json' });
     triggerDownload(blob, 'projects.json');
-    setSaved('Exported projects.json. Drop it at the repo root and commit.');
+    setSaved('Exported. Drop at repo root and commit.');
   }
 
   function dataURLToBlob(dataURL) {
@@ -474,16 +654,13 @@
     for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
     return new Blob([bytes], { type: mime });
   }
-
   function downloadNewImages() {
+    if (sb) { setSaved('Images go straight to Storage now — nothing to download.'); return; }
     const names = Object.keys(newImages);
-    if (names.length === 0) { setSaved('No new images to download.'); return; }
-    for (const name of names) {
-      triggerDownload(dataURLToBlob(newImages[name]), name);
-    }
-    setSaved(`Downloaded ${names.length} image${names.length === 1 ? '' : 's'}. Drop them in /uploads/ and commit.`);
+    if (names.length === 0) { setSaved('No new images.'); return; }
+    for (const name of names) triggerDownload(dataURLToBlob(newImages[name]), name);
+    setSaved(`Downloaded ${names.length} image${names.length === 1 ? '' : 's'}.`);
   }
-
   function triggerDownload(blob, filename) {
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -504,17 +681,34 @@
   }
 
   // ─────────────────────────────────────────────────────────────────────────
-  // Boot
+  // Newsletter signup
   // ─────────────────────────────────────────────────────────────────────────
-  document.addEventListener('DOMContentLoaded', () => {
-    bindFilters();
-    bindModal();
-    bindAdminForm();
-    bindRouting();
-    load().catch(err => {
-      console.error('[projects] failed to load', err);
-      const host = document.getElementById('projectsDB');
-      if (host) host.innerHTML = '<div class="db-empty db-empty-error">Couldn\'t load projects.json. Check the file is at the repo root.</div>';
+  function bindNewsletter() {
+    const form = document.getElementById('newsletterForm');
+    if (!form) return;
+    const status = document.getElementById('newsletterStatus');
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const email = form.email.value.trim();
+      if (!email) return;
+      if (!sb) {
+        status.textContent = 'Newsletter isn\'t configured yet — try again soon.';
+        return;
+      }
+      status.textContent = 'Subscribing…';
+      const source = form.dataset.source || 'site';
+      const { error } = await sb.from('newsletter_signups').insert({ email, source });
+      if (error) {
+        // 23505 = unique violation
+        if (error.code === '23505') {
+          status.textContent = 'You\'re already on the list — see you in v2.0.';
+        } else {
+          status.textContent = 'Hmm: ' + error.message;
+        }
+        return;
+      }
+      form.reset();
+      status.textContent = 'You\'re in. We\'ll email when v2.0 opens.';
     });
-  });
+  }
 })();
