@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Orcas — logo pack</title>
+<link rel="icon" type="image/svg+xml" href="logo/orca.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="logo/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="logo/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="logo/apple-touch-icon.png">
+<style>
+  :root{
+    --ink: #16191c;
+    --muted: #6b7480;
+    --line: #e6e8ec;
+    --bg: #fafbfc;
+    --card: #ffffff;
+  }
+  *{ box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body{
+    font-family: ui-sans-serif, system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.45;
+  }
+  .wrap{ max-width: 1080px; margin: 0 auto; padding: 56px 32px 96px; }
+  header{ display: flex; align-items: center; gap: 20px; margin-bottom: 12px; }
+  header img{ width: 64px; height: 64px; display: block; }
+  h1{ font-size: 34px; letter-spacing: -0.02em; margin: 0; font-weight: 600; }
+  .lede{ color: var(--muted); margin: 8px 0 0; max-width: 60ch; font-size: 15.5px; }
+
+  section{ margin-top: 56px; }
+  h2{ font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin: 0 0 18px; font-weight: 600; }
+
+  /* Background swatches */
+  .bg-row{ display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .bg-tile{
+    aspect-ratio: 1 / 1;
+    border-radius: 14px;
+    display: grid; place-items: center;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid var(--line);
+  }
+  .bg-tile img{ width: 64%; height: 64%; object-fit: contain; }
+  .bg-tile .lbl{
+    position: absolute; left: 12px; bottom: 10px;
+    font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+    color: rgba(0,0,0,0.5);
+  }
+  .tile-dark .lbl{ color: rgba(255,255,255,0.6); }
+  .tile-checker{
+    background-image:
+      linear-gradient(45deg, #e5e7eb 25%, transparent 25%),
+      linear-gradient(-45deg, #e5e7eb 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #e5e7eb 75%),
+      linear-gradient(-45deg, transparent 75%, #e5e7eb 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0;
+    background-color: #ffffff;
+  }
+
+  /* Size strip */
+  .sizes{
+    display: flex; align-items: end; gap: 28px; flex-wrap: wrap;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 28px 32px;
+  }
+  .sizes figure{ margin: 0; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .sizes img{ display: block; image-rendering: -webkit-optimize-contrast; }
+  .sizes figcaption{ font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  /* File table */
+  table{ width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td{ text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--line); }
+  th{ font-weight: 500; color: var(--muted); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; }
+  td.path{ font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12.5px; }
+  td.size{ color: var(--muted); font-variant-numeric: tabular-nums; text-align: right; width: 90px; }
+  td.use{ color: var(--muted); }
+  tr:last-child td{ border-bottom: 0; }
+  table{ background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+
+  /* Code block */
+  pre{
+    background: #0f1216; color: #e5eaf0;
+    padding: 22px 24px; border-radius: 12px;
+    overflow-x: auto; font-size: 12.5px; line-height: 1.6;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    margin: 0;
+  }
+  pre .c{ color: #6b7682; }
+  pre .t{ color: #8fb6ff; }
+  pre .a{ color: #f0c674; }
+  pre .s{ color: #b5e6a3; }
+  .pre-wrap{ position: relative; }
+  .copy{
+    position: absolute; top: 12px; right: 12px;
+    background: rgba(255,255,255,0.08); color: #e5eaf0;
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 6px 12px; border-radius: 8px; font-size: 12px; cursor: pointer;
+    font-family: inherit;
+  }
+  .copy:hover{ background: rgba(255,255,255,0.14); }
+  .copy.ok{ background: #1e6b3a; border-color: #2a8a4d; }
+
+  footer{ margin-top: 56px; color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <img src="logo/orca.svg" alt="Orcas logo">
+    <div>
+      <h1>Orcas — logo pack</h1>
+      <p class="lede">Background removed, exported across every common web format and size.</p>
+    </div>
+  </header>
+
+  <section>
+    <h2>On surfaces</h2>
+    <div class="bg-row">
+      <div class="bg-tile" style="background:#ffffff"><img src="logo/orca-512.png" alt=""><span class="lbl">White</span></div>
+      <div class="bg-tile" style="background:#f3f4f6"><img src="logo/orca-512.png" alt=""><span class="lbl">Light gray</span></div>
+      <div class="bg-tile tile-checker"><img src="logo/orca-512.png" alt=""><span class="lbl">Transparent</span></div>
+      <div class="bg-tile tile-dark" style="background:#16191c"><img src="logo/orca-512.png" alt=""><span class="lbl">Dark</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Sizes</h2>
+    <div class="sizes">
+      <figure><img src="logo/favicon-16.png" width="16" height="16" alt=""><figcaption>16</figcaption></figure>
+      <figure><img src="logo/favicon-32.png" width="32" height="32" alt=""><figcaption>32</figcaption></figure>
+      <figure><img src="logo/orca-64.png" width="64" height="64" alt=""><figcaption>64</figcaption></figure>
+      <figure><img src="logo/orca-128.png" width="128" height="128" alt=""><figcaption>128</figcaption></figure>
+      <figure><img src="logo/apple-touch-icon.png" width="180" height="180" alt=""><figcaption>180</figcaption></figure>
+      <figure><img src="logo/orca-256.png" width="256" height="256" alt=""><figcaption>256</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>Files</h2>
+    <table>
+      <thead>
+        <tr><th>Path</th><th>Use</th><th style="text-align:right">Format</th></tr>
+      </thead>
+      <tbody id="files"></tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>HTML head — copy &amp; paste</h2>
+    <div class="pre-wrap">
+      <button class="copy" id="copyBtn">Copy</button>
+<pre id="snippet"><span class="c">&lt;!-- Favicons --&gt;</span>
+<span class="t">&lt;link</span> <span class="a">rel</span>=<span class="s">"icon"</span> <span class="a">type</span>=<span class="s">"image/svg+xml"</span> <span class="a">href</span>=<span class="s">"/logo/orca.svg"</span><span class="t">&gt;</span>
+<span class="t">&lt;link</span> <span class="a">rel</span>=<span class="s">"icon"</span> <span class="a">type</span>=<span class="s">"image/png"</span> <span class="a">sizes</span>=<span class="s">"32x32"</span> <span class="a">href</span>=<span class="s">"/logo/favicon-32.png"</span><span class="t">&gt;</span>
+<span class="t">&lt;link</span> <span class="a">rel</span>=<span class="s">"icon"</span> <span class="a">type</span>=<span class="s">"image/png"</span> <span class="a">sizes</span>=<span class="s">"16x16"</span> <span class="a">href</span>=<span class="s">"/logo/favicon-16.png"</span><span class="t">&gt;</span>
+<span class="t">&lt;link</span> <span class="a">rel</span>=<span class="s">"shortcut icon"</span> <span class="a">href</span>=<span class="s">"/logo/favicon.ico"</span><span class="t">&gt;</span>
+<span class="t">&lt;link</span> <span class="a">rel</span>=<span class="s">"apple-touch-icon"</span> <span class="a">sizes</span>=<span class="s">"180x180"</span> <span class="a">href</span>=<span class="s">"/logo/apple-touch-icon.png"</span><span class="t">&gt;</span>
+<span class="t">&lt;link</span> <span class="a">rel</span>=<span class="s">"manifest"</span> <span class="a">href</span>=<span class="s">"/site.webmanifest"</span><span class="t">&gt;</span>
+
+<span class="c">&lt;!-- Open Graph --&gt;</span>
+<span class="t">&lt;meta</span> <span class="a">property</span>=<span class="s">"og:image"</span> <span class="a">content</span>=<span class="s">"/logo/orca-1200-og.jpg"</span><span class="t">&gt;</span>
+<span class="t">&lt;meta</span> <span class="a">property</span>=<span class="s">"og:image:width"</span> <span class="a">content</span>=<span class="s">"1200"</span><span class="t">&gt;</span>
+<span class="t">&lt;meta</span> <span class="a">property</span>=<span class="s">"og:image:height"</span> <span class="a">content</span>=<span class="s">"630"</span><span class="t">&gt;</span></pre>
+    </div>
+  </section>
+
+  <section>
+    <h2>site.webmanifest</h2>
+    <pre id="manifest">{
+  "name": "Orcas",
+  "short_name": "Orcas",
+  "icons": [
+    { "src": "/logo/orca-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/logo/orca-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/logo/orca-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "theme_color": "#16191c",
+  "background_color": "#ffffff",
+  "display": "standalone"
+}</pre>
+  </section>
+
+  <footer>Tip: download the whole <code>logo/</code> folder and drop it into your project.</footer>
+</div>
+
+<script>
+  const FILES = [
+    ['logo/orca.svg',              'Scalable vector — primary mark',          'SVG'],
+    ['logo/orca-512.svg',          'Lighter SVG (512-base embed)',            'SVG'],
+    ['logo/orca-1024.png',         'High-res raster',                          'PNG'],
+    ['logo/orca-512.png',          'Standard raster',                          'PNG'],
+    ['logo/orca-256.png',          'Medium raster',                            'PNG'],
+    ['logo/orca-192.png',          'PWA icon (Android)',                       'PNG'],
+    ['logo/apple-touch-icon.png',  'iOS home-screen icon (180×180)',           'PNG'],
+    ['logo/orca-128.png',          'Small raster',                             'PNG'],
+    ['logo/orca-64.png',           'UI icon',                                  'PNG'],
+    ['logo/favicon-32.png',        'Browser tab favicon',                      'PNG'],
+    ['logo/favicon-16.png',        'Browser tab favicon (small)',              'PNG'],
+    ['logo/favicon.ico',           'Legacy multi-res favicon (16/32/48)',      'ICO'],
+    ['logo/orca-maskable-512.png', 'PWA maskable icon (safe-zone padded)',     'PNG'],
+    ['logo/orca-1024.webp',        'Modern raster — smaller',                  'WebP'],
+    ['logo/orca-512.webp',         'Modern raster',                            'WebP'],
+    ['logo/orca-256.webp',         'Modern raster — small',                    'WebP'],
+    ['logo/orca-1024-white.jpg',   'Flat JPG on white (email/social)',         'JPG'],
+    ['logo/orca-1200-og.jpg',      'Open Graph card (1200×630)',               'JPG'],
+  ];
+  const tbody = document.getElementById('files');
+  for (const [path, use, type] of FILES){
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="path"><a href="${path}" target="_blank" style="color:inherit;text-decoration:none">${path}</a></td>
+      <td class="use">${use}</td>
+      <td class="size">${type}</td>`;
+    tbody.appendChild(tr);
+  }
+
+  document.getElementById('copyBtn').addEventListener('click', (e) => {
+    const txt = document.getElementById('snippet').innerText;
+    navigator.clipboard.writeText(txt);
+    e.target.textContent = 'Copied';
+    e.target.classList.add('ok');
+    setTimeout(()=>{ e.target.textContent = 'Copy'; e.target.classList.remove('ok'); }, 1400);
+  });
+</script>
+</body>
+</html>

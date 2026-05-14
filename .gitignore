@@ -1,0 +1,28 @@
+# OS
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+desktop.ini
+
+# Editor / Tooling
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Dev / Local
+node_modules/
+.env*.local
+.env
+
+# Uploads: keep the folder, ignore the pre-existing junk —
+# admin-uploaded project images (d01.jpg … d30.png style) get whitelisted below.
+uploads/*
+!uploads/.gitkeep
+!uploads/d[0-9][0-9].jpg
+!uploads/d[0-9][0-9].jpeg
+!uploads/d[0-9][0-9].png
+!uploads/d[0-9][0-9].webp
+!uploads/d[0-9][0-9].gif
