@@ -2115,3 +2115,4 @@ body.admin-open { overflow: hidden; }
 body.intro-done .hero-stack { opacity: 1; }
 
 :focus-visible { outline: 2px solid var(--gull); outline-offset: 3px; border-radius: 4px; }
+/* deploy-stamp: 2026-05-14T12:32:48Z */
