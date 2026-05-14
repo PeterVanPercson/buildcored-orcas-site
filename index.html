@@ -23,15 +23,10 @@
 </head>
 <body>
 
-<!-- ═══ Brand intro overlay (2.5s, mirrors buildcored.com splash) ═════════ -->
+<!-- ═══ Brand intro overlay (2.3s, mirrors buildcored.com splash) ═════════ -->
 <div class="intro" id="intro" aria-hidden="false">
-  <div class="intro-content">
-    <div class="intro-stage">
-      <img class="intro-mark" src="brand/mark-white.svg" alt="" aria-hidden="true">
-      <span class="intro-wordmark">BUILDCORED</span>
-    </div>
-    <p class="intro-tag">Creative Engineering</p>
-  </div>
+  <img class="intro-lockup" src="brand/lockup-white.svg" alt="Buildcored" />
+  <p class="intro-tag">Creative Engineering</p>
   <button class="intro-skip" id="introSkip" type="button">Skip</button>
 </div>
 
@@ -660,7 +655,7 @@
       setTimeout(() => {
         finish();
         sessionStorage.setItem('bc-intro-played', '1');
-      }, 2500);
+      }, 2300);
     }
 
     // Preload the orca animation in the background (used when its section enters viewport)

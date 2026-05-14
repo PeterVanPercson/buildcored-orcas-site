@@ -219,54 +219,53 @@ ul { list-style: none; }
 .btn-link svg { transition: transform 200ms var(--ease-out); }
 .btn-link:hover svg { transform: translateX(3px); }
 
-/* ═══ Brand intro overlay ════════════════════════════════════════════════ */
+/* ═══ Brand intro overlay (mirrors buildcored.com splash) ════════════════ */
 .intro {
   position: fixed;
   inset: 0;
   background: #000;
   z-index: 1000;
-  display: grid;
-  place-items: center;
-  transition: opacity 800ms var(--ease-in-out), visibility 800ms;
-}
-.intro.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-.intro-content {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: clamp(28px, 4vw, 52px);
+  justify-content: center;
+  gap: clamp(20px, 2.4vw, 28px);
+  animation: introContainerFade 2.2s var(--ease-in-out) forwards;
 }
-.intro-stage {
-  display: flex;
-  align-items: center;
-  gap: clamp(20px, 3vw, 40px);
+.intro.hidden {
   opacity: 0;
-  transform: scale(0.96);
-  animation: introFade 1100ms 200ms var(--ease-out) forwards;
+  visibility: hidden;
+  pointer-events: none;
+  animation: none;
+  transition: opacity 300ms var(--ease-out), visibility 300ms;
 }
-.intro-mark {
-  width: clamp(72px, 7.5vw, 108px);
+.intro-lockup {
+  height: clamp(56px, 7vw, 88px);
+  width: auto;
   display: block;
-}
-.intro-wordmark {
-  font-family: var(--font-serif);
-  font-weight: 500;
-  font-size: clamp(26px, 3.6vw, 44px);
-  letter-spacing: 0.05em;
-  color: var(--ink-0);
+  opacity: 0;
+  transform: translateY(12px);
+  animation: introItemIn 800ms 100ms ease-out forwards;
 }
 .intro-tag {
   font-family: var(--font-sans);
-  font-size: clamp(11px, 1.05vw, 14px);
-  font-weight: 400;
-  letter-spacing: 0.42em;
+  font-size: clamp(11px, 1vw, 14px);
+  font-weight: 300;
+  letter-spacing: 0.25em;
   text-transform: uppercase;
-  color: var(--ink-2);
+  color: rgba(255, 255, 255, 0.4);
   opacity: 0;
-  animation: introTagFade 700ms 900ms var(--ease-out) forwards;
+  transform: translateY(12px);
+  animation: introItemIn 800ms 400ms ease-out forwards;
+  margin: 0;
 }
-@keyframes introFade { to { opacity: 1; transform: scale(1); } }
-@keyframes introTagFade { to { opacity: 0.85; } }
+@keyframes introContainerFade {
+  0%, 70% { opacity: 1; }
+  100% { opacity: 0; pointer-events: none; }
+}
+@keyframes introItemIn {
+  to { opacity: 1; transform: translateY(0); }
+}
 
 .intro-skip {
   position: absolute;
@@ -537,21 +536,25 @@ body.drawer-open { overflow: hidden; }
 .hero-headline {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: clamp(4px, 0.5vw, 10px);
+  align-items: stretch;
+  gap: clamp(6px, 0.8vw, 14px);
+  width: 100%;
+  max-width: 1100px;
   position: relative;
 }
 .hero-headline .dim {
+  align-self: flex-start;
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(19px, 2.7vw, 42px);
-  letter-spacing: -0.035em;
+  font-size: clamp(22px, 3.2vw, 52px);
+  letter-spacing: -0.025em;
   line-height: 1;
   color: var(--ink-2);
   opacity: 0.55;
   display: inline-flex;
   align-items: center;
   gap: 14px;
+  margin-left: clamp(0px, 1vw, 16px);
 }
 .hero-headline .dim::before {
   content: "";
@@ -564,14 +567,15 @@ body.drawer-open { overflow: hidden; }
 .hero-headline .big {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: clamp(38px, 7.5vw, 96px);
+  font-size: clamp(56px, 11vw, 152px);
   letter-spacing: -0.045em;
   line-height: 0.92;
   color: var(--ink-0);
   position: relative;
+  width: 100%;
 }
 .hero-headline .big .word {
   display: block;
@@ -579,8 +583,17 @@ body.drawer-open { overflow: hidden; }
   transform: translateY(0.4em);
   animation: heroWordRise 900ms var(--ease-out) forwards;
 }
-.hero-headline .big .word:nth-child(1) { animation-delay: 360ms; }
-.hero-headline .big .word:nth-child(2) { animation-delay: 480ms; }
+.hero-headline .big .word:nth-child(1) {
+  align-self: flex-start;
+  text-align: left;
+  animation-delay: 360ms;
+}
+.hero-headline .big .word:nth-child(2) {
+  align-self: flex-end;
+  text-align: right;
+  animation-delay: 520ms;
+  margin-top: clamp(-14px, -1vw, -4px);
+}
 @keyframes heroWordRise { to { opacity: 1; transform: translateY(0); } }
 
 /* Subtle continuous shimmer on "creative engineering" — brand-true ambient motion */
