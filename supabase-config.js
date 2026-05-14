@@ -8,5 +8,6 @@
 window.BC_CONFIG = {
   SUPABASE_URL:      'https://pfvvangcpvjcmahrgvwv.supabase.co',
   SUPABASE_ANON_KEY: '',  // ← paste anon key here (Supabase → Settings → API → anon public)
-  ADMIN_EMAIL:       '',  // ← paste the email allowed to admin-write
+  ADMIN_EMAIL:       'team@buildcored.com',
+  NEWSLETTER_FROM:   'Buildcored <team@buildcored.com>',
 };
