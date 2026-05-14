@@ -240,7 +240,7 @@ ul { list-style: none; }
   transition: opacity 300ms var(--ease-out), visibility 300ms;
 }
 .intro-lockup {
-  height: clamp(56px, 7vw, 88px);
+  height: clamp(24px, 2.6vw, 36px);
   width: auto;
   display: block;
   opacity: 0;
@@ -249,7 +249,7 @@ ul { list-style: none; }
 }
 .intro-tag {
   font-family: var(--font-sans);
-  font-size: clamp(11px, 1vw, 14px);
+  font-size: clamp(9.5px, 0.85vw, 12px);
   font-weight: 300;
   letter-spacing: 0.25em;
   text-transform: uppercase;
@@ -537,13 +537,13 @@ body.drawer-open { overflow: hidden; }
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: clamp(6px, 0.8vw, 14px);
+  gap: clamp(4px, 0.5vw, 8px);
   width: 100%;
-  max-width: 1100px;
+  max-width: 720px;
   position: relative;
 }
 .hero-headline .dim {
-  align-self: flex-start;
+  align-self: center;
   font-family: var(--font-display);
   font-weight: 500;
   font-size: clamp(22px, 3.2vw, 52px);
@@ -554,7 +554,6 @@ body.drawer-open { overflow: hidden; }
   display: inline-flex;
   align-items: center;
   gap: 14px;
-  margin-left: clamp(0px, 1vw, 16px);
 }
 .hero-headline .dim::before {
   content: "";
@@ -570,7 +569,7 @@ body.drawer-open { overflow: hidden; }
   align-items: stretch;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: clamp(56px, 11vw, 152px);
+  font-size: clamp(52px, 10vw, 132px);
   letter-spacing: -0.045em;
   line-height: 0.92;
   color: var(--ink-0);
@@ -592,7 +591,7 @@ body.drawer-open { overflow: hidden; }
   align-self: flex-end;
   text-align: right;
   animation-delay: 520ms;
-  margin-top: clamp(-14px, -1vw, -4px);
+  margin-top: clamp(-20px, -1.5vw, -8px);
 }
 @keyframes heroWordRise { to { opacity: 1; transform: translateY(0); } }
 
