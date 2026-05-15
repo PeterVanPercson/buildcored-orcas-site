@@ -183,7 +183,16 @@
     if (!url) return '';
     const isSvg = /\.svg(\?|$)/i.test(project.image || '') || url.startsWith('data:image/svg');
     if (isSvg) {
-      return `<object class="pcard-anim" type="image/svg+xml" data="${escapeHtml(url)}" aria-label="${escapeHtml(project.title)} cover" tabindex="-1"></object>`;
+      const lbl = `aria-label="${escapeHtml(project.title)} cover" tabindex="-1"`;
+      // Modal: one cover, user asked for it — load now. Cards: 30 animated
+      // SVG documents at once is what makes the gallery crawl, so defer the
+      // <object> src (no native loading=lazy for <object>) and let the
+      // IntersectionObserver in bindLazyCovers() swap data-src→data just
+      // before it scrolls in.
+      if (ctx === 'modal') {
+        return `<object class="pcard-anim" type="image/svg+xml" data="${escapeHtml(url)}" ${lbl}></object>`;
+      }
+      return `<object class="pcard-anim is-lazy" type="image/svg+xml" data-src="${escapeHtml(url)}" ${lbl}></object>`;
     }
     const lazy = ctx === 'card' ? ' loading="lazy"' : '';
     return `<img src="${escapeHtml(url)}" alt="${ctx === 'modal' ? escapeHtml(project.title) : ''}"${lazy} />`;
@@ -277,6 +286,35 @@
     const frag = document.createDocumentFragment();
     for (const p of projects) frag.appendChild(createCard(p));
     host.appendChild(frag);
+    bindLazyCovers(host);
+  }
+
+  // Animated SVG covers are heavy (each is a live document). Loading 30 at
+  // once stalls the gallery, so we hold the src in data-src and only set the
+  // real `data` attribute ~700px before a card scrolls into view. First rows
+  // are already intersecting when this runs, so they load straight away.
+  let lazyCoverIO = null;
+  function bindLazyCovers(host) {
+    if (lazyCoverIO) lazyCoverIO.disconnect();
+    const lazies = host.querySelectorAll('.pcard-anim.is-lazy[data-src]');
+    if (!lazies.length) return;
+    if (!('IntersectionObserver' in window)) {
+      lazies.forEach(el => { el.data = el.dataset.src; el.classList.remove('is-lazy'); });
+      return;
+    }
+    lazyCoverIO = new IntersectionObserver((entries, obs) => {
+      for (const e of entries) {
+        if (!e.isIntersecting) continue;
+        const el = e.target;
+        if (el.dataset.src) {
+          el.data = el.dataset.src;
+          el.removeAttribute('data-src');
+          el.classList.remove('is-lazy');
+        }
+        obs.unobserve(el);
+      }
+    }, { rootMargin: '700px 0px 700px 0px', threshold: 0 });
+    lazies.forEach(el => lazyCoverIO.observe(el));
   }
 
   function updateShippedCount() {
@@ -774,6 +812,7 @@
 
     const MAX_VOL = 0.5;
     let unlocked = false;
+    let primed = false;   // decoder warmed (muted play→pause) → real play is instant
     let played = false;   // had its single pass — never auto-plays again
     let active = false;   // currently playing in-section
     let inView = false;
@@ -781,6 +820,8 @@
 
     audio.loop = false;
     audio.volume = 0;
+    audio.preload = 'auto';
+    try { audio.load(); } catch (_) {}
 
     function fadeTo(target, ms, thenPause) {
       clearInterval(fadeTimer);
@@ -798,13 +839,34 @@
       }, 40);
     }
 
+    // Warm the audio pipeline on the first gesture: a muted play()→pause()
+    // forces the browser to fetch+decode now instead of when the gallery
+    // appears. That decode is the 2–3s lag — once primed, the real play()
+    // is instant. We reset to 0 so this doesn't burn the single pass.
+    function prime() {
+      if (primed) return;
+      primed = true;
+      const prevMuted = audio.muted;
+      audio.muted = true;
+      const p = audio.play();
+      const settle = () => {
+        audio.pause();
+        try { audio.currentTime = 0; } catch (_) {}
+        audio.muted = prevMuted;
+        if (inView && !played) startOnce();  // already in section → go now
+      };
+      if (p && p.then) p.then(settle).catch(() => { audio.muted = prevMuted; primed = false; });
+      else settle();
+    }
+
     function startOnce() {
       if (played || active || !unlocked || !inView) return;
+      if (!primed) { prime(); return; }   // prime() re-calls startOnce when warm
       active = true;
       try { audio.currentTime = 0; } catch (_) {}
       const p = audio.play();
       if (p && p.catch) p.catch(() => { active = false; });
-      fadeTo(MAX_VOL, 250);   // tiny ramp, effectively immediate
+      fadeTo(MAX_VOL, 200);   // brief ramp to avoid a click — perceptually instant
     }
     function stopFade() {
       if (!active) return;
@@ -820,7 +882,8 @@
     const unlock = () => {
       if (unlocked) return;
       unlocked = true;
-      startOnce();
+      prime();        // warm the decoder the moment the user does anything
+      startOnce();    // (no-op unless already in the gallery)
       evs.forEach(e => window.removeEventListener(e, unlock));
     };
     evs.forEach(e => window.addEventListener(e, unlock, { passive: true }));
