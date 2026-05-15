@@ -158,13 +158,34 @@
     if (!project.image) return '';
     // Fresh local upload this session (data URL) — show immediately
     if (newImages[project.image]) return newImages[project.image];
+    const ver = project.updatedAt ? `?v=${encodeURIComponent(project.updatedAt)}` : '';
+    // Designed SVG covers ship in the repo and are served same-origin.
+    // (Supabase Storage forces `content-disposition: attachment` +
+    //  `content-security-policy: default-src 'none'; sandbox` on SVGs,
+    //  which blocks their fonts/animations and inline-document rendering.)
+    if (/\.svg$/i.test(project.image)) {
+      return `covers/${project.image}${ver}`;
+    }
+    // Raster uploads (admin GIF/PNG/JPG) live in Supabase Storage
     if (sb) {
-      // Cache-bust by updated_at so a re-uploaded GIF/image shows immediately
-      // (Storage sends cacheControl: max-age, so the URL must change on swap)
-      const ver = project.updatedAt ? `?v=${encodeURIComponent(project.updatedAt)}` : '';
       return `${CFG.SUPABASE_URL}/storage/v1/object/public/project-images/${project.image}${ver}`;
     }
     return 'uploads/' + project.image;
+  }
+
+  // Cover markup. Animated SVGs only run their CSS keyframes when embedded as
+  // a document (<object>), NOT as <img> (which freezes them on frame 0 and
+  // often looks empty). So: SVG → <object> (pointer-events:none so the card
+  // stays clickable), GIF/PNG/JPG → <img loading=lazy> (those animate fine).
+  function coverMedia(project, ctx) {
+    const url = resolveImage(project);
+    if (!url) return '';
+    const isSvg = /\.svg(\?|$)/i.test(project.image || '') || url.startsWith('data:image/svg');
+    if (isSvg) {
+      return `<object class="pcard-anim" type="image/svg+xml" data="${escapeHtml(url)}" aria-label="${escapeHtml(project.title)} cover" tabindex="-1"></object>`;
+    }
+    const lazy = ctx === 'card' ? ' loading="lazy"' : '';
+    return `<img src="${escapeHtml(url)}" alt="${ctx === 'modal' ? escapeHtml(project.title) : ''}"${lazy} />`;
   }
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -204,7 +225,7 @@
     card.innerHTML = `
       <div class="pcard-media">
         ${img
-          ? `<img src="${escapeHtml(img)}" alt="" loading="lazy" />`
+          ? coverMedia(p, 'card')
           : `<div class="pcard-media-empty" aria-hidden="true">
               <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
                 <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.2"/>
@@ -284,7 +305,7 @@
     body.innerHTML = `
       <div class="pmodal-grid">
         <div class="pmodal-media">
-          ${img ? `<img src="${escapeHtml(img)}" alt="${escapeHtml(p.title)}" />` : `<div class="pcard-media-empty" aria-hidden="true">No image yet</div>`}
+          ${img ? coverMedia(p, 'modal') : `<div class="pcard-media-empty" aria-hidden="true">No image yet</div>`}
         </div>
         <div class="pmodal-body">
           <div class="pmodal-meta">
