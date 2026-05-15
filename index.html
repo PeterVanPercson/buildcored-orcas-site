@@ -354,13 +354,13 @@
 
         <!-- ── 1. Image (most visual, biggest impact) ─────────────────────── -->
         <label class="admin-field admin-field-wide admin-field-image" id="adminImageDrop">
-          <span class="admin-section-label">① Cover image</span>
+          <span class="admin-section-label">① Cover — animated GIF</span>
           <div class="admin-image-drop">
             <div class="admin-image-preview" id="adminImagePreview"></div>
             <div class="admin-image-cta">
-              <input name="image" type="file" accept="image/*" id="adminImageInput" hidden />
-              <button type="button" class="btn-admin" id="adminImagePick">Pick a file</button>
-              <span class="admin-image-hint">or drag & drop · JPG / PNG / WEBP · max 5MB</span>
+              <input name="image" type="file" accept="image/gif,image/webp,image/apng,image/png,image/jpeg" id="adminImageInput" hidden />
+              <button type="button" class="btn-admin" id="adminImagePick">Pick a GIF</button>
+              <span class="admin-image-hint">or drag & drop · GIF / animated WEBP · uploaded at full quality · up to ~45MB</span>
               <button type="button" class="btn-admin btn-admin-ghost" id="adminImageClear">Clear</button>
             </div>
             <span class="admin-image-name" id="adminImageName" hidden>No file chosen</span>

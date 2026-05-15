@@ -15,11 +15,13 @@ If you don't see the form, you're not signed in as the admin. Refresh and re-sig
 
 The form has **4 sections**, in order:
 
-### ① Cover image
-- Drag a JPG/PNG/WEBP onto the dashed box, or click **Pick a file**
-- Max 5 MB
-- 4:3-ish aspect works best (the card crops to 4:3)
-- Image uploads instantly to Supabase Storage — you'll see the preview replace the dashed box
+### ① Cover — animated GIF
+- Drag a **GIF** (or animated WEBP) onto the dashed box, or click **Pick a GIF**
+- Uploaded at **full quality** — no re-encode, no compression. The raw file goes straight to Supabase Storage.
+- Up to ~45 MB (Storage global cap is 50 MB; raise it in Supabase → Storage → Settings if you need bigger)
+- 4:3-ish aspect works best (cards crop to 4:3, animation plays inline on the card and in the modal)
+- **Swapping a GIF takes effect immediately** — the URL is cache-busted on every change, so re-uploading `d03.gif` shows the new one on the next page load (no 1-hour CDN wait)
+- A still image (PNG/JPG) still works if you ever need it — same flow
 
 ### ② The submission
 | Field | Required? | What to put |

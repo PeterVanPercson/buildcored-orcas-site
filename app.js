@@ -105,6 +105,7 @@
       featured: !!row.featured,
       winner: !!row.winner,
       tags: row.tags || [],
+      updatedAt: row.updated_at || '',
     };
   }
   function projectToRow(p) {
@@ -155,8 +156,14 @@
   // ─────────────────────────────────────────────────────────────────────────
   function resolveImage(project) {
     if (!project.image) return '';
+    // Fresh local upload this session (data URL) — show immediately
     if (newImages[project.image]) return newImages[project.image];
-    if (sb) return `${CFG.SUPABASE_URL}/storage/v1/object/public/project-images/${project.image}`;
+    if (sb) {
+      // Cache-bust by updated_at so a re-uploaded GIF/image shows immediately
+      // (Storage sends cacheControl: max-age, so the URL must change on swap)
+      const ver = project.updatedAt ? `?v=${encodeURIComponent(project.updatedAt)}` : '';
+      return `${CFG.SUPABASE_URL}/storage/v1/object/public/project-images/${project.image}${ver}`;
+    }
     return 'uploads/' + project.image;
   }
 
@@ -462,6 +469,9 @@
       const { error } = await sb.from('projects').upsert(projectToRow(updated));
       if (error) { console.error(error); setSaved('Save failed: ' + error.message); return; }
       Object.assign(current, patch);
+      // DB trigger bumps updated_at; mirror it locally so resolveImage()
+      // produces a fresh ?v= immediately (cache-bust without a reload)
+      current.updatedAt = new Date().toISOString();
       renderGallery();
       updateShippedCount();
       renderAdminList();
@@ -535,7 +545,7 @@
       }));
       dropZone.addEventListener('drop', e => {
         const f = e.dataTransfer?.files?.[0];
-        if (!f || !f.type.startsWith('image/')) return;
+        if (!f || !(f.type.startsWith('image/') || f.type === 'image/gif')) return;
         // Transfer the file to the input and fire change
         const dt = new DataTransfer();
         dt.items.add(f);
@@ -549,30 +559,49 @@
       const file = input.files && input.files[0];
       if (!file) return;
       const p = db.projects.find(x => x.id === editingId);
-      const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+      const ext = (file.name.split('.').pop() || 'gif').toLowerCase();
       const filename = `${p.id}.${ext}`;
+      const prevImage = p.image; // may differ in extension (e.g. d03.jpg → d03.gif)
 
       if (sb && isAdmin()) {
-        // Direct upload to Supabase Storage
+        nameEl.hidden = false;
+        nameEl.textContent = `Uploading ${(file.size / 1048576).toFixed(1)}MB…`;
+        // Direct upload — raw bytes, no re-encode, full quality preserved.
+        // Short cacheControl so swaps propagate fast; resolveImage() also
+        // appends ?v=updated_at to hard-bust on every change.
         const { error } = await sb.storage.from('project-images').upload(filename, file, {
-          upsert: true, contentType: file.type || 'image/jpeg', cacheControl: '3600',
+          upsert: true,
+          contentType: file.type || 'image/gif',
+          cacheControl: '60',
         });
         if (error) { setSaved('Upload failed: ' + error.message); console.error(error); return; }
+        // If the extension changed, the old object is now orphaned — delete it
+        if (prevImage && prevImage !== filename) {
+          sb.storage.from('project-images').remove([prevImage]).catch(() => {});
+        }
         await saveProject(editingId, { image: filename });
         const url = `${CFG.SUPABASE_URL}/storage/v1/object/public/project-images/${filename}?t=${Date.now()}`;
         preview.innerHTML = `<img src="${url}" alt="" />`;
-        nameEl.textContent = filename + ' · uploaded';
-        setSaved('Image uploaded to Storage.');
+        nameEl.textContent = `${filename} · uploaded (${(file.size / 1048576).toFixed(1)}MB)`;
+        setSaved('Uploaded. Live on the card now.');
       } else {
-        // Fallback: data URL in localStorage + download-on-export later
+        // Fallback: data URL in localStorage. Big GIFs blow the ~5MB quota,
+        // so guard the write and tell the user instead of throwing.
         const reader = new FileReader();
         reader.onload = async () => {
-          newImages[filename] = reader.result;
+          try {
+            newImages[filename] = reader.result;
+            saveLocal();
+          } catch (e) {
+            delete newImages[filename];
+            setSaved('Too big for offline mode — sign in so it uploads to Storage instead.');
+            return;
+          }
           await saveProject(editingId, { image: filename });
           preview.innerHTML = `<img src="${reader.result}" alt="" />`;
+          nameEl.hidden = false;
           nameEl.textContent = filename + ' · new, not yet committed';
-          saveLocal();
-          setSaved('Image attached. Use "Download new images" to get the file for /uploads/.');
+          setSaved('Image attached. Use "Download new images" for the file.');
         };
         reader.readAsDataURL(file);
       }
