@@ -33,6 +33,7 @@
     bindAdminForm();
     bindRouting();
     bindNewsletter();
+    bindGalleryAudio();
 
     if (HAS_SB) {
       try {
@@ -759,6 +760,77 @@
 
   // ─────────────────────────────────────────────────────────────────────────
   // Newsletter signup
+  // ─────────────────────────────────────────────────────────────────────────
+  // Gallery ambience — plays only while the Project DB section is on screen.
+  // Fades in on enter, fades out over 1s when you scroll above/below it,
+  // keeps playing while a project modal is open (modal doesn't move the page).
+  // Browser autoplay needs a prior user gesture, so we unlock on the first
+  // pointer/key/touch and (re)start if the gallery is in view.
+  // ─────────────────────────────────────────────────────────────────────────
+  function bindGalleryAudio() {
+    const audio = document.getElementById('bgAudio');
+    const section = document.getElementById('projects');
+    if (!audio || !section) return;
+
+    const MAX_VOL = 0.55;
+    let inView = false;
+    let unlocked = false;
+    let fadeTimer = null;
+
+    audio.volume = 0;
+
+    function fadeTo(target, ms, thenPause) {
+      clearInterval(fadeTimer);
+      const start = audio.volume;
+      const steps = Math.max(1, Math.round(ms / 40));
+      let i = 0;
+      fadeTimer = setInterval(() => {
+        i++;
+        audio.volume = Math.min(1, Math.max(0, start + (target - start) * (i / steps)));
+        if (i >= steps) {
+          clearInterval(fadeTimer);
+          audio.volume = Math.max(0, Math.min(1, target));
+          if (thenPause && target === 0) audio.pause();
+        }
+      }, 40);
+    }
+
+    function tryPlay() {
+      if (!inView || !unlocked) return;
+      const p = audio.play();
+      if (p && p.catch) p.catch(() => {/* still blocked; will retry on next gesture */});
+      fadeTo(MAX_VOL, 900);
+    }
+    function stop() {
+      fadeTo(0, 1000, true); // 1s fade-out then pause
+    }
+
+    // First real user gesture unlocks audio (autoplay policy)
+    const unlock = () => {
+      if (unlocked) return;
+      unlocked = true;
+      tryPlay();
+      window.removeEventListener('pointerdown', unlock);
+      window.removeEventListener('keydown', unlock);
+      window.removeEventListener('touchstart', unlock);
+    };
+    window.addEventListener('pointerdown', unlock, { passive: true });
+    window.addEventListener('keydown', unlock);
+    window.addEventListener('touchstart', unlock, { passive: true });
+
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting && e.intersectionRatio > 0.08) {
+          if (!inView) { inView = true; tryPlay(); }
+        } else if (inView) {
+          inView = false;
+          stop();
+        }
+      }
+    }, { threshold: [0, 0.08, 0.25] });
+    io.observe(section);
+  }
+
   // ─────────────────────────────────────────────────────────────────────────
   function bindNewsletter() {
     const form = document.getElementById('newsletterForm');
