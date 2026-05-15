@@ -812,7 +812,8 @@
 
     const MAX_VOL = 0.5;
     let unlocked = false;
-    let primed = false;   // decoder warmed (muted play→pause) → real play is instant
+    let priming = false;  // prime() in flight
+    let warm = false;     // decoder warmed (muted play→pause settled) → real play is instant
     let played = false;   // had its single pass — never auto-plays again
     let active = false;   // currently playing in-section
     let inView = false;
@@ -844,28 +845,30 @@
     // appears. That decode is the 2–3s lag — once primed, the real play()
     // is instant. We reset to 0 so this doesn't burn the single pass.
     function prime() {
-      if (primed) return;
-      primed = true;
+      if (priming || warm) return;
+      priming = true;
       const prevMuted = audio.muted;
       audio.muted = true;
-      const p = audio.play();
+      const p = audio.play();          // muted autoplay is allowed pre-gesture
       const settle = () => {
         audio.pause();
         try { audio.currentTime = 0; } catch (_) {}
         audio.muted = prevMuted;
+        priming = false;
+        warm = true;
         if (inView && !played) startOnce();  // already in section → go now
       };
-      if (p && p.then) p.then(settle).catch(() => { audio.muted = prevMuted; primed = false; });
+      if (p && p.then) p.then(settle).catch(() => { audio.muted = prevMuted; priming = false; });
       else settle();
     }
 
     function startOnce() {
       if (played || active || !unlocked || !inView) return;
-      if (!primed) { prime(); return; }   // prime() re-calls startOnce when warm
+      if (!warm) { prime(); return; }   // prime()'s settle re-calls us when warm
       active = true;
       try { audio.currentTime = 0; } catch (_) {}
       const p = audio.play();
-      if (p && p.catch) p.catch(() => { active = false; });
+      if (p && p.then) p.then(stopArming).catch(() => { active = false; });
       fadeTo(MAX_VOL, 200);   // brief ramp to avoid a click — perceptually instant
     }
     function stopFade() {
@@ -877,16 +880,25 @@
 
     audio.addEventListener('ended', () => { active = false; played = true; });
 
-    // First real gesture unlocks audio (browser autoplay policy)
-    const evs = ['pointerdown', 'keydown', 'touchstart', 'wheel'];
-    const unlock = () => {
-      if (unlocked) return;
+    // Arm on ANY interaction anywhere — and KEEP listening until the theme
+    // has actually played. Chrome only lets UNMUTED audio start after a
+    // real gesture (click / key / tap); plain mouse-wheel scrolling does
+    // NOT qualify, so a stray scroll must not consume the arming (that was
+    // the bug — the first wheel event tore the listeners down). Result:
+    // the theme plays the moment the Project DB scrolls into view — it's
+    // not tied to the "Browse 30 projects" button. Whatever the visitor
+    // does first (dismiss the intro, click a CTA, press a key, tap) arms
+    // it; wheel/scroll additionally warm the decoder via prime().
+    const evs = ['pointerdown', 'click', 'keydown', 'touchstart', 'wheel', 'scroll'];
+    function arm() {
       unlocked = true;
-      prime();        // warm the decoder the moment the user does anything
-      startOnce();    // (no-op unless already in the gallery)
-      evs.forEach(e => window.removeEventListener(e, unlock));
-    };
-    evs.forEach(e => window.addEventListener(e, unlock, { passive: true }));
+      prime();        // muted warm-up — allowed even before a gesture
+      startOnce();    // plays immediately if already in-section & armed
+    }
+    function stopArming() {
+      evs.forEach(e => window.removeEventListener(e, arm));
+    }
+    evs.forEach(e => window.addEventListener(e, arm, { passive: true }));
 
     // rootMargin 300px → arms before the section is even visible (no lag).
     const io = new IntersectionObserver((entries) => {
