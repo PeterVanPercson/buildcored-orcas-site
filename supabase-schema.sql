@@ -59,6 +59,23 @@ create policy "newsletter_public_insert" on public.newsletter_signups
 create policy "newsletter_admin_read" on public.newsletter_signups
   for select to authenticated using (true);
 
+-- ── v2.0 waitlist: builder idea + a public, privacy-safe live count ───────
+-- "what would you build with real boards?" — optional free text
+alter table public.newsletter_signups
+  add column if not exists note text;
+
+-- SECURITY DEFINER so anonymous visitors can read the COUNT only — the
+-- table's RLS still hides every email/row from the public.
+create or replace function public.waitlist_count()
+returns bigint
+language sql
+security definer
+set search_path = public
+as $$ select count(*) from public.newsletter_signups $$;
+
+revoke all on function public.waitlist_count() from public;
+grant execute on function public.waitlist_count() to anon, authenticated;
+
 -- ── updated_at auto-touch ─────────────────────────────────────────────────
 create or replace function public.touch_updated_at() returns trigger
 language plpgsql as $$

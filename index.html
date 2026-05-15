@@ -597,19 +597,22 @@
 <section class="apply" id="apply" data-screen-label="07 Apply">
   <div class="container apply-inner">
     <div class="apply-copy">
+      <span class="apply-tag">Orcas v2.0 · Hardware</span>
       <h2 class="apply-head">
-        Next cohort.<br><em>Pre-apply.</em>
+        Real boards.<br><em>Join the waitlist.</em>
       </h2>
-      <p class="apply-sub">Orcas v1.5 wrapped — 30 projects shipped. Want the next one? Free, daily, no hardware. Mac, Windows, Linux — all AI runs locally.</p>
-      <form class="newsletter-form" id="newsletterForm" data-source="apply" autocomplete="off">
+      <p class="apply-sub">v1.5 wrapped — 30 projects, 30 days, software only. v2.0 keeps the cadence and adds real hardware. Free, daily, in design now. Get the first invite.</p>
+      <form class="newsletter-form" id="newsletterForm" data-source="v2-waitlist" autocomplete="off">
         <input type="email" name="email" placeholder="you@example.com" required aria-label="Email address" />
+        <input type="text" name="idea" maxlength="160" placeholder="What would you build with real boards? (optional)" aria-label="What would you build with real boards?" />
         <button type="submit" class="btn-dark">
-          Notify me
+          Join the waitlist
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
             <path d="M2.5 7H11.5M11.5 7L7 2.5M11.5 7L7 11.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
           </svg>
         </button>
       </form>
+      <p class="waitlist-count" id="waitlistCount" aria-live="polite" hidden></p>
       <p class="newsletter-status" id="newsletterStatus" aria-live="polite"></p>
     </div>
     <div class="apply-cta">
@@ -660,10 +663,28 @@
      fades out when you scroll above it, keeps playing inside a project modal -->
 <audio id="bgAudio" src="audio/orcas-theme.mp3" preload="auto" playsinline></audio>
 
+<!-- Visible control for the gallery ambience: appears with the Project DB,
+     lets anyone mute/unmute (or start it, under reduce-motion / no-autoplay) -->
+<button class="sound-toggle" id="soundToggle" type="button" hidden
+        aria-pressed="false" aria-label="Play gallery sound" title="Gallery sound">
+  <svg class="ico-on"  width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M11 5 6 9H3v6h3l5 4V5Z" fill="currentColor"/>
+    <path d="M15.5 8.5a5 5 0 0 1 0 7M18 6a8.5 8.5 0 0 1 0 12" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+  </svg>
+  <svg class="ico-off" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M11 5 6 9H3v6h3l5 4V5Z" fill="currentColor"/>
+    <path d="m16 9 5 6m0-6-5 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+  </svg>
+  <span class="sound-toggle-label">Sound</span>
+</button>
+
 <script src="orca-animation.js"></script>
 <script src="supabase-config.js"></script>
 <script src="app.js"></script>
 <script>
+  // Respect the OS "reduce motion" setting across intro, reveals, orca.
+  const REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   // ─── Brand intro → page reveal ─────────────────────────────────────────
   (async () => {
     const intro = document.getElementById('intro');
@@ -681,10 +702,11 @@
       sessionStorage.setItem('bc-intro-played', '1');
     });
 
-    // Sessionstorage check: only play once per session
-    if (sessionStorage.getItem('bc-intro-played')) {
+    // Reduced-motion or already seen this session → skip the splash entirely.
+    if (REDUCE || sessionStorage.getItem('bc-intro-played')) {
       intro.style.transition = 'none';
       finish();
+      sessionStorage.setItem('bc-intro-played', '1');
     } else {
       // Wait for the brand fade-in to complete (~1.6s)
       setTimeout(() => {
@@ -709,13 +731,19 @@
   // ─── Mobile drawer toggle ──────────────────────────────────────────────
   const navToggle = document.getElementById('navToggle');
   const mobileDrawer = document.getElementById('mobileDrawer');
+  const drawerFocusables = () =>
+    [...mobileDrawer.querySelectorAll('a[href], button:not([disabled])')];
+  let drawerLastFocus = null;
   const openMenu = () => {
+    drawerLastFocus = document.activeElement;
     navToggle.classList.add('open');
     navToggle.setAttribute('aria-expanded', 'true');
     navToggle.setAttribute('aria-label', 'Close menu');
     mobileDrawer.classList.add('open');
     mobileDrawer.setAttribute('aria-hidden', 'false');
     document.body.classList.add('drawer-open');
+    // Defer focus a frame so the drawer is visible before we move into it.
+    requestAnimationFrame(() => drawerFocusables()[0]?.focus());
   };
   const closeMenu = () => {
     navToggle.classList.remove('open');
@@ -724,13 +752,26 @@
     mobileDrawer.classList.remove('open');
     mobileDrawer.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('drawer-open');
+    (drawerLastFocus && drawerLastFocus.focus ? drawerLastFocus : navToggle).focus();
   };
   navToggle.addEventListener('click', () => {
     mobileDrawer.classList.contains('open') ? closeMenu() : openMenu();
   });
   mobileDrawer.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+  // Tap the dimmed area outside the menu to dismiss it.
+  mobileDrawer.addEventListener('click', (e) => {
+    if (e.target === mobileDrawer) closeMenu();
+  });
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && mobileDrawer.classList.contains('open')) closeMenu();
+    if (!mobileDrawer.classList.contains('open')) return;
+    if (e.key === 'Escape') { closeMenu(); return; }
+    if (e.key === 'Tab') {                   // keep focus inside the drawer
+      const f = drawerFocusables();
+      if (!f.length) return;
+      const first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
   });
   // Close drawer if the viewport grows past mobile breakpoint
   window.matchMedia('(min-width: 861px)').addEventListener('change', (m) => {
@@ -738,15 +779,20 @@
   });
 
   // ─── Section reveal observer ───────────────────────────────────────────
-  const io = new IntersectionObserver((entries) => {
-    for (const e of entries) {
-      if (e.isIntersecting) {
-        e.target.classList.add('in');
-        io.unobserve(e.target);
+  if (REDUCE) {
+    // No scroll-reveal motion — just show everything.
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
+  } else {
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          io.unobserve(e.target);
+        }
       }
-    }
-  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
-  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+    }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  }
 
   // ─── Orca animation: auto-play on first viewport entry + replay on click ─
   const orcaCanvas = document.getElementById('orcaCanvas');
@@ -758,6 +804,7 @@
 
   const playOrca = async () => {
     if (orcaPlaying) return;
+    if (REDUCE) { await OrcaAnimation.showFinalFrame(orcaCanvas); return; }
     orcaPlaying = true;
     orcaSlot.classList.add('is-playing');
     await OrcaAnimation.playOnce(orcaCanvas);

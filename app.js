@@ -24,6 +24,14 @@
   let activeFilter = 'all';
   let editingId = null;
 
+  // Per-project deep links: each project is shareable at #p/<id>. We keep the
+  // page's original <title>/OG so we can restore them when the modal closes.
+  const BASE_TITLE = document.title;
+  const ogEl = p => document.querySelector(`meta[property="og:${p}"]`);
+  const BASE_OG = { title: ogEl('title')?.content || BASE_TITLE, url: ogEl('url')?.content || location.href };
+  const projectUrl = id => location.origin + location.pathname + '#p/' + encodeURIComponent(id);
+  let routing = false;   // guard so programmatic nav doesn't re-enter route()
+
   // ─────────────────────────────────────────────────────────────────────────
   // Boot
   // ─────────────────────────────────────────────────────────────────────────
@@ -58,7 +66,7 @@
     try {
       loadLocal();
       await load();
-      if (location.hash === '#admin') openAdmin();
+      route();   // projects are loaded — honor #admin or #p/<id> deep links
     } catch (err) {
       console.error('[projects] load failed', err);
       const host = document.getElementById('projectsDB');
@@ -336,7 +344,7 @@
   // ─────────────────────────────────────────────────────────────────────────
   // Modal
   // ─────────────────────────────────────────────────────────────────────────
-  function openModal(id) {
+  function openModal(id, viaRoute) {
     const p = db.projects.find(x => x.id === id);
     if (!p) return;
     const body = document.getElementById('projectModalBody');
@@ -354,6 +362,12 @@
             <span class="pcard-cat">${escapeHtml(p.category)}</span>
           </div>
           <h2 class="pmodal-title">${escapeHtml(p.title)}</h2>
+          <div class="pmodal-actions">
+            <button type="button" class="pmodal-share" id="pmodalShare" aria-label="Share this project">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 13.5l6-3.5M9 14a2.5 2.5 0 1 1-2.5-2.5A2.5 2.5 0 0 1 9 14Zm0-4a2.5 2.5 0 1 0-2.5 2.5h0M15 7.5A2.5 2.5 0 1 0 17.5 5 2.5 2.5 0 0 0 15 7.5Zm0 9a2.5 2.5 0 1 0 2.5-2.5 2.5 2.5 0 0 0-2.5 2.5Zm0 0-6-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="pmodal-share-label">Share</span>
+            </button>
+          </div>
           ${p.builder
             ? `<div class="pmodal-builder-line">by ${p.builderUrl ? `<a href="${escapeHtml(p.builderUrl)}" target="_blank" rel="noopener">${escapeHtml(p.builder)}</a>` : escapeHtml(p.builder)}</div>`
             : ''}
@@ -376,20 +390,56 @@
     modal.classList.add('open');
     modal.setAttribute('aria-hidden', 'false');
     document.body.classList.add('modal-open');
+
+    // Shareable identity: title, OG, and a #p/<id> URL (back button closes).
+    document.title = `${p.title} · Day ${p.day} — Buildcored`;
+    if (ogEl('title')) ogEl('title').content = `${p.title} — Buildcored Orcas`;
+    if (ogEl('url'))   ogEl('url').content   = projectUrl(p.id);
+    if (!viaRoute) {
+      routing = true;
+      history.pushState({ p: p.id }, '', '#p/' + encodeURIComponent(p.id));
+      routing = false;
+    }
+
+    // Share: native sheet where available, clipboard copy otherwise.
+    const shareBtn = document.getElementById('pmodalShare');
+    shareBtn?.addEventListener('click', async () => {
+      const url = projectUrl(p.id);
+      const label = shareBtn.querySelector('.pmodal-share-label');
+      const data = { title: `${p.title} — Buildcored Orcas`, text: `${p.title} — Day ${p.day}, Buildcored Orcas`, url };
+      try {
+        if (navigator.share) { await navigator.share(data); return; }
+        await navigator.clipboard.writeText(url);
+        if (label) { const o = label.textContent; label.textContent = 'Link copied'; shareBtn.classList.add('is-copied'); setTimeout(() => { label.textContent = o; shareBtn.classList.remove('is-copied'); }, 1800); }
+      } catch (_) { /* user dismissed the share sheet — ignore */ }
+    });
   }
-  function closeModal() {
+  function closeModal(viaRoute) {
     const modal = document.getElementById('projectModal');
+    if (!modal.classList.contains('open')) return;
     modal.classList.remove('open');
     modal.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('modal-open');
+    document.title = BASE_TITLE;
+    if (ogEl('title')) ogEl('title').content = BASE_OG.title;
+    if (ogEl('url'))   ogEl('url').content   = BASE_OG.url;
+    // User-initiated close → drop the #p/<id> from the URL.
+    if (!viaRoute && location.hash.indexOf('#p/') === 0) {
+      routing = true;
+      history.replaceState({}, '', location.pathname + location.search);
+      routing = false;
+    }
   }
   function bindModal() {
-    document.getElementById('projectModalClose')?.addEventListener('click', closeModal);
-    document.getElementById('projectModalBackdrop')?.addEventListener('click', closeModal);
+    // Wrap in arrow fns — passing the listener directly would feed the click
+    // event in as closeModal()'s `viaRoute` arg and skip the URL cleanup.
+    document.getElementById('projectModalClose')?.addEventListener('click', () => closeModal());
+    document.getElementById('projectModalBackdrop')?.addEventListener('click', () => closeModal());
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape' && document.getElementById('projectModal')?.classList.contains('open')) closeModal();
     });
   }
+
 
   // ─────────────────────────────────────────────────────────────────────────
   // Auth (Supabase magic link)
@@ -789,11 +839,23 @@
   // ─────────────────────────────────────────────────────────────────────────
   // Routing
   // ─────────────────────────────────────────────────────────────────────────
+  function route() {
+    if (routing) return;
+    const h = location.hash;
+    if (h === '#admin') { closeModal(true); openAdmin(); return; }
+    const m = h.match(/^#p\/(.+)$/);
+    if (m) {
+      closeAdmin();
+      const id = decodeURIComponent(m[1]);
+      if (db && db.projects) openModal(id, true);
+      return;
+    }
+    closeAdmin();
+    closeModal(true);
+  }
   function bindRouting() {
-    window.addEventListener('hashchange', () => {
-      if (location.hash === '#admin') openAdmin();
-      else closeAdmin();
-    });
+    window.addEventListener('hashchange', route);
+    window.addEventListener('popstate', route);
   }
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -818,6 +880,29 @@
     let active = false;   // currently playing in-section
     let inView = false;
     let fadeTimer = null;
+
+    // Reduced-motion → ambience is opt-in (no autoplay). Everyone gets a
+    // visible Sound control that appears with the Project DB.
+    const REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const toggleBtn = document.getElementById('soundToggle');
+    let wantSound = !REDUCE;   // user intent; default off only under reduce-motion
+    let toggleShown = false;
+
+    function syncToggle() {
+      if (!toggleBtn) return;
+      toggleBtn.classList.toggle('is-on', wantSound);
+      toggleBtn.setAttribute('aria-pressed', wantSound ? 'true' : 'false');
+      toggleBtn.setAttribute('aria-label', wantSound ? 'Mute gallery sound' : 'Play gallery sound');
+      const lbl = toggleBtn.querySelector('.sound-toggle-label');
+      if (lbl) lbl.textContent = wantSound ? 'Sound on' : 'Sound off';
+    }
+    function revealToggle() {
+      if (toggleShown || !toggleBtn) return;
+      toggleShown = true;
+      toggleBtn.hidden = false;
+      requestAnimationFrame(() => toggleBtn.classList.add('show'));
+      syncToggle();
+    }
 
     audio.loop = false;
     audio.volume = 0;
@@ -862,10 +947,14 @@
       else settle();
     }
 
-    function startOnce() {
-      if (played || active || !unlocked || !inView) return;
+    // manual=true → an explicit Sound-toggle press; it overrides the
+    // single-pass guard and the reduced-motion no-autoplay default.
+    function startOnce(manual) {
+      if (!manual && (played || !wantSound)) return;
+      if (active || !unlocked || !inView) return;
       if (!warm) { prime(); return; }   // prime()'s settle re-calls us when warm
       active = true;
+      played = false;
       try { audio.currentTime = 0; } catch (_) {}
       const p = audio.play();
       if (p && p.then) p.then(stopArming).catch(() => { active = false; });
@@ -878,7 +967,21 @@
       fadeTo(0, 1000, true);  // 1s fade → silence → pause
     }
 
-    audio.addEventListener('ended', () => { active = false; played = true; });
+    audio.addEventListener('ended', () => { active = false; played = true; syncToggle(); });
+
+    toggleBtn?.addEventListener('click', () => {
+      wantSound = !wantSound;
+      if (wantSound) {
+        unlocked = true;        // an explicit gesture — real activation
+        played = false;
+        revealToggle();
+        startOnce(true);
+      } else if (active) {
+        active = false;
+        fadeTo(0, 250, true);   // manual stop — reversible (not a used pass)
+      }
+      syncToggle();
+    });
 
     // Arm on ANY interaction anywhere — and KEEP listening until the theme
     // has actually played. Chrome only lets UNMUTED audio start after a
@@ -903,7 +1006,7 @@
     // rootMargin 300px → arms before the section is even visible (no lag).
     const io = new IntersectionObserver((entries) => {
       for (const e of entries) {
-        if (e.isIntersecting) { inView = true; startOnce(); }
+        if (e.isIntersecting) { inView = true; revealToggle(); startOnce(); }
         else { inView = false; stopFade(); }
       }
     }, { threshold: 0, rootMargin: '300px 0px 300px 0px' });
@@ -915,28 +1018,56 @@
     const form = document.getElementById('newsletterForm');
     if (!form) return;
     const status = document.getElementById('newsletterStatus');
+    const countEl = document.getElementById('waitlistCount');
+
+    // Live count via a SECURITY DEFINER RPC (waitlist_count) so the public
+    // can see the number without the table exposing anyone's email.
+    async function refreshCount() {
+      if (!countEl || !sb) return;
+      try {
+        const { data, error } = await sb.rpc('waitlist_count');
+        if (error) return;                 // RPC missing → just stay hidden
+        const n = Number(data);
+        if (!Number.isFinite(n)) return;
+        countEl.innerHTML = n > 0
+          ? `<strong>${n.toLocaleString()}</strong> builder${n === 1 ? '' : 's'} on the v2.0 waitlist`
+          : 'Be the first on the v2.0 waitlist.';
+        countEl.hidden = false;
+      } catch (_) { /* offline / not deployed — leave hidden */ }
+    }
+    // sb loads asynchronously after boot; poll briefly until it's ready.
+    let tries = 0;
+    (function tryCount() {
+      if (sb) { refreshCount(); return; }
+      if (tries++ < 25) setTimeout(tryCount, 250);
+    })();
+
     form.addEventListener('submit', async e => {
       e.preventDefault();
       const email = form.email.value.trim();
+      const idea = (form.idea?.value || '').trim();
       if (!email) return;
       if (!sb) {
-        status.textContent = 'Newsletter isn\'t configured yet — try again soon.';
+        status.textContent = 'Waitlist isn\'t configured yet — try again soon.';
         return;
       }
-      status.textContent = 'Subscribing…';
+      status.textContent = 'Joining…';
       const source = form.dataset.source || 'site';
-      const { error } = await sb.from('newsletter_signups').insert({ email, source });
+      const row = { email, source };
+      if (idea) row.note = idea;
+      const { error } = await sb.from('newsletter_signups').insert(row);
       if (error) {
         // 23505 = unique violation
         if (error.code === '23505') {
-          status.textContent = 'You\'re already on the list — see you in v2.0.';
+          status.textContent = 'You\'re already on the waitlist — see you in v2.0.';
         } else {
           status.textContent = 'Hmm: ' + error.message;
         }
         return;
       }
       form.reset();
-      status.textContent = 'You\'re in. We\'ll email when v2.0 opens.';
+      status.textContent = 'You\'re on the waitlist. We\'ll email the first v2.0 invite.';
+      refreshCount();
     });
   }
 })();
