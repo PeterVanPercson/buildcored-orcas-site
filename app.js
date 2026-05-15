@@ -761,22 +761,25 @@
   // ─────────────────────────────────────────────────────────────────────────
   // Newsletter signup
   // ─────────────────────────────────────────────────────────────────────────
-  // Gallery ambience — plays only while the Project DB section is on screen.
-  // Fades in on enter, fades out over 1s when you scroll above/below it,
-  // keeps playing while a project modal is open (modal doesn't move the page).
-  // Browser autoplay needs a prior user gesture, so we unlock on the first
-  // pointer/key/touch and (re)start if the gallery is in view.
+  // Gallery ambience — ONE pass while the Project DB is on screen.
+  // Armed 300px before the section enters (no late start). Plays once
+  // through at 50% (no loop); when it ends OR you scroll away it fades
+  // to silence and will not replay this session ("pass it once").
+  // Keeps playing while a project modal is open (modal doesn't scroll).
   // ─────────────────────────────────────────────────────────────────────────
   function bindGalleryAudio() {
     const audio = document.getElementById('bgAudio');
     const section = document.getElementById('projects');
     if (!audio || !section) return;
 
-    const MAX_VOL = 0.55;
-    let inView = false;
+    const MAX_VOL = 0.5;
     let unlocked = false;
+    let played = false;   // had its single pass — never auto-plays again
+    let active = false;   // currently playing in-section
+    let inView = false;
     let fadeTimer = null;
 
+    audio.loop = false;
     audio.volume = 0;
 
     function fadeTo(target, ms, thenPause) {
@@ -795,39 +798,40 @@
       }, 40);
     }
 
-    function tryPlay() {
-      if (!inView || !unlocked) return;
+    function startOnce() {
+      if (played || active || !unlocked || !inView) return;
+      active = true;
+      try { audio.currentTime = 0; } catch (_) {}
       const p = audio.play();
-      if (p && p.catch) p.catch(() => {/* still blocked; will retry on next gesture */});
-      fadeTo(MAX_VOL, 900);
+      if (p && p.catch) p.catch(() => { active = false; });
+      fadeTo(MAX_VOL, 250);   // tiny ramp, effectively immediate
     }
-    function stop() {
-      fadeTo(0, 1000, true); // 1s fade-out then pause
+    function stopFade() {
+      if (!active) return;
+      active = false;
+      played = true;          // used up its one pass
+      fadeTo(0, 1000, true);  // 1s fade → silence → pause
     }
 
-    // First real user gesture unlocks audio (autoplay policy)
+    audio.addEventListener('ended', () => { active = false; played = true; });
+
+    // First real gesture unlocks audio (browser autoplay policy)
+    const evs = ['pointerdown', 'keydown', 'touchstart', 'wheel'];
     const unlock = () => {
       if (unlocked) return;
       unlocked = true;
-      tryPlay();
-      window.removeEventListener('pointerdown', unlock);
-      window.removeEventListener('keydown', unlock);
-      window.removeEventListener('touchstart', unlock);
+      startOnce();
+      evs.forEach(e => window.removeEventListener(e, unlock));
     };
-    window.addEventListener('pointerdown', unlock, { passive: true });
-    window.addEventListener('keydown', unlock);
-    window.addEventListener('touchstart', unlock, { passive: true });
+    evs.forEach(e => window.addEventListener(e, unlock, { passive: true }));
 
+    // rootMargin 300px → arms before the section is even visible (no lag).
     const io = new IntersectionObserver((entries) => {
       for (const e of entries) {
-        if (e.isIntersecting && e.intersectionRatio > 0.08) {
-          if (!inView) { inView = true; tryPlay(); }
-        } else if (inView) {
-          inView = false;
-          stop();
-        }
+        if (e.isIntersecting) { inView = true; startOnce(); }
+        else { inView = false; stopFade(); }
       }
-    }, { threshold: [0, 0.08, 0.25] });
+    }, { threshold: 0, rootMargin: '300px 0px 300px 0px' });
     io.observe(section);
   }
 
