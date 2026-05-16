@@ -1354,44 +1354,33 @@ section { position: relative; }
   background: linear-gradient(180deg, rgba(214, 222, 224, 0.04), var(--bg-2) 30%);
 }
 
-/* Difficulty at a glance — a breathing colored "light" on every card so
-   hardness reads without opening the project. Colors match the modal
-   .diff-* scale: easy→green, moderate→gull, advanced→amber, expert→red. */
-.pcard-diff {
-  position: absolute;
-  bottom: 12px;
-  left: 12px;
-  display: inline-flex;
+/* Difficulty at a glance — a small breathing dot on the title row, to the
+   right of the project name (outside the cover). Hardness reads instantly
+   on entry, no click. Colors match the modal .diff-* scale:
+   easy→green, moderate→gull, advanced→amber, expert→red. */
+.pcard-titlerow {
+  display: flex;
   align-items: center;
-  gap: 7px;
-  font-family: var(--font-mono);
-  font-size: 9.5px;
-  font-weight: 500;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  background: rgba(6, 7, 10, 0.72);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-  padding: 4px 9px 4px 8px;
-  border-radius: 999px;
-  border: 1px solid var(--line-2);
-  pointer-events: none;
+  gap: 12px;
 }
-.pcard-diff-dot {
-  width: 7px;
-  height: 7px;
+.pcard-titlerow .pcard-title { flex: 1; min-width: 0; }
+.pcard-diff {
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
+  color: var(--gull);
   background: currentColor;
   animation: diffPulse 1.8s ease-in-out infinite;
 }
 @keyframes diffPulse {
-  0%, 100% { opacity: 0.4; transform: scale(0.8); box-shadow: 0 0 0 0 transparent; }
-  50%      { opacity: 1;   transform: scale(1);   box-shadow: 0 0 8px 1px currentColor; }
+  0%, 100% { opacity: 0.5; transform: scale(0.85); box-shadow: 0 0 0 0 transparent; }
+  50%      { opacity: 1;   transform: scale(1);    box-shadow: 0 0 8px 1px currentColor; }
 }
-.pcard-diff-easy     { color: #6ee2a1; border-color: rgba(110, 226, 161, 0.38); }
-.pcard-diff-moderate { color: var(--gull); border-color: rgba(214, 222, 224, 0.30); }
-.pcard-diff-advanced { color: #f0b966; border-color: rgba(240, 185, 102, 0.38); }
-.pcard-diff-expert   { color: #ef7878; border-color: rgba(239, 120, 120, 0.42); }
+.pcard-diff-easy     { color: #6ee2a1; }
+.pcard-diff-moderate { color: var(--gull); }
+.pcard-diff-advanced { color: #f0b966; }
+.pcard-diff-expert   { color: #ef7878; }
 
 .pcard-body {
   padding: 18px 18px 18px;
@@ -2524,6 +2513,6 @@ body.intro-done .hero-stack { opacity: 1; }
   .marquee-track { animation: none !important; }
   .sound-toggle { transition: opacity 0.001ms !important; }
   /* keep the difficulty light readable (solid, not frozen mid-pulse) */
-  .pcard-diff-dot { animation: none !important; opacity: 1 !important; transform: none !important; box-shadow: none !important; }
+  .pcard-diff { animation: none !important; opacity: 1 !important; transform: none !important; box-shadow: none !important; }
 }
 /* deploy-stamp: 2026-05-14T12:32:48Z */

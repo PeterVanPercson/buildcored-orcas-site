@@ -291,12 +291,14 @@
         ${isShipped
           ? (p.winner ? `<span class="pcard-ship pcard-ship-winner">🏆 Day ${p.day} Winner</span>` : `<span class="pcard-ship">Shipped</span>`)
           : `<span class="pcard-ship pcard-ship-pending">Awaiting submission</span>`}
-        ${p.difficulty
-          ? `<span class="pcard-diff pcard-diff-${escapeHtml(p.difficulty)}" title="Difficulty: ${escapeHtml(diffLabel(p.difficulty))}"><i class="pcard-diff-dot" aria-hidden="true"></i>${escapeHtml(diffLabel(p.difficulty))}</span>`
-          : ''}
       </div>
       <div class="pcard-body">
-        <h3 class="pcard-title">${escapeHtml(p.title)}</h3>
+        <div class="pcard-titlerow">
+          <h3 class="pcard-title">${escapeHtml(p.title)}</h3>
+          ${p.difficulty
+            ? `<span class="pcard-diff pcard-diff-${escapeHtml(p.difficulty)}" role="img" title="Difficulty: ${escapeHtml(diffLabel(p.difficulty))}" aria-label="${escapeHtml(diffLabel(p.difficulty))} difficulty"></span>`
+            : ''}
+        </div>
         <p class="pcard-desc">${escapeHtml(p.description)}</p>
         ${tagPills(p.tags)}
         <div class="pcard-foot">
