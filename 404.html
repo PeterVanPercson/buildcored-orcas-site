@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Buildcored</title>
+<script>
+  // GitHub Pages has no server rewrites. The certificate prints a clean
+  // URL: buildcored.com/verify/<code>. That path 404s here, so we pull the
+  // code out and hand it to the real /verify/ page as ?c=<code>.
+  (function () {
+    var p = location.pathname.replace(/\/+$/, '');
+    var m = p.match(/^\/verify\/(.+)$/i);
+    if (m && m[1]) {
+      location.replace('/verify/?c=' + encodeURIComponent(decodeURIComponent(m[1])));
+      return;
+    }
+    if (/^\/verify$/i.test(p)) { location.replace('/verify/'); return; }
+  })();
+</script>
+<style>
+  html,body{margin:0;height:100%;background:#0b0d10;color:#f4f6f8;
+    font-family:"Geist",-apple-system,BlinkMacSystemFont,sans-serif;
+    display:flex;align-items:center;justify-content:center;text-align:center}
+  .w{padding:24px}
+  h1{font-family:"Bricolage Grotesque","Geist",sans-serif;font-size:64px;margin:0 0 8px;letter-spacing:-.02em}
+  p{color:#898f97;margin:0 0 22px}
+  a{color:#d6dee0;font-family:"Geist Mono",ui-monospace,Menlo,monospace;font-size:13px;
+    letter-spacing:.06em;text-decoration:none;border:1px solid rgba(255,255,255,.18);
+    padding:11px 20px;border-radius:999px;display:inline-block}
+  a:hover{border-color:#d6dee0}
+</style>
+</head>
+<body>
+  <div class="w">
+    <h1>404</h1>
+    <p>That page doesn't exist.</p>
+    <a href="/">← Back to Buildcored</a>
+  </div>
+</body>
+</html>

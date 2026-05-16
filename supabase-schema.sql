@@ -76,6 +76,29 @@ as $$ select count(*) from public.newsletter_signups $$;
 revoke all on function public.waitlist_count() from public;
 grant execute on function public.waitlist_count() to anon, authenticated;
 
+-- ── Certificates: public verification by code (buildcored.com/verify/<code>)
+-- Codes are PUBLIC by design — anyone with a code can verify a certificate.
+-- No write policy: only the dashboard / service role can issue new ones.
+create table if not exists public.certificates (
+  code          text primary key,                       -- store lowercase, e.g. 'bco-26-0142'
+  recipient     text not null,                           -- 'Sharipov Komil'
+  program       text not null default 'ORCAS · V1.5',
+  invitation    text default 'received a special invitation to Orcas v2.0 — a Nazarx Robotics × Buildcored Orcas program.',
+  place_term    text default 'TASHKENT · SUMMER 2026',
+  signer        text default 'Husan Mavlonov',
+  signer_title  text default 'FOUNDER, BUILDCORED',
+  issued_on     date not null default current_date,
+  created_at    timestamptz default now()
+);
+alter table public.certificates enable row level security;
+drop policy if exists "certificates_public_read" on public.certificates;
+create policy "certificates_public_read" on public.certificates
+  for select using (true);
+
+insert into public.certificates (code, recipient, program, issued_on)
+values ('bco-26-0142', 'Sharipov Komil', 'ORCAS · V1.5', '2026-05-16')
+on conflict (code) do nothing;
+
 -- ── updated_at auto-touch ─────────────────────────────────────────────────
 create or replace function public.touch_updated_at() returns trigger
 language plpgsql as $$
