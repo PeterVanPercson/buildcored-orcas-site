@@ -8,13 +8,13 @@
 <meta name="description" content="Verify a Buildcored Orcas certificate by its code.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Geist:wght@400;500&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Cormorant+Garamond:wght@600&family=Geist:wght@400;500&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#0b0d10; --ink-0:#f4f6f8; --ink-2:#898f97; --ink-3:#585d64;
     --line:rgba(255,255,255,.10); --line-2:rgba(255,255,255,.18);
-    --gull:#d6dee0; --slate:#3D4E63; --green:#6ee2a1;
-    --paper:#efedeb; --mono:"Geist Mono",ui-monospace,Menlo,monospace;
+    --gull:#d6dee0; --green:#6ee2a1;
+    --mono:"Geist Mono",ui-monospace,Menlo,monospace;
     --serif:"Cormorant Garamond",Georgia,serif; --disp:"Bricolage Grotesque","Geist",sans-serif;
     --sans:"Geist",-apple-system,sans-serif;
   }
@@ -23,7 +23,7 @@
   body{min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:40px 20px 80px}
   a{color:inherit}
   .v-top{width:100%;max-width:1120px;display:flex;align-items:center;justify-content:space-between;margin-bottom:34px}
-  .v-brand{font-family:var(--serif);font-weight:600;font-size:15px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-0);text-decoration:none}
+  .v-brand{font-family:var(--serif);font-weight:600;font-size:15px;letter-spacing:.16em;text-transform:uppercase;text-decoration:none}
   .v-back{font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--ink-2);text-decoration:none}
   .v-back:hover{color:var(--ink-0)}
   .v-head{width:100%;max-width:760px;text-align:center;margin-bottom:26px}
@@ -36,40 +36,39 @@
   .v-form input::placeholder{color:var(--ink-3);text-transform:none;letter-spacing:0}
   .v-form input:focus{outline:none;border-color:var(--gull);background:rgba(255,255,255,.08)}
   .v-form button{font:inherit;font-weight:500;font-size:14px;color:#0b0d10;background:var(--gull);
-    border:0;border-radius:999px;padding:13px 26px;cursor:pointer;transition:transform .12s,opacity .15s}
+    border:0;border-radius:999px;padding:13px 26px;cursor:pointer;transition:opacity .15s}
   .v-form button:hover{opacity:.9}
-  .v-form button:active{transform:translateY(1px)}
   .v-status{font-family:var(--mono);font-size:13px;letter-spacing:.04em;margin-top:18px;text-align:center;min-height:1.2em}
-  .v-status.ok{color:var(--green)}
-  .v-status.bad{color:#ef7878}
-  .v-status.busy{color:var(--ink-2)}
+  .v-status.ok{color:var(--green)} .v-status.bad{color:#ef7878} .v-status.busy{color:var(--ink-2)}
 
   .v-result{width:100%;max-width:1120px;margin-top:30px;display:none;flex-direction:column;align-items:center;gap:22px}
   .v-result.show{display:flex}
-  .v-certwrap{width:100%;background:var(--paper);border-radius:14px;overflow:hidden;
-    box-shadow:0 30px 90px -40px rgba(0,0,0,.8);border:1px solid var(--line)}
-  #cert{display:block;width:100%;height:auto}
   .v-verified{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:12.5px;
     letter-spacing:.12em;text-transform:uppercase;color:var(--green);
     border:1px solid rgba(110,226,161,.4);background:rgba(110,226,161,.08);padding:8px 16px;border-radius:999px}
   .v-verified .dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
+  .v-certwrap{width:100%;border-radius:14px;overflow:hidden;background:#efedeb;
+    box-shadow:0 30px 90px -40px rgba(0,0,0,.8);border:1px solid var(--line)}
+  #certImg{display:block;width:100%;height:auto}
+  .v-fallback{display:none;padding:60px 28px;text-align:center;color:#3a3f45;background:#efedeb}
+  .v-fallback h3{font-family:var(--serif);font-size:30px;margin-bottom:8px;color:#1a1d20}
+  .v-fallback p{font-family:var(--mono);font-size:13px;letter-spacing:.04em}
   .v-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
   .v-actions button{font:inherit;font-family:var(--mono);font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;
     color:var(--ink-0);background:rgba(255,255,255,.04);border:1px solid var(--line-2);border-radius:999px;
-    padding:12px 22px;cursor:pointer;transition:border-color .18s,background .18s,color .18s}
+    padding:12px 22px;cursor:pointer;transition:border-color .18s,background .18s}
   .v-actions button:hover{border-color:var(--gull);background:rgba(255,255,255,.07)}
   .v-meta{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;color:var(--ink-3);text-align:center}
 
   @media (max-width:560px){ .v-form input{min-width:0;width:100%} .v-form{flex-direction:column} }
 
-  /* Print → Save as PDF: only the certificate, landscape, edge to edge */
   @media print{
     @page{ size:A4 landscape; margin:0 }
     body{background:#fff;padding:0;display:block}
     .v-top,.v-head,.v-status,.v-verified,.v-actions,.v-meta{display:none!important}
     .v-result{margin:0;max-width:none}
     .v-certwrap{box-shadow:none;border:0;border-radius:0;width:100vw}
-    #cert{width:100vw;height:100vh}
+    #certImg{width:100vw;height:auto}
   }
 </style>
 </head>
@@ -92,9 +91,15 @@
 
   <div class="v-result" id="vResult">
     <span class="v-verified"><span class="dot"></span> Verified · genuine certificate</span>
-    <div class="v-certwrap" id="certWrap"></div>
+    <div class="v-certwrap" id="certWrap">
+      <img id="certImg" alt="Certificate" />
+      <div class="v-fallback" id="certFallback">
+        <h3 id="fbName"></h3>
+        <p id="fbDetail"></p>
+      </div>
+    </div>
     <div class="v-actions">
-      <button type="button" id="dlPng">Download PNG</button>
+      <button type="button" id="dlImg">Download certificate</button>
       <button type="button" id="dlPdf">Save as PDF</button>
     </div>
     <p class="v-meta" id="vWho"></p>
@@ -105,174 +110,67 @@
 (() => {
   const CFG = window.BC_CONFIG || {};
   const $ = s => document.querySelector(s);
-  const statusEl = $('#vStatus'), resultEl = $('#vResult'),
-        wrap = $('#certWrap'), form = $('#vForm'), input = $('#vCode');
+  const statusEl=$('#vStatus'), resultEl=$('#vResult'), img=$('#certImg'),
+        fb=$('#certFallback'), form=$('#vForm'), input=$('#vCode');
+  let current = null;
 
-  const MONTHS = ['January','February','March','April','May','June','July',
-                  'August','September','October','November','December'];
-  function fmtDate(d){
-    if(!d) return '';
-    const m = String(d).match(/^(\d{4})-(\d{2})-(\d{2})/);
-    if(!m) return String(d);
-    return `${MONTHS[+m[2]-1]} ${+m[3]}, ${m[1]}`;
-  }
-  function esc(s){ return String(s??'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
-
-  // word-wrap into <= maxChars lines, return array
-  function wrap_(text, maxChars){
-    const words = String(text||'').split(/\s+/), lines=[]; let cur='';
-    for(const w of words){
-      if((cur+' '+w).trim().length > maxChars){ if(cur) lines.push(cur); cur=w; }
-      else cur = (cur?cur+' ':'')+w;
-    }
-    if(cur) lines.push(cur);
-    return lines.slice(0,4);
-  }
-
-  function certSVG(c){
-    const code = c.code.toUpperCase();
-    const name = String(c.recipient||'').trim();
-    const parts = name.split(/\s+/);
-    const first = esc(parts.shift()||name);
-    const rest  = esc(parts.join(' '));
-    const inv = wrap_(c.invitation || 'received a special invitation to Orcas v2.0 — a Nazarx Robotics × Buildcored Orcas program.', 46);
-    const invSpans = inv.map((ln,i)=>`<tspan x="70" dy="${i===0?0:38}">${esc(ln)}</tspan>`).join('');
-    const ver = (c.program||'').split('·').pop().trim() || 'V1.5';
-    return `
-<svg id="cert" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1320 920" role="img" aria-label="Certificate ${esc(code)} for ${esc(name)}">
-  <rect width="1320" height="920" fill="#efedeb"/>
-  <g stroke="#000" stroke-opacity="0.05" stroke-width="1">
-    ${Array.from({length:7},(_,i)=>`<line x1="${940+i*56}" y1="120" x2="${940+i*56}" y2="560"/>`).join('')}
-    ${Array.from({length:8},(_,i)=>`<line x1="940" y1="${120+i*56}" x2="1280" y2="${120+i*56}"/>`).join('')}
-  </g>
-  <text x="70" y="74" font-family="Cormorant Garamond,serif" font-weight="600" font-size="30" letter-spacing="3" fill="#1a1d20">BUILDCORED</text>
-  <text x="1250" y="70" text-anchor="end" font-family="Geist Mono,monospace" font-size="15" letter-spacing="2" fill="#8a8f97">CERTIFICATE — № ${esc(code)}</text>
-  <line x1="70" y1="96" x2="1250" y2="96" stroke="#000" stroke-opacity="0.12"/>
-
-  <text x="70" y="150" font-family="Geist Mono,monospace" font-size="12" letter-spacing="3" fill="#9aa0a6">PRESENTED</text>
-  <text x="70" y="167" font-family="Geist Mono,monospace" font-size="12" letter-spacing="3" fill="#9aa0a6">TO</text>
-  <text x="66" y="258" font-family="Cormorant Garamond,serif" font-size="92" fill="#1a1d20">
-    <tspan font-weight="600">${first}</tspan><tspan font-style="italic" fill="#3D4E63"> ${rest}</tspan>
-  </text>
-
-  <text x="70" y="318" font-family="Geist Mono,monospace" font-size="12" letter-spacing="3" fill="#9aa0a6">FOR COMPLETING</text>
-  <text x="68" y="372" font-family="Bricolage Grotesque,sans-serif" font-weight="700" font-size="52" letter-spacing="-1" fill="#15181b">${esc(c.program||'ORCAS · V1.5')}</text>
-
-  <text x="70" y="428" font-family="Geist Mono,monospace" font-size="12" letter-spacing="3" fill="#9aa0a6">INVITATION · NEXT</text>
-  <text x="70" y="445" font-family="Geist Mono,monospace" font-size="12" letter-spacing="3" fill="#9aa0a6">COHORT</text>
-  <text x="70" y="490" font-family="Cormorant Garamond,serif" font-style="italic" font-size="31" fill="#5a6068">${invSpans}</text>
-  <text x="70" y="${505+ (inv.length-1)*38 + 40}" font-family="Geist Mono,monospace" font-size="13" letter-spacing="3" fill="#9aa0a6">${esc(c.place_term||'TASHKENT · SUMMER 2026')}</text>
-
-  <!-- Nazarx × Buildcored lockup -->
-  <g transform="translate(70 ${560 + (inv.length-1)*38 + 40})">
-    <text x="0" y="0" font-family="Bricolage Grotesque,sans-serif" font-weight="800" font-size="22" letter-spacing="1" fill="#1a1d20" font-style="italic">NAZARX</text>
-    <text x="118" y="0" font-family="Geist Mono,monospace" font-size="16" fill="#9aa0a6">×</text>
-    <g transform="translate(150 -16)">${orcaGlyph(0.13,'#1a1d20','#3D4E63','#9aa0a6')}</g>
-    <text x="196" y="0" font-family="Cormorant Garamond,serif" font-weight="600" font-size="22" letter-spacing="2" fill="#1a1d20">BUILDCORED</text>
-  </g>
-
-  <!-- Orca emblem -->
-  <g transform="translate(1090 250)">${orcaGlyph(1,'#15181b','#3D4E63','#c2c8cd')}</g>
-  <line x1="990" y1="395" x2="1190" y2="395" stroke="#000" stroke-opacity="0.14"/>
-  <text x="1090" y="438" text-anchor="middle" font-family="Geist Mono,monospace" font-weight="500" font-size="22" letter-spacing="4" fill="#3D4E63">${esc(ver)}</text>
-
-  <line x1="70" y1="780" x2="1250" y2="780" stroke="#000" stroke-opacity="0.10"/>
-  <text x="390" y="806" font-family="Geist Mono,monospace" font-size="12" letter-spacing="3" fill="#9aa0a6">SIGNED</text>
-  <text x="390" y="850" font-family="Cormorant Garamond,serif" font-style="italic" font-weight="600" font-size="28" fill="#1a1d20">${esc(c.signer||'Husan Mavlonov')}</text>
-  <line x1="390" y1="864" x2="745" y2="864" stroke="#000" stroke-opacity="0.18"/>
-  <text x="390" y="886" font-family="Geist Mono,monospace" font-size="11" letter-spacing="2" fill="#9aa0a6">${esc(c.signer_title||'FOUNDER, BUILDCORED')}</text>
-
-  <text x="70" y="846" font-family="Geist Mono,monospace" font-size="12" letter-spacing="3" fill="#9aa0a6">ISSUED</text>
-  <text x="70" y="870" font-family="Geist Mono,monospace" font-size="14" letter-spacing="1" fill="#3a3f45">${esc(fmtDate(c.issued_on))}</text>
-
-  <text x="1250" y="846" text-anchor="end" font-family="Geist Mono,monospace" font-size="12" letter-spacing="3" fill="#9aa0a6">VERIFY AT</text>
-  <text x="1250" y="870" text-anchor="end" font-family="Geist Mono,monospace" font-size="14" letter-spacing="1" fill="#3a3f45">buildcored.com/verify/${esc(c.code)}</text>
-</svg>`;
-  }
-
-  // Stylized orca emblem (ink body, slate tail, gull belly + eye-patch)
-  function orcaGlyph(s, ink, slate, gull){
-    return `<g transform="scale(${s})">
-      <g transform="rotate(16)">
-        <path d="M-150 -55 L-205 -95 L-200 -8 L-205 78 L-150 35 Z" fill="${slate}"/>
-        <path d="M30 -70 Q 70 -188 120 -64 Q 80 -52 30 -70 Z" fill="${ink}"/>
-        <ellipse cx="0" cy="0" rx="155" ry="92" fill="${ink}"/>
-        <path d="M-120 48 Q 10 128 138 30 Q 20 92 -120 48 Z" fill="${gull}" opacity="0.92"/>
-        <ellipse cx="-95" cy="-18" rx="30" ry="17" fill="${gull}"/>
-        <circle cx="-104" cy="-15" r="7" fill="${ink}"/>
-        <path d="M150 60 Q 210 100 250 60 Q 215 110 150 95 Z" fill="${slate}"/>
-      </g>
-    </g>`;
-  }
-
-  function setStatus(msg, cls){ statusEl.textContent = msg||''; statusEl.className = 'v-status'+(cls?' '+cls:''); }
+  const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  function fmtDate(d){ const m=String(d||'').match(/^(\d{4})-(\d{2})-(\d{2})/); return m?`${MONTHS[+m[2]-1]} ${+m[3]}, ${m[1]}`:String(d||''); }
+  function setStatus(msg,cls){ statusEl.textContent=msg||''; statusEl.className='v-status'+(cls?' '+cls:''); }
+  // The real certificate images live in the repo at /certs/<code>.png
+  // (same-origin, reliable). Add new ones there + a row in `certificates`.
+  function certImageURL(code){ return '/certs/'+encodeURIComponent(code.toLowerCase())+'.png'; }
 
   async function verify(rawCode){
-    const code = String(rawCode||'').trim().toLowerCase();
+    const code=String(rawCode||'').trim().toLowerCase();
     resultEl.classList.remove('show');
     if(!code){ setStatus(''); return; }
-    if(!CFG.SUPABASE_URL || !CFG.SUPABASE_ANON_KEY){
-      setStatus('Verification is temporarily unavailable.', 'bad'); return;
-    }
-    setStatus('Checking…', 'busy');
+    if(!CFG.SUPABASE_URL || !CFG.SUPABASE_ANON_KEY){ setStatus('Verification is temporarily unavailable.','bad'); return; }
+    setStatus('Checking…','busy');
     try{
-      const url = `${CFG.SUPABASE_URL}/rest/v1/certificates?select=*&code=eq.${encodeURIComponent(code)}&limit=1`;
-      const r = await fetch(url, { headers:{ apikey:CFG.SUPABASE_ANON_KEY, Authorization:'Bearer '+CFG.SUPABASE_ANON_KEY }});
+      const url=`${CFG.SUPABASE_URL}/rest/v1/certificates?select=*&code=eq.${encodeURIComponent(code)}&limit=1`;
+      const r=await fetch(url,{headers:{apikey:CFG.SUPABASE_ANON_KEY,Authorization:'Bearer '+CFG.SUPABASE_ANON_KEY}});
       if(!r.ok) throw new Error('http '+r.status);
-      const rows = await r.json();
-      if(!rows.length){
-        setStatus(`No certificate found for “${code.toUpperCase()}”. Check the code and try again.`, 'bad');
-        return;
-      }
-      const c = rows[0];
-      wrap.innerHTML = certSVG(c);
+      const rows=await r.json();
+      if(!rows.length){ setStatus(`No certificate found for “${code.toUpperCase()}”. Check the code and try again.`,'bad'); return; }
+      const c=rows[0]; current=c;
+      const src = (c.image && /^https?:|^\//.test(c.image)) ? c.image : certImageURL(c.code);
+      // show the real designed certificate image; fall back to text if missing
+      img.style.display='none'; fb.style.display='none';
+      img.onload = () => { img.style.display='block'; fb.style.display='none'; };
+      img.onerror = () => {
+        img.style.display='none'; fb.style.display='block';
+        $('#fbName').textContent = c.recipient;
+        $('#fbDetail').textContent = `${c.program} · № ${c.code.toUpperCase()} · issued ${fmtDate(c.issued_on)}`;
+      };
+      img.alt = `${c.recipient} — ${c.program} certificate ${c.code.toUpperCase()}`;
+      img.src = src + '?v=' + encodeURIComponent(c.created_at || c.issued_on || '');
       $('#vWho').textContent = `${c.recipient} · ${c.program} · issued ${fmtDate(c.issued_on)}`;
-      setStatus('This certificate is genuine.', 'ok');
+      setStatus('This certificate is genuine.','ok');
       resultEl.classList.add('show');
-      try{ history.replaceState(null,'', '/verify/?c='+encodeURIComponent(code)); }catch(_){}
-      window.__cert = c;
-    }catch(e){
-      setStatus('Could not verify right now — please try again in a moment.', 'bad');
-    }
+      try{ history.replaceState(null,'','/verify/?c='+encodeURIComponent(code)); }catch(_){}
+    }catch(e){ setStatus('Could not verify right now — please try again in a moment.','bad'); }
   }
 
-  // ── Downloads ───────────────────────────────────────────────────────────
-  async function downloadPNG(){
-    const svg = document.getElementById('cert');
-    if(!svg) return;
-    try{ await document.fonts.ready; }catch(_){}
-    const xml = new XMLSerializer().serializeToString(svg);
-    const blob = new Blob([xml], {type:'image/svg+xml;charset=utf-8'});
-    const u = URL.createObjectURL(blob);
-    const img = new Image();
-    img.onload = () => {
-      const sc = 2, cv = document.createElement('canvas');
-      cv.width = 1320*sc; cv.height = 920*sc;
-      const ctx = cv.getContext('2d');
-      ctx.fillStyle = '#efedeb'; ctx.fillRect(0,0,cv.width,cv.height);
-      ctx.drawImage(img,0,0,cv.width,cv.height);
-      URL.revokeObjectURL(u);
-      cv.toBlob(b => {
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(b);
-        a.download = ((window.__cert&&window.__cert.code)||'certificate').toUpperCase()+'.png';
-        document.body.appendChild(a); a.click(); a.remove();
-        setTimeout(()=>URL.revokeObjectURL(a.href),1000);
-      }, 'image/png');
-    };
-    img.onerror = () => { URL.revokeObjectURL(u); window.print(); };
-    img.src = u;
+  async function downloadImage(){
+    if(!current) return;
+    const src = (current.image && /^https?:|^\//.test(current.image)) ? current.image : certImageURL(current.code);
+    try{
+      const r=await fetch(src,{cache:'no-store'}); const b=await r.blob();
+      const a=document.createElement('a'); a.href=URL.createObjectURL(b);
+      a.download = current.code.toUpperCase()+'.png';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+    }catch(_){ window.open(src,'_blank'); }
   }
 
-  $('#dlPng').addEventListener('click', downloadPNG);
+  $('#dlImg').addEventListener('click', downloadImage);
   $('#dlPdf').addEventListener('click', () => window.print());
-
   form.addEventListener('submit', e => { e.preventDefault(); verify(input.value); });
 
-  // Code from ?c= (set by the /verify/<code> 404 fallback) or #hash
-  const params = new URLSearchParams(location.search);
-  const initial = params.get('c') || decodeURIComponent((location.hash||'').replace(/^#\/?(verify\/)?/,''));
-  if(initial){ input.value = initial.toUpperCase(); verify(initial); }
+  const params=new URLSearchParams(location.search);
+  const initial=params.get('c') || decodeURIComponent((location.hash||'').replace(/^#\/?(verify\/)?/,''));
+  if(initial){ input.value=initial.toUpperCase(); verify(initial); }
 })();
 </script>
 </body>
