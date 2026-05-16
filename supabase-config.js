@@ -15,5 +15,5 @@ window.BC_CONFIG = {
   // GoatCounter: make a free site at goatcounter.com, then paste your
   // endpoint here, e.g. 'https://buildcored.goatcounter.com/count'.
   // Leave '' and nothing loads / no requests are made.
-  ANALYTICS_GOATCOUNTER: '',
+  ANALYTICS_GOATCOUNTER: 'https://buildcored.goatcounter.com/count',
 };
