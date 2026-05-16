@@ -273,7 +273,7 @@
     card.dataset.id = p.id;
     card.tabIndex = 0;
     card.setAttribute('role', 'button');
-    card.setAttribute('aria-label', `${p.title} — Day ${p.day}${p.winner ? ' (Day winner)' : ''}`);
+    card.setAttribute('aria-label', `${p.title} — Day ${p.day}${p.winner ? ' (Day winner)' : ''}${p.difficulty ? `, ${diffLabel(p.difficulty)} difficulty` : ''}`);
     card.innerHTML = `
       <div class="pcard-media">
         ${img
@@ -291,6 +291,9 @@
         ${isShipped
           ? (p.winner ? `<span class="pcard-ship pcard-ship-winner">🏆 Day ${p.day} Winner</span>` : `<span class="pcard-ship">Shipped</span>`)
           : `<span class="pcard-ship pcard-ship-pending">Awaiting submission</span>`}
+        ${p.difficulty
+          ? `<span class="pcard-diff pcard-diff-${escapeHtml(p.difficulty)}" title="Difficulty: ${escapeHtml(diffLabel(p.difficulty))}"><i class="pcard-diff-dot" aria-hidden="true"></i>${escapeHtml(diffLabel(p.difficulty))}</span>`
+          : ''}
       </div>
       <div class="pcard-body">
         <h3 class="pcard-title">${escapeHtml(p.title)}</h3>
