@@ -15,21 +15,20 @@
 <meta property="og:image" content="logo/orca-1200-og.jpg">
 <meta property="og:type" content="website">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- Self-hosted fonts: one same-origin file, cached once for the page AND
+     every cover SVG (was a Google Fonts @import inside all 30 covers). -->
+<link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/geist-v5-gyByhwUxId8gMEwcGFWNOITd.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/bricolagegrotesque-v9-3y9K6as8bTXq_nANBjzKo3IeZx8z6up5BeSl9D4dj_x9PpZBMlGIInHWVyNJ.woff2">
+<link rel="stylesheet" href="fonts.css">
 
 <link rel="stylesheet" href="styles.css">
-
-<!-- Fetch the gallery theme early so it's decoded before anyone scrolls there -->
-<link rel="preload" href="audio/orcas-theme.mp3" as="audio" type="audio/mpeg">
 </head>
 <body>
 
 <!-- ═══ Brand intro overlay (2.3s, mirrors buildcored.com splash) ═════════ -->
 <div class="intro" id="intro" aria-hidden="false">
   <div class="intro-stage">
-    <img class="intro-mark" src="brand/mark-white.svg" alt="" aria-hidden="true">
+    <img class="intro-mark" src="brand/mark-white-trim.png" alt="" aria-hidden="true">
     <span class="intro-wordmark">BUILDCORED</span>
   </div>
   <p class="intro-tag">Creative Engineering</p>
@@ -40,7 +39,7 @@
 <nav class="nav" id="nav" aria-label="Primary">
   <div class="container nav-inner">
     <a href="#top" class="brand" aria-label="Buildcored home">
-      <img class="brand-mark" src="brand/mark-white.svg" alt="" aria-hidden="true">
+      <img class="brand-mark" src="brand/mark-white-trim.png" alt="" aria-hidden="true">
       <span class="brand-name">Buildcored</span>
     </a>
     <div class="nav-links">
@@ -628,7 +627,7 @@
     <div class="footer-grid">
       <div class="footer-brand">
         <div class="footer-brand-row">
-          <img class="bc-mark" src="brand/mark-white.svg" alt="" aria-hidden="true">
+          <img class="bc-mark" src="brand/mark-white-trim.png" alt="" aria-hidden="true">
           <span class="wordmark">Buildcored</span>
         </div>
         <p class="footer-tagline">Creative engineering, in public. Open-source, daily, and made for the curious.</p>
@@ -661,7 +660,7 @@
 
 <!-- Project-gallery ambience: autostarts when the Project DB is in view,
      fades out when you scroll above it, keeps playing inside a project modal -->
-<audio id="bgAudio" src="audio/orcas-theme.mp3" preload="auto" playsinline></audio>
+<audio id="bgAudio" src="audio/orcas-theme.mp3" preload="none" playsinline></audio>
 
 <!-- Visible control for the gallery ambience: appears with the Project DB,
      lets anyone mute/unmute (or start it, under reduce-motion / no-autoplay) -->

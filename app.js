@@ -13,6 +13,29 @@
   const CFG         = window.BC_CONFIG || {};
   const HAS_SB      = !!(CFG.SUPABASE_ANON_KEY && CFG.SUPABASE_URL);
 
+  // ─────────────────────────────────────────────────────────────────────────
+  // Privacy-friendly analytics (GoatCounter — cookieless, no PII). Loads
+  // ONLY if an endpoint is configured; otherwise track() is a silent no-op
+  // and zero network requests are made. Never blocks render (async script).
+  // ─────────────────────────────────────────────────────────────────────────
+  function loadAnalytics() {
+    const ep = CFG.ANALYTICS_GOATCOUNTER;
+    if (!ep || document.getElementById('gc-analytics')) return;
+    const s = document.createElement('script');
+    s.id = 'gc-analytics';
+    s.async = true;
+    s.dataset.goatcounter = ep;
+    s.src = 'https://gc.zgo.at/count.js';
+    document.head.appendChild(s);
+  }
+  function track(name) {
+    try {
+      if (window.goatcounter && window.goatcounter.count) {
+        window.goatcounter.count({ path: 'evt-' + name, title: name, event: true });
+      }
+    } catch (_) { /* analytics must never break the page */ }
+  }
+
   /** @type {any} Supabase client, lazily loaded */
   let sb = null;
   let currentUser = null;
@@ -42,35 +65,46 @@
     bindRouting();
     bindNewsletter();
     bindGalleryAudio();
+    loadAnalytics();
+    // Intent signal: clicking either hero CTA toward the gallery/program.
+    document.querySelectorAll('.hero-actions a').forEach(a =>
+      a.addEventListener('click', () => track('hero-cta-' + (a.getAttribute('href') || '').replace('#', ''))));
 
-    if (HAS_SB) {
-      try {
-        const mod = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
-        sb = mod.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_ANON_KEY, {
-          auth: { persistSession: true, autoRefreshToken: true },
-        });
-        const { data: { session } } = await sb.auth.getSession();
-        currentUser = session?.user || null;
-        sb.auth.onAuthStateChange((event, s) => {
-          currentUser = s?.user || null;
-          updateAuthUI();
-          if (event === 'SIGNED_IN') renderAdminList();
-        });
-        updateAuthUI();
-      } catch (err) {
-        console.error('[supabase] init failed, falling back to projects.json', err);
-        sb = null;
-      }
-    }
-
+    // Render the gallery immediately from projects.json (sb still null) so
+    // it does NOT wait on the ~70 KB Supabase SDK CDN fetch. Supabase then
+    // initializes in the background and re-loads live data when ready.
     try {
       loadLocal();
       await load();
-      route();   // projects are loaded — honor #admin or #p/<id> deep links
+      route();   // honor #admin or #p/<id> deep links against local data
     } catch (err) {
       console.error('[projects] load failed', err);
       const host = document.getElementById('projectsDB');
       if (host) host.innerHTML = `<div class="db-empty db-empty-error">Couldn't load projects. ${escapeHtml(err.message || err)}</div>`;
+    }
+
+    if (HAS_SB) {
+      (async () => {
+        try {
+          const mod = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+          sb = mod.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_ANON_KEY, {
+            auth: { persistSession: true, autoRefreshToken: true },
+          });
+          const { data: { session } } = await sb.auth.getSession();
+          currentUser = session?.user || null;
+          sb.auth.onAuthStateChange((event, s) => {
+            currentUser = s?.user || null;
+            updateAuthUI();
+            if (event === 'SIGNED_IN') renderAdminList();
+          });
+          updateAuthUI();
+          await load();        // refresh gallery with live Supabase data
+          route();
+        } catch (err) {
+          console.error('[supabase] init failed, staying on projects.json', err);
+          sb = null;
+        }
+      })();
     }
   });
 
@@ -263,7 +297,7 @@
         <p class="pcard-desc">${escapeHtml(p.description)}</p>
         ${tagPills(p.tags)}
         <div class="pcard-foot">
-          ${p.builder ? `<span class="pcard-builder">by ${escapeHtml(p.builder)}</span>` : `<span class="pcard-builder pcard-builder-empty">${escapeHtml(p.category)}</span>`}
+          ${p.builder ? `<span class="pcard-builder">by <b>${escapeHtml(p.builder)}</b></span>` : `<span class="pcard-builder pcard-builder-empty">${escapeHtml(p.category)}</span>`}
           ${(isShipped && (p.githubUrl || p.demoUrl))
             ? `<span class="pcard-links">
                 ${p.githubUrl ? `<a class="pcard-link" href="${escapeHtml(p.githubUrl)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" aria-label="GitHub repo"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 1.5A10.5 10.5 0 0 0 1.5 12c0 4.64 3 8.58 7.18 9.97.53.1.72-.23.72-.5 0-.25-.01-1.09-.01-1.98-2.92.63-3.54-1.24-3.54-1.24-.48-1.21-1.17-1.53-1.17-1.53-.96-.65.07-.64.07-.64 1.06.07 1.62 1.09 1.62 1.09.95 1.6 2.48 1.14 3.08.87.1-.68.37-1.14.67-1.4-2.33-.27-4.78-1.17-4.78-5.2 0-1.15.4-2.09 1.08-2.83-.11-.27-.47-1.34.1-2.78 0 0 .88-.28 2.88 1.08a9.7 9.7 0 0 1 5.24 0c2-1.36 2.88-1.08 2.88-1.08.57 1.44.21 2.51.1 2.78.68.74 1.08 1.68 1.08 2.83 0 4.04-2.46 4.93-4.8 5.19.38.33.72.96.72 1.95 0 1.41-.01 2.55-.01 2.89 0 .28.19.61.73.5A10.51 10.51 0 0 0 22.5 12 10.5 10.5 0 0 0 12 1.5Z"/></svg> Repo</a>` : ''}
@@ -297,10 +331,11 @@
     bindLazyCovers(host);
   }
 
-  // Animated SVG covers are heavy (each is a live document). Loading 30 at
-  // once stalls the gallery, so we hold the src in data-src and only set the
-  // real `data` attribute ~700px before a card scrolls into view. First rows
-  // are already intersecting when this runs, so they load straight away.
+  // Animated SVG covers are heavy (each is a live document). We hold the src
+  // in data-src and only set the real `data` attribute as a card nears the
+  // viewport — AND cap how many load at once so a fast scroll can't fire a
+  // burst of 8–10 document loads in one frame (the old stall). Each <object>
+  // frees its slot on load/error and the next queued one starts.
   let lazyCoverIO = null;
   function bindLazyCovers(host) {
     if (lazyCoverIO) lazyCoverIO.disconnect();
@@ -310,18 +345,39 @@
       lazies.forEach(el => { el.data = el.dataset.src; el.classList.remove('is-lazy'); });
       return;
     }
+    const MAX = 4;                 // concurrent <object> document loads
+    let active = 0;
+    const queue = [];
+    const queued = new WeakSet();
+
+    function pump() {
+      while (active < MAX && queue.length) {
+        const el = queue.shift();
+        if (!el.dataset.src) continue;
+        active++;
+        const done = () => {
+          active--;
+          el.removeEventListener('load', done);
+          el.removeEventListener('error', done);
+          pump();
+        };
+        el.addEventListener('load', done);
+        el.addEventListener('error', done);
+        el.data = el.dataset.src;
+        el.removeAttribute('data-src');
+        el.classList.remove('is-lazy');
+      }
+    }
+
     lazyCoverIO = new IntersectionObserver((entries, obs) => {
       for (const e of entries) {
         if (!e.isIntersecting) continue;
         const el = e.target;
-        if (el.dataset.src) {
-          el.data = el.dataset.src;
-          el.removeAttribute('data-src');
-          el.classList.remove('is-lazy');
-        }
         obs.unobserve(el);
+        if (el.dataset.src && !queued.has(el)) { queued.add(el); queue.push(el); }
       }
-    }, { rootMargin: '700px 0px 700px 0px', threshold: 0 });
+      pump();
+    }, { rootMargin: '300px 0px 400px 0px', threshold: 0 });
     lazies.forEach(el => lazyCoverIO.observe(el));
   }
 
@@ -390,6 +446,7 @@
     modal.classList.add('open');
     modal.setAttribute('aria-hidden', 'false');
     document.body.classList.add('modal-open');
+    track('project-open-' + id);
 
     // Shareable identity: title, OG, and a #p/<id> URL (back button closes).
     document.title = `${p.title} · Day ${p.day} — Buildcored`;
@@ -906,8 +963,10 @@
 
     audio.loop = false;
     audio.volume = 0;
-    audio.preload = 'auto';
-    try { audio.load(); } catch (_) {}
+    // No eager fetch: the 3 MB track must NOT download on page load. The
+    // first-gesture prime() below warms it (fetch+decode) well before
+    // anyone reaches the gallery, so playback is still instant.
+    audio.preload = 'none';
 
     function fadeTo(target, ms, thenPause) {
       clearInterval(fadeTimer);
@@ -1029,9 +1088,13 @@
         if (error) return;                 // RPC missing → just stay hidden
         const n = Number(data);
         if (!Number.isFinite(n)) return;
-        countEl.innerHTML = n > 0
-          ? `<strong>${n.toLocaleString()}</strong> builder${n === 1 ? '' : 's'} on the v2.0 waitlist`
-          : 'Be the first on the v2.0 waitlist.';
+        // Only show the actual number once it's flattering. Below the
+        // threshold a tiny "2 builders" reads as "nobody's here", so show
+        // motivating qualitative copy instead (no number).
+        const COUNT_MIN = 25;
+        countEl.innerHTML = n >= COUNT_MIN
+          ? `<strong>${n.toLocaleString()}</strong> builders on the v2.0 waitlist`
+          : 'v2.0 invites go out in waves — early signups go first.';
         countEl.hidden = false;
       } catch (_) { /* offline / not deployed — leave hidden */ }
     }
@@ -1067,6 +1130,7 @@
       }
       form.reset();
       status.textContent = 'You\'re on the waitlist. We\'ll email the first v2.0 invite.';
+      track('waitlist-signup');
       refreshCount();
     });
   }

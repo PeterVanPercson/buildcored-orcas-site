@@ -1418,10 +1418,11 @@ section { position: relative; }
 }
 .pcard-builder {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.04em;
-  color: var(--ink-1);
+  color: var(--ink-2);
 }
+.pcard-builder b { color: var(--gull); font-weight: 500; }
 .pcard-builder-empty { color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.12em; }
 .pcard-links { display: flex; gap: 12px; align-items: center; }
 .pcard-link {
