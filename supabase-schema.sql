@@ -95,9 +95,20 @@ drop policy if exists "certificates_public_read" on public.certificates;
 create policy "certificates_public_read" on public.certificates
   for select using (true);
 
-insert into public.certificates (code, recipient, program, issued_on)
-values ('bco-26-0142', 'Sharipov Komil', 'ORCAS · V1.5', '2026-05-16')
-on conflict (code) do nothing;
+insert into public.certificates (code, recipient, program, issued_on) values
+  ('bco-26-0142', 'Botirsherov Abdulatif',     'ORCAS · V1.5', '2026-05-16'),
+  ('bco-26-0143', 'Bositkhonov Abduboriykhon', 'ORCAS · V1.5', '2026-05-16'),
+  ('bco-26-0144', 'Adhamjon Ollanazarov',      'ORCAS · V1.5', '2026-05-16'),
+  ('bco-26-0145', 'Madina Muhammadova',        'ORCAS · V1.5', '2026-05-16'),
+  ('bco-26-0146', 'Javohir Rahmatullaev',      'ORCAS · V1.5', '2026-05-16'),
+  ('bco-26-0147', 'Sharipov Komil',            'ORCAS · V1.5', '2026-05-16'),
+  ('bco-26-0148', 'Hakimjanova Mehribon',      'ORCAS · V1.5', '2026-05-16'),
+  ('bco-26-0149', 'Raximov Rahim',             'ORCAS · V1.5', '2026-05-16'),
+  ('bco-26-0150', 'Komiljon Solijonov',        'ORCAS · V1.5', '2026-05-16')
+on conflict (code) do update
+  set recipient = excluded.recipient,
+      program   = excluded.program,
+      issued_on = excluded.issued_on;
 
 -- ── updated_at auto-touch ─────────────────────────────────────────────────
 create or replace function public.touch_updated_at() returns trigger
