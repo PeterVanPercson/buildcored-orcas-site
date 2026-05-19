@@ -661,7 +661,10 @@
 
 <!-- Project-gallery ambience: autostarts when the Project DB is in view,
      fades out when you scroll above it, keeps playing inside a project modal -->
-<audio id="bgAudio" src="audio/orcas-theme.mp3" preload="none" playsinline></audio>
+<audio id="bgAudio" preload="none" playsinline>
+  <source src="audio/orcas-theme.opus" type="audio/ogg; codecs=opus">
+  <source src="audio/orcas-theme.m4a" type="audio/mp4; codecs=mp4a.40.2">
+</audio>
 
 <!-- Visible control for the gallery ambience: appears with the Project DB,
      lets anyone mute/unmute (or start it, under reduce-motion / no-autoplay) -->

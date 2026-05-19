@@ -1229,6 +1229,12 @@ section { position: relative; }
   display: flex;
   flex-direction: column;
   cursor: pointer;
+  /* Phones choked rendering 30 live animated SVG covers at once. Let the
+     browser skip layout/paint/animation for off-screen cards and only
+     "wake" them as they near the viewport — animations then kick in right
+     when you scroll to them. No-op on browsers that don't support it. */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 460px;
   transition:
     background 220ms var(--ease-out),
     border-color 220ms var(--ease-out),

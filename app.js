@@ -382,7 +382,7 @@
         if (el.dataset.src && !queued.has(el)) { queued.add(el); queue.push(el); }
       }
       pump();
-    }, { rootMargin: '300px 0px 400px 0px', threshold: 0 });
+    }, { rootMargin: '400px 0px 800px 0px', threshold: 0 });
     lazies.forEach(el => lazyCoverIO.observe(el));
   }
 
