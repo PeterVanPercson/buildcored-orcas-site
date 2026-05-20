@@ -2522,3 +2522,221 @@ body.intro-done .hero-stack { opacity: 1; }
   .pcard-diff { animation: none !important; opacity: 1 !important; transform: none !important; box-shadow: none !important; }
 }
 /* deploy-stamp: 2026-05-14T12:32:48Z */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FREE CLAUDE — pill button + chooser modal + jumping sprite.
+   Lifted verbatim from husanmavlonov.com (where this was authored). The
+   small token bridge below maps the original tokens to Buildcored's tokens
+   so the rest can stay byte-for-byte and easy to diff against the source.
+   ═════════════════════════════════════════════════════════════════════════ */
+.claude-wrap, .cc-backdrop {
+  --claude: #cc7757;
+  --bg: var(--bg-2);
+  --line: var(--line-2);
+  --line-strong: var(--line-3);
+  --fg: var(--ink-0);
+  --dim: var(--ink-2);
+  --mono: var(--font-mono);
+  --serif: var(--font-serif);
+  --accent: var(--slate);
+}
+.claude-row { display: flex; justify-content: center; margin-top: 18px; }
+
+    .claude-wrap {
+      position: relative;
+      width: max-content;
+      max-width: 100%;
+      margin-top: 38px;       /* room for the walker above */
+      padding-top: 4px;
+    }
+    .claude-cta {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 14px;
+      background: rgba(204, 119, 87, 0.10);
+      border: 1px solid rgba(204, 119, 87, 0.45);
+      border-radius: 999px;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--claude);
+      cursor: pointer;
+      transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+    }
+    .claude-cta:hover {
+      background: rgba(204, 119, 87, 0.20);
+      border-color: var(--claude);
+      transform: translateY(-1px);
+    }
+    /* Light theme override — pill goes solid for high contrast on steel-blue bg */
+    body.light .claude-cta {
+      background: var(--claude);
+      border-color: var(--claude);
+      color: #fff;
+    }
+    body.light .claude-cta:hover {
+      background: #b85f3f;
+      border-color: #b85f3f;
+    }
+    .claude-walker {
+      position: absolute;
+      bottom: calc(100% - 10px);   /* sits on the top edge of the pill */
+      left: 14px;
+      width: 30px;
+      height: 30px;
+      display: block;
+      pointer-events: none;
+      animation: walkerStroll 9s ease-in-out infinite;
+    }
+    @keyframes walkerStroll {
+      0%, 100% { left: 14px; transform: scaleX(1); }
+      45%      { left: calc(100% - 44px); transform: scaleX(1); }
+      50%      { left: calc(100% - 44px); transform: scaleX(-1); }
+      95%      { left: 14px; transform: scaleX(-1); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .claude-walker { animation: none; }
+    }
+
+    /* ===== CLAUDE CHOOSER MODAL ===== */
+    .cc-backdrop {
+      position: fixed; inset: 0;
+      height: 100vh;
+      height: 100dvh;
+      background: rgba(8, 9, 11, 0.74);
+      -webkit-backdrop-filter: blur(3px);
+      backdrop-filter: blur(3px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 1000;
+    }
+    .cc-backdrop.open { opacity: 1; pointer-events: auto; }
+    .cc-modal {
+      position: relative;
+      width: min(560px, 92vw);
+      height: 400px;
+      background: var(--bg);
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      overflow: hidden;
+      padding: 0 46px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 26px;
+      transform: translateY(14px) scale(0.97);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .cc-backdrop.open .cc-modal { transform: translateY(0) scale(1); }
+
+    .cc-close {
+      position: absolute;
+      top: 14px; right: 16px;
+      width: 24px; height: 24px;
+      background: none; border: none;
+      padding: 0;
+      cursor: pointer;
+      z-index: 6;
+      opacity: 0.65;
+      transition: opacity 0.25s ease, transform 0.35s cubic-bezier(0.16,1,0.3,1);
+    }
+    .cc-close:hover { opacity: 1; transform: rotate(90deg) scale(1.1); }
+    .cc-close img { width: 100%; height: 100%; display: block; pointer-events: none; }
+
+    .cc-head { z-index: 2; }
+    .cc-eyebrow {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--claude);
+      margin-bottom: 10px;
+    }
+    .cc-me {
+      display: inline-block;
+      width: 1.7em;            /* ≈ matches the eyebrow text height */
+      height: 1.7em;
+      object-fit: cover;
+      border-radius: 50%;
+      vertical-align: middle;
+      margin-left: 9px;
+      position: relative;
+      top: -1px;
+      border: 1px solid var(--line);
+    }
+    .cc-title {
+      font-family: var(--serif);
+      font-size: 40px;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      color: var(--fg);
+      line-height: 1;
+    }
+    .cc-title em { font-style: italic; color: var(--accent); font-weight: 400; }
+
+    .cc-choices {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      z-index: 2;
+    }
+    .cc-choice {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      padding: 20px 18px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.02);
+      text-decoration: none;
+      transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+    }
+    .cc-choice:hover {
+      border-color: var(--claude);
+      background: rgba(204, 119, 87, 0.09);
+      transform: translateY(-2px);
+    }
+    .cc-choice-name {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 23px;
+      color: var(--fg);
+      letter-spacing: -0.01em;
+    }
+    .cc-choice-desc {
+      font-size: 12.5px;
+      line-height: 1.45;
+      color: var(--dim);
+    }
+
+    /* ---- the three Claude sprites ---- */
+    .cc-sprite {
+      position: absolute;
+      width: 26px; height: 26px;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .cc-sprite img { width: 100%; height: 100%; display: block; }
+
+    /* sporty jumper — child of the backdrop (no transform); JS places it in screen coords */
+    .cc-jumper {
+      left: 0; top: 0;
+      z-index: 20;
+      will-change: transform;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .cc-jumper.live { opacity: 1; }
+
+    @media (max-width: 560px) {
+      .cc-modal { height: auto; padding: 60px 28px 40px; gap: 22px; }
+      .cc-choices { grid-template-columns: 1fr; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .cc-jumper { animation: none; }
+    }

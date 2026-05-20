@@ -106,6 +106,15 @@
         </a>
         <a href="#projects" class="btn btn-ghost">Browse 30 projects</a>
       </div>
+
+      <div class="claude-row reveal" data-delay="4">
+        <div class="claude-wrap">
+          <img class="claude-walker" src="claude/claude.png" alt="" aria-hidden="true">
+          <button class="claude-cta" type="button" id="claudeCtaBtn" aria-haspopup="dialog">
+            Free Claude
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -681,6 +690,38 @@
   <span class="sound-toggle-label">Sound</span>
 </button>
 
+<!-- ═══ Free Claude — chooser modal (lifted from husanmavlonov.com) ════════ -->
+<div class="cc-backdrop" id="ccBackdrop" aria-hidden="true">
+  <div class="cc-modal" role="dialog" aria-modal="true" aria-label="Pick Claude Code or Claude Cowork">
+
+    <button class="cc-close" id="ccClose" type="button" aria-label="Close">
+      <img src="claude/claude-logo.png" alt="" aria-hidden="true">
+    </button>
+
+    <div class="cc-head">
+      <p class="cc-eyebrow">Free for a week · on me<img class="cc-me" src="claude/me.png" alt="" onerror="this.remove()"></p>
+      <h2 class="cc-title">Pick your Claude<em>.</em></h2>
+    </div>
+
+    <div class="cc-choices">
+      <a class="cc-choice" href="mailto:team@buildcored.com?subject=Free%20Claude%20Code%20for%20a%20week&body=Hey%2C%20Husan%21%0A%0AI%27d%20love%20a%20free%20week%20of%20Claude%20Code.%20I%27m%20building%20">
+        <span class="cc-choice-name">Claude Code</span>
+        <span class="cc-choice-desc">Terminal-native. Agents that ship.</span>
+      </a>
+      <a class="cc-choice" href="mailto:team@buildcored.com?subject=Free%20Claude%20Cowork%20for%20a%20week&body=Hey%2C%20Husan%21%0A%0AI%27d%20love%20a%20free%20week%20of%20Claude%20Cowork.%20I%27m%20building%20">
+        <span class="cc-choice-name">Claude Cowork</span>
+        <span class="cc-choice-desc">An agent that works alongside you.</span>
+      </a>
+    </div>
+
+  </div>
+
+  <!-- jumper lives on the backdrop (no transform) so screen-coord math is exact -->
+  <span class="cc-sprite cc-jumper" aria-hidden="true">
+    <img src="claude/claude-sporty.png" alt="" aria-hidden="true">
+  </span>
+</div>
+
 <script src="orca-animation.js"></script>
 <script src="supabase-config.js"></script>
 <script src="app.js"></script>
@@ -837,6 +878,147 @@
     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); playOrca(); }
   });
   orcaReplayBtn.addEventListener('click', playOrca);
+
+    // ============================================
+    // CLAUDE CHOOSER MODAL — open/close
+    // ============================================
+    (function () {
+      const trigger  = document.getElementById('claudeCtaBtn');
+      const backdrop = document.getElementById('ccBackdrop');
+      const closeBtn = document.getElementById('ccClose');
+      const modal    = backdrop ? backdrop.querySelector('.cc-modal') : null;
+      const jumper   = backdrop ? backdrop.querySelector('.cc-jumper') : null;
+      if (!trigger || !backdrop) return;
+      let lastFocus = null;
+
+      // ---------- the jumper: real physics onto real text boxes ----------
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const SPRITE = 26;
+      const AIR    = 1;    // hair of space between the sprite's feet and the cap line
+      let raf = 0, pts = [], idx = 0, mode = 'rest', phaseT = 0, landY = 1;
+
+      function measure() {
+        if (!modal || !jumper) return [];
+        // Screen-space rects. Jumper is a child of the backdrop (no transform),
+        // so backdrop-relative screen coords place the sprite exactly on the text.
+        const bd = backdrop.getBoundingClientRect();
+        // Target the actual word-level elements, not the full-width blocks
+        const els = [
+          modal.querySelector('.cc-eyebrow'),
+          modal.querySelector('.cc-title'),
+          modal.querySelectorAll('.cc-choice-name')[0],
+          modal.querySelectorAll('.cc-choice-name')[1]
+        ].filter(Boolean);
+        return els.map(el => {
+          const r  = el.getBoundingClientRect();
+          const cs = getComputedStyle(el);
+          const fs = parseFloat(cs.fontSize);
+          const lh = cs.lineHeight === 'normal' ? fs * 1.2 : parseFloat(cs.lineHeight);
+          // real cap-top of THIS element's glyphs: half-leading + the font's
+          // ascender gap above caps (~0.18em). self-corrects per font size.
+          const capTop = r.top + (lh - fs) / 2 + fs * 0.18;
+          return {
+            x: (r.left  - bd.left) + 4,             // LEFT start of the text
+            y: (capTop - bd.top) - SPRITE - AIR     // feet rest right on the cap line
+          };
+        });
+      }
+      function put(x, y, sx, sy) {
+        jumper.style.transform =
+          'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) scale(' + sx + ',' + sy + ')';
+      }
+      const REST = 2400;   // ms sitting on each text
+      const HOP  = 560;    // ms of one jump
+      const ARC  = 38;     // px apex height — ~60% of the old hop, low & real (was 64)
+
+      function step(now) {
+        if (!backdrop.classList.contains('open') || pts.length < 2) { raf = 0; return; }
+        if (!phaseT) phaseT = now;
+        const t = now - phaseT;
+        const a = pts[idx];
+        const b = pts[(idx + 1) % pts.length];
+
+        if (mode === 'rest') {
+          // gentle landing recovery in the first 180ms, then hold still
+          let sy = 1, sx = 1;
+          if (t < 180) { const k = t / 180; sy = 0.9 + 0.1 * k; sx = 1.08 - 0.08 * k; }
+          put(a.x, a.y, sx, sy);
+          if (t >= REST) { mode = 'hop'; phaseT = now; }
+        } else {
+          let p = Math.min(1, t / HOP);
+          const x = a.x + (b.x - a.x) * p;
+          const baseY = a.y + (b.y - a.y) * p;
+          const y = baseY - ARC * Math.sin(Math.PI * p);   // true parabolic hop
+          // minimal squash: tiny crouch at takeoff, neutral in air
+          let sx = 1, sy = 1;
+          if (p < 0.10) { sy = 0.94; sx = 1.05; }
+          put(x, y, sx, sy);
+          if (p >= 1) { idx = (idx + 1) % pts.length; mode = 'rest'; phaseT = now; }
+        }
+        raf = requestAnimationFrame(step);
+      }
+      function startJumper() {
+        if (reduce || !jumper) return;
+        pts = measure();
+        if (pts.length < 2) return;
+        idx = 0; mode = 'rest'; phaseT = 0;
+        put(pts[0].x, pts[0].y, 1, 1);
+        jumper.classList.add('live');
+        if (!raf) raf = requestAnimationFrame(step);
+      }
+      function stopJumper() {
+        if (raf) cancelAnimationFrame(raf);
+        raf = 0;
+        if (jumper) jumper.classList.remove('live');
+      }
+
+      // ---------- open / close ----------
+      function open() {
+        lastFocus = document.activeElement;
+        backdrop.classList.add('open');
+        backdrop.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        if (closeBtn) closeBtn.focus();
+        // measure AFTER the open transition settles (modal scale back to 1)
+        setTimeout(startJumper, 380);
+      }
+      function close() {
+        backdrop.classList.remove('open');
+        backdrop.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        stopJumper();
+        if (lastFocus && lastFocus.focus) lastFocus.focus();
+      }
+
+      trigger.addEventListener('click', open);
+      if (closeBtn) closeBtn.addEventListener('click', close);
+      backdrop.addEventListener('click', (e) => { if (e.target === backdrop) close(); });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && backdrop.classList.contains('open')) close();
+      });
+      backdrop.querySelectorAll('.cc-choice').forEach((c) => {
+        c.addEventListener('click', (e) => {
+          const m = c.getAttribute('href') || '';
+          if (m.slice(0, 7) === 'mailto:') {
+            const to = m.slice(7).split('?')[0];
+            const q  = m.indexOf('?') > -1 ? m.slice(m.indexOf('?') + 1) : '';
+            const p  = new URLSearchParams(q);
+            const g  = 'https://mail.google.com/mail/?view=cm&fs=1'
+                     + '&to='   + encodeURIComponent(to)
+                     + '&su='   + encodeURIComponent(p.get('subject') || '')
+                     + '&body=' + encodeURIComponent(p.get('body') || '');
+            // Gmail web compose covers the no-desktop-client case;
+            // the mailto href stays as the fallback if the popup is blocked.
+            const w = window.open(g, '_blank', 'noopener');
+            if (w) e.preventDefault();
+          }
+          setTimeout(close, 250);
+        });
+      });
+      window.addEventListener('resize', () => {
+        if (backdrop.classList.contains('open')) { pts = measure(); }
+      });
+    })();
 </script>
 
 </body>
