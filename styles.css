@@ -2530,15 +2530,18 @@ body.intro-done .hero-stack { opacity: 1; }
    so the rest can stay byte-for-byte and easy to diff against the source.
    ═════════════════════════════════════════════════════════════════════════ */
 .claude-wrap, .cc-backdrop {
+  /* Verbatim values from husanmavlonov.com :root (dark theme) so the
+     Free Claude block reads identically to the original — independent
+     of Buildcored's own design tokens. */
   --claude: #cc7757;
-  --bg: var(--bg-2);
-  --line: var(--line-2);
-  --line-strong: var(--line-3);
-  --fg: var(--ink-0);
-  --dim: var(--ink-2);
-  --mono: var(--font-mono);
-  --serif: var(--font-serif);
-  --accent: var(--slate);
+  --bg: #16181c;
+  --line: #26282d;
+  --line-strong: #2e3035;
+  --fg: #e8e6df;
+  --dim: #7c7873;
+  --accent: #a8aeb4;
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --serif: 'Instrument Serif', Georgia, serif;
 }
 .claude-row { display: flex; justify-content: center; margin-top: 18px; }
 
