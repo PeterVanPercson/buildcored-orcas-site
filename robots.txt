@@ -1,0 +1,12 @@
+# Buildcored — robots.txt
+# Anyone is welcome to crawl/index everything except internal/admin pages.
+
+User-agent: *
+Allow: /
+
+# The /verify/ page itself is fine to discover, but verify/<code> pages
+# are infinite and per-recipient — keep them out of indexes.
+Disallow: /verify/?c=
+Disallow: /verify/*?
+
+Sitemap: https://buildcored.com/sitemap.xml
