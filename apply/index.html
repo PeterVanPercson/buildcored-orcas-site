@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Apply — Orcas v2.0 · Nazarx × Buildcored</title>
+<meta name="description" content="Apply to Orcas v2.0 — the Nazarx Robotics × Buildcored hardware cohort. 30 days, real boards, free. Tashkent, Summer 2026.">
+<link rel="canonical" href="https://buildcored.com/apply/">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="theme-color" content="#0b0d10">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Buildcored">
+<meta property="og:title" content="Apply — Orcas v2.0 · Nazarx × Buildcored">
+<meta property="og:description" content="The Nazarx Robotics × Buildcored hardware cohort. 30 days, real boards, free. Tashkent, Summer 2026.">
+<meta property="og:url" content="https://buildcored.com/apply/">
+<meta property="og:image" content="https://buildcored.com/logo/orca-1200-og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" type="image/svg+xml" href="/logo/orca.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/logo/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/logo/apple-touch-icon.png">
+
+<link rel="stylesheet" href="/fonts.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&display=swap">
+
+<style>
+  :root{
+    --bg-0:#06070a; --bg-1:#0b0d10; --bg-2:#12151a; --bg-3:#181c22; --bg-elev:#20242b;
+    --ink-0:#f4f6f8; --ink-1:#c4cad1; --ink-2:#898f97; --ink-3:#585d64; --ink-4:#363a40;
+    --line-1: rgba(255,255,255,.06); --line-2: rgba(255,255,255,.10); --line-3: rgba(255,255,255,.18);
+    --gull:#d6dee0; --slate:#3D4E63; --green:#6ee2a1;
+    --mono:"Geist Mono",ui-monospace,Menlo,monospace;
+    --serif:"Cormorant Garamond",Georgia,serif;
+    --disp:"Bricolage Grotesque","Geist",sans-serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,sans-serif;
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg-1);color:var(--ink-0);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+  body{min-height:100vh;display:flex;flex-direction:column}
+  a{color:inherit}
+
+  /* ── Top bar ─────────────────────────────────────────────────────────── */
+  .ap-top{
+    position:sticky; top:0; z-index:20;
+    background: rgba(11,13,16,.78); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px);
+    border-bottom: 1px solid var(--line-1);
+    padding: 16px clamp(20px,4vw,42px);
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .ap-brand{font-family:var(--serif);font-weight:500;font-size:14px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-0);text-decoration:none;display:inline-flex;align-items:center;gap:10px}
+  .ap-brand img{width:26px;height:26px}
+  .ap-back{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--ink-2);text-decoration:none}
+  .ap-back:hover{color:var(--ink-0)}
+
+  .wrap{max-width: 760px; margin: 0 auto; padding: 0 clamp(20px,5vw,32px);}
+
+  /* ── Hero ────────────────────────────────────────────────────────────── */
+  .ap-hero{padding: clamp(64px,9vw,120px) 0 clamp(48px,7vw,80px); text-align:center;}
+  .ap-kicker{font-family:var(--mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-3);margin-bottom:18px}
+  .ap-title{
+    font-family:var(--disp); font-weight:700;
+    font-size: clamp(54px, 10vw, 124px);
+    letter-spacing:-.035em; line-height:.92;
+    color: var(--ink-0);
+  }
+  .ap-sub{
+    font-family:var(--serif); font-weight:500; font-style:italic;
+    font-size: clamp(22px, 3.2vw, 32px); line-height:1.25;
+    color: var(--ink-1); margin-top:18px;
+  }
+  .ap-sub em{font-style:italic; color:var(--gull)}
+  .ap-lockup{
+    display:inline-flex; align-items:center; gap:14px;
+    margin-top: 28px;
+    padding: 11px 22px;
+    border:1px solid var(--line-2); border-radius:999px;
+    font-family:var(--mono); font-size:12px; letter-spacing:.18em;
+    color: var(--ink-1);
+  }
+  .ap-lockup .nazarx{font-family:var(--disp);font-weight:800;font-style:italic;font-size:14px;letter-spacing:.06em;color:var(--ink-0)}
+  .ap-lockup .x{color:var(--ink-3)}
+  .ap-lockup img{width:22px;height:22px;display:block}
+  .ap-lockup .bc{font-family:var(--serif);font-weight:500;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-0)}
+  .ap-count{margin-top:22px;font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--ink-2)}
+  .ap-count strong{color:var(--ink-0);font-weight:600}
+
+  /* ── Value tiles ─────────────────────────────────────────────────────── */
+  .ap-tiles{
+    display:grid; grid-template-columns: repeat(4,1fr); gap:12px;
+    margin: 14px 0 clamp(48px,7vw,72px);
+  }
+  .ap-tile{
+    border:1px solid var(--line-1); border-radius:12px; padding:18px 16px;
+    background:var(--bg-2); text-align:center;
+  }
+  .ap-tile h3{font-family:var(--disp);font-weight:700;font-size:18px;letter-spacing:-.01em;color:var(--ink-0);margin-bottom:6px}
+  .ap-tile p{font-size:12.5px;color:var(--ink-2);line-height:1.45}
+  @media (max-width:720px){ .ap-tiles{grid-template-columns:repeat(2,1fr)} }
+
+  /* ── Form ────────────────────────────────────────────────────────────── */
+  .ap-form{display:flex; flex-direction:column; gap: clamp(28px,4vw,40px); padding-bottom: 80px;}
+  .ap-section{
+    border:0; padding: 0;
+    display:flex; flex-direction:column; gap:18px;
+  }
+  .ap-section legend{
+    font-family:var(--mono); font-size:11.5px; letter-spacing:.18em; text-transform:uppercase;
+    color: var(--ink-3); padding-bottom:14px; margin-bottom:6px;
+    border-bottom: 1px solid var(--line-1); width:100%;
+  }
+  .ap-section label{display:flex; flex-direction:column; gap:9px;}
+  .label-row{
+    display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;
+    font-family:var(--mono); font-size:11.5px; letter-spacing:.12em; text-transform:uppercase;
+    color: var(--ink-1);
+  }
+  .label-row em{font-style:normal; color:var(--gull); margin-left:-4px}
+  .label-row .hint{font-family:var(--sans); font-size:12px; letter-spacing:0; text-transform:none; color:var(--ink-3); font-weight:400}
+  .char-count{margin-left:auto; font-family:var(--mono); font-size:10.5px; letter-spacing:.06em; color:var(--ink-3); text-transform:none}
+  .char-count.warn{color:#f0b966}
+  .char-count.over{color:#ef7878}
+
+  .ap-form input[type=text],
+  .ap-form input[type=email],
+  .ap-form select,
+  .ap-form textarea{
+    font:inherit; font-size:15px; font-family:var(--sans);
+    color: var(--ink-0);
+    background: rgba(255,255,255,.04);
+    border:1px solid var(--line-2);
+    border-radius: 10px;
+    padding: 13px 16px;
+    transition: border-color 180ms var(--ease-out), background 180ms var(--ease-out);
+    width:100%;
+  }
+  .ap-form input::placeholder, .ap-form textarea::placeholder{color:var(--ink-3)}
+  .ap-form input:focus, .ap-form select:focus, .ap-form textarea:focus{
+    outline:none; border-color: var(--gull); background: rgba(255,255,255,.07);
+  }
+  .ap-form select{appearance:none; -webkit-appearance:none; background-image:
+    linear-gradient(45deg, transparent 50%, var(--ink-2) 50%),
+    linear-gradient(135deg, var(--ink-2) 50%, transparent 50%);
+    background-position: calc(100% - 22px) 19px, calc(100% - 16px) 19px;
+    background-size: 6px 6px, 6px 6px;
+    background-repeat: no-repeat;
+    padding-right: 40px;
+  }
+  .ap-form textarea{resize:vertical; min-height: 110px; line-height:1.5}
+
+  label.consent{flex-direction:row !important; align-items:flex-start; gap:14px;
+    border:1px solid var(--line-1); border-radius:12px; padding:16px; background:var(--bg-2);}
+  label.consent input{width:18px;height:18px;margin-top:2px;flex-shrink:0;accent-color:var(--gull)}
+  label.consent span{font-size:14px; line-height:1.5; color: var(--ink-1)}
+  label.consent em{font-style:normal; color:var(--gull)}
+
+  .ap-submit{
+    font:inherit; font-family:var(--sans); font-weight:500; font-size:15px;
+    color:#000; background:var(--gull);
+    border:0; border-radius:999px;
+    padding: 16px 28px;
+    cursor:pointer;
+    transition: opacity .15s ease, transform .12s ease;
+    align-self:flex-start;
+  }
+  .ap-submit:hover{opacity:.92}
+  .ap-submit:active{transform: translateY(1px)}
+  .ap-submit:disabled{opacity:.5; cursor:wait}
+
+  .ap-status{font-family:var(--mono); font-size:12.5px; letter-spacing:.04em; min-height:1.2em; margin-top:-12px;}
+  .ap-status.ok{color:var(--green)}
+  .ap-status.bad{color:#ef7878}
+  .ap-status.busy{color:var(--ink-2)}
+
+  /* ── Success state ───────────────────────────────────────────────────── */
+  .ap-success{display:none; flex-direction:column; align-items:center; text-align:center;
+    padding: clamp(48px,8vw,96px) 0; gap:18px;}
+  .ap-success.show{display:flex}
+  .success-glyph{
+    width:78px; height:78px; border-radius:50%;
+    border:1.5px solid rgba(110,226,161,.45); color:var(--green);
+    display:grid; place-items:center; font-size:36px; font-weight:300;
+    background: rgba(110,226,161,.06);
+  }
+  .ap-success h2{font-family:var(--disp); font-weight:700; font-size: clamp(34px,5vw,52px); letter-spacing:-.02em}
+  .ap-success p{color:var(--ink-1); max-width:520px; line-height:1.55; font-size:15.5px}
+  .ap-success p strong{color:var(--ink-0)}
+  .ap-back-btn{
+    margin-top: 14px;
+    font-family:var(--mono); font-size:12px; letter-spacing:.12em; text-transform:uppercase;
+    color: var(--ink-0); text-decoration:none;
+    border:1px solid var(--line-2); padding: 12px 22px; border-radius:999px;
+  }
+  .ap-back-btn:hover{border-color: var(--gull)}
+
+  /* ── Footer ──────────────────────────────────────────────────────────── */
+  .ap-foot{
+    margin-top:auto;
+    padding: 32px clamp(20px,4vw,42px);
+    border-top: 1px solid var(--line-1);
+    font-family:var(--mono); font-size:11.5px; letter-spacing:.06em; color: var(--ink-3);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
+  }
+  .ap-foot a{color: var(--ink-2); text-decoration:none}
+  .ap-foot a:hover{color: var(--ink-0)}
+
+  @media (max-width:560px){
+    .ap-top{padding: 14px 18px}
+    .ap-foot{flex-direction:column}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{ transition-duration:.001ms !important; animation-duration:.001ms !important }
+  }
+</style>
+</head>
+<body>
+
+<header class="ap-top">
+  <a class="ap-brand" href="/" aria-label="Buildcored home">
+    <img src="/brand/mark-white.svg" alt="" aria-hidden="true">
+    <span>Buildcored</span>
+  </a>
+  <a class="ap-back" href="/">← Back to site</a>
+</header>
+
+<main class="wrap">
+
+  <section class="ap-hero">
+    <p class="ap-kicker">Orcas v2.0 · Hardware Cohort</p>
+    <h1 class="ap-title">Apply.</h1>
+    <p class="ap-sub">Nazarx Robotics × Buildcored. <em>30 days. Real boards. Free.</em></p>
+    <div class="ap-lockup">
+      <span class="nazarx">NAZARX</span>
+      <span class="x">×</span>
+      <img src="/brand/mark-white.svg" alt="" aria-hidden="true">
+      <span class="bc">BUILDCORED</span>
+    </div>
+    <p class="ap-count" id="appCount" hidden></p>
+  </section>
+
+  <section class="ap-tiles" aria-label="What it is">
+    <div class="ap-tile"><h3>Free</h3><p>No tuition. Funded by partners.</p></div>
+    <div class="ap-tile"><h3>Hardware</h3><p>Real boards. Real sensors. Day one.</p></div>
+    <div class="ap-tile"><h3>30 days · 30 projects</h3><p>One a day. Built in public.</p></div>
+    <div class="ap-tile"><h3>Tashkent</h3><p>Summer 2026.</p></div>
+  </section>
+
+  <form class="ap-form" id="applyForm" autocomplete="on" novalidate>
+
+    <fieldset class="ap-section">
+      <legend>Who you are</legend>
+      <label>
+        <span class="label-row">Full name <em>*</em></span>
+        <input type="text" name="full_name" required autocomplete="name" placeholder="Sharipov Komil">
+      </label>
+      <label>
+        <span class="label-row">Email <em>*</em></span>
+        <input type="email" name="email" required autocomplete="email" placeholder="you@example.com" inputmode="email">
+      </label>
+      <label>
+        <span class="label-row">Telegram <span class="hint">— optional, the cohort runs there</span></span>
+        <input type="text" name="telegram" autocomplete="off" placeholder="@username">
+      </label>
+      <label>
+        <span class="label-row">Where are you based? <em>*</em></span>
+        <input type="text" name="location" required autocomplete="address-level2" placeholder="Tashkent, Uzbekistan">
+      </label>
+    </fieldset>
+
+    <fieldset class="ap-section">
+      <legend>About you</legend>
+      <label>
+        <span class="label-row">Current status <em>*</em></span>
+        <select name="background" required>
+          <option value="">choose…</option>
+          <option value="high-school">High school</option>
+          <option value="university">University</option>
+          <option value="working">Working</option>
+          <option value="solo">Building solo</option>
+          <option value="other">Other</option>
+        </select>
+      </label>
+      <label>
+        <span class="label-row">Programming experience <em>*</em></span>
+        <select name="experience" required>
+          <option value="">choose…</option>
+          <option value="beginner">Just starting (a few lines of code)</option>
+          <option value="some">Some — I've finished a couple of small projects</option>
+          <option value="comfortable">Comfortable — I've shipped real things</option>
+          <option value="experienced">Experienced builder</option>
+        </select>
+      </label>
+    </fieldset>
+
+    <fieldset class="ap-section">
+      <legend>The application</legend>
+      <label>
+        <span class="label-row">Why do you want to do Orcas v2.0? <em>*</em><span class="char-count" data-for="motivation">0 / 280</span></span>
+        <textarea name="motivation" required maxlength="280" rows="4" placeholder="A few honest sentences. No buzzwords needed."></textarea>
+      </label>
+      <label>
+        <span class="label-row">What would you build with real boards? <em>*</em><span class="char-count" data-for="build_idea">0 / 280</span></span>
+        <textarea name="build_idea" required maxlength="280" rows="4" placeholder="A specific project idea. Doesn't need to be polished."></textarea>
+      </label>
+      <label>
+        <span class="label-row">Any links? <span class="hint">— GitHub, LinkedIn, portfolio, anything (optional)</span></span>
+        <input type="text" name="links" autocomplete="url" placeholder="github.com/you · linkedin.com/in/you …">
+      </label>
+    </fieldset>
+
+    <fieldset class="ap-section">
+      <legend>Last bits</legend>
+      <label>
+        <span class="label-row">How did you hear about Orcas?</span>
+        <select name="heard_from">
+          <option value="">choose…</option>
+          <option value="friend">Friend / referral</option>
+          <option value="telegram">Telegram</option>
+          <option value="linkedin">LinkedIn</option>
+          <option value="instagram">Instagram</option>
+          <option value="search">Google / search</option>
+          <option value="nazarx">Nazarx Robotics</option>
+          <option value="other">Other</option>
+        </select>
+      </label>
+      <label class="consent">
+        <input type="checkbox" name="consent" required>
+        <span>I'm serious about doing all 30 days, sharing my progress in public, and respecting the cohort. <em>*</em></span>
+      </label>
+    </fieldset>
+
+    <button type="submit" class="ap-submit" id="appSubmit">Submit application →</button>
+    <p class="ap-status" id="appStatus" aria-live="polite"></p>
+
+  </form>
+
+  <section class="ap-success" id="appSuccess">
+    <div class="success-glyph" aria-hidden="true">✓</div>
+    <h2>Application received.</h2>
+    <p>We'll review every application carefully and email you at <strong id="successEmail"></strong> with next steps. Expect a reply within two weeks.</p>
+    <a href="/" class="ap-back-btn">← Back to Buildcored</a>
+  </section>
+
+</main>
+
+<footer class="ap-foot">
+  <span>Buildcored · open source for creative engineering.</span>
+  <span>Questions? <a href="mailto:team@buildcored.com">team@buildcored.com</a></span>
+</footer>
+
+<script src="/supabase-config.js"></script>
+<script>
+(() => {
+  const CFG = window.BC_CONFIG || {};
+  const form = document.getElementById('applyForm');
+  const status = document.getElementById('appStatus');
+  const submit = document.getElementById('appSubmit');
+  const success = document.getElementById('appSuccess');
+  const countEl = document.getElementById('appCount');
+
+  // Char counts on textareas
+  document.querySelectorAll('.char-count').forEach(c => {
+    const ta = form.querySelector(`[name="${c.dataset.for}"]`);
+    if (!ta) return;
+    const max = parseInt(ta.maxLength || 280, 10);
+    const refresh = () => {
+      const n = ta.value.length;
+      c.textContent = `${n} / ${max}`;
+      c.classList.toggle('warn', n > max * 0.85 && n <= max);
+      c.classList.toggle('over', n >= max);
+    };
+    ta.addEventListener('input', refresh);
+    refresh();
+  });
+
+  function setStatus(msg, cls) {
+    status.textContent = msg || '';
+    status.className = 'ap-status' + (cls ? ' ' + cls : '');
+  }
+
+  // Live count
+  (async function refreshCount() {
+    if (!CFG.SUPABASE_URL || !CFG.SUPABASE_ANON_KEY || !countEl) return;
+    try {
+      const r = await fetch(CFG.SUPABASE_URL + '/rest/v1/rpc/applications_count', {
+        method: 'POST',
+        headers: {
+          'apikey': CFG.SUPABASE_ANON_KEY,
+          'Authorization': 'Bearer ' + CFG.SUPABASE_ANON_KEY,
+          'Content-Type': 'application/json',
+        },
+        body: '{}',
+      });
+      if (!r.ok) return;
+      const n = Number((await r.text()).trim());
+      if (!Number.isFinite(n) || n <= 0) return;
+      countEl.innerHTML = `<strong>${n.toLocaleString()}</strong> ${n === 1 ? 'person has' : 'people have'} already applied`;
+      countEl.hidden = false;
+    } catch (_) {}
+  })();
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    setStatus('Sending…', 'busy');
+    submit.disabled = true;
+
+    // Native browser validation
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      setStatus('Please fill in the required fields.', 'bad');
+      submit.disabled = false;
+      return;
+    }
+
+    const data = Object.fromEntries(new FormData(form).entries());
+    data.consent = !!form.consent.checked;
+    data.email = (data.email || '').trim().toLowerCase();
+
+    if (!CFG.SUPABASE_URL || !CFG.SUPABASE_ANON_KEY) {
+      setStatus('Applications aren\'t available right now — try again in a moment.', 'bad');
+      submit.disabled = false;
+      return;
+    }
+
+    try {
+      const r = await fetch(CFG.SUPABASE_URL + '/rest/v1/applications', {
+        method: 'POST',
+        headers: {
+          'apikey': CFG.SUPABASE_ANON_KEY,
+          'Authorization': 'Bearer ' + CFG.SUPABASE_ANON_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal',
+        },
+        body: JSON.stringify(data),
+      });
+      if (r.status === 201 || r.status === 200 || r.status === 204) {
+        // success
+        document.getElementById('successEmail').textContent = data.email;
+        form.style.display = 'none';
+        success.classList.add('show');
+        document.querySelector('.ap-tiles').style.display = 'none';
+        success.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+      }
+      let body = '';
+      try { body = await r.text(); } catch (_) {}
+      // Unique violation on email
+      if (r.status === 409 || /23505|duplicate/i.test(body)) {
+        setStatus("You've already applied with that email. We have it — we'll be in touch.", 'ok');
+        submit.disabled = false;
+        return;
+      }
+      setStatus('Hmm, something didn\'t go through — please try again in a moment.', 'bad');
+    } catch (err) {
+      setStatus('Network hiccup — please try again.', 'bad');
+    } finally {
+      submit.disabled = false;
+    }
+  });
+
+  // Lightweight analytics: track that someone reached the apply page
+  try {
+    if (window.goatcounter && window.goatcounter.count) {
+      window.goatcounter.count({ path: 'evt-apply-view', title: 'apply-view', event: true });
+    }
+  } catch (_) {}
+})();
+</script>
+
+<!-- GoatCounter — same as homepage so /apply/ pageviews + the evt-apply-view
+     event roll up into one dashboard. Endpoint comes from the global config. -->
+<script>
+(function(){
+  if (!window.BC_CONFIG || !window.BC_CONFIG.ANALYTICS_GOATCOUNTER) return;
+  var s = document.createElement('script');
+  s.async = true; s.src = '//gc.zgo.at/count.js';
+  s.dataset.goatcounter = window.BC_CONFIG.ANALYTICS_GOATCOUNTER;
+  document.head.appendChild(s);
+})();
+</script>
+
+</body>
+</html>

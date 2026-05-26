@@ -154,3 +154,40 @@ values
   ('d29', 29, 4, 'Full Systems', 'SilentAssistant', 'Camera sees you, AI understands, responds, speaks back.', 'expert', false, false, false, '{}'::text[]),
   ('d30', 30, 4, 'Full Systems', 'OrcaOS', 'Combine the best of 30 days into one personal OS. Ship it.', 'expert', false, false, false, '{}'::text[])
 on conflict (id) do nothing;
+
+-- ── Applications: serious applicants for Orcas v2.0 (Nazarx × Buildcored)
+-- Anyone can submit (public insert). Rows readable only by signed-in admin.
+-- A separate count RPC exposes the total to the public without exposing rows.
+create table if not exists public.applications (
+  id            uuid primary key default gen_random_uuid(),
+  full_name     text not null,
+  email         text not null,
+  telegram      text,
+  location      text not null,         -- "City, Country"
+  background    text not null,         -- 'high-school' | 'university' | 'working' | 'other'
+  experience    text not null,         -- 'beginner' | 'some' | 'comfortable' | 'experienced'
+  motivation    text not null,
+  build_idea    text not null,
+  links         text,
+  heard_from    text,
+  consent       boolean not null default false,
+  created_at    timestamptz default now()
+);
+create unique index if not exists applications_email_unique on public.applications (lower(email));
+
+alter table public.applications enable row level security;
+drop policy if exists "applications_public_insert" on public.applications;
+drop policy if exists "applications_admin_read"    on public.applications;
+create policy "applications_public_insert" on public.applications
+  for insert with check (true);
+create policy "applications_admin_read" on public.applications
+  for select to authenticated using (true);
+
+create or replace function public.applications_count()
+returns bigint
+language sql
+security definer
+set search_path = public
+as $$ select count(*) from public.applications $$;
+revoke all on function public.applications_count() from public;
+grant execute on function public.applications_count() to anon, authenticated;

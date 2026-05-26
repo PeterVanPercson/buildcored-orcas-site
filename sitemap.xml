@@ -11,4 +11,10 @@
       <image:title>Buildcored — Open source for creative engineering</image:title>
     </image:image>
   </url>
+  <url>
+    <loc>https://buildcored.com/apply/</loc>
+    <lastmod>2026-05-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
 </urlset>
