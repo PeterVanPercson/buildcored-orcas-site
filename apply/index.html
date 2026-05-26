@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Apply — Orcas v2.0 · Nazarx × Buildcored</title>
-<meta name="description" content="Apply to Orcas v2.0 — the Nazarx Robotics × Buildcored hardware cohort. 30 days, real boards, free. Tashkent, Summer 2026.">
+<meta name="description" content="Apply to Orcas v2.0 — the Nazarx Robotics × Buildcored hardware cohort. 30 days, real boards, free.">
 <link rel="canonical" href="https://buildcored.com/apply/">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="theme-color" content="#0b0d10">
@@ -13,7 +13,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Buildcored">
 <meta property="og:title" content="Apply — Orcas v2.0 · Nazarx × Buildcored">
-<meta property="og:description" content="The Nazarx Robotics × Buildcored hardware cohort. 30 days, real boards, free. Tashkent, Summer 2026.">
+<meta property="og:description" content="The Nazarx Robotics × Buildcored hardware cohort. 30 days, real boards, free.">
 <meta property="og:url" content="https://buildcored.com/apply/">
 <meta property="og:image" content="https://buildcored.com/logo/orca-1200-og.jpg">
 <meta property="og:image:width" content="1200">
@@ -24,10 +24,11 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/logo/favicon-32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/logo/apple-touch-icon.png">
 
+<!-- Same exact font setup as the homepage (self-hosted Geist + Bricolage; -->
+<!-- serif falls back to system Garamond/Georgia like the rest of the site). -->
+<link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/geist-v5-gyByhwUxId8gMEwcGFWNOITd.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/bricolagegrotesque-v9-3y9K6as8bTXq_nANBjzKo3IeZx8z6up5BeSl9D4dj_x9PpZBMlGIInHWVyNJ.woff2">
 <link rel="stylesheet" href="/fonts.css">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&display=swap">
 
 <style>
   :root{
@@ -35,18 +36,17 @@
     --ink-0:#f4f6f8; --ink-1:#c4cad1; --ink-2:#898f97; --ink-3:#585d64; --ink-4:#363a40;
     --line-1: rgba(255,255,255,.06); --line-2: rgba(255,255,255,.10); --line-3: rgba(255,255,255,.18);
     --gull:#d6dee0; --slate:#3D4E63; --green:#6ee2a1;
-    --mono:"Geist Mono",ui-monospace,Menlo,monospace;
-    --serif:"Cormorant Garamond",Georgia,serif;
-    --disp:"Bricolage Grotesque","Geist",sans-serif;
-    --sans:"Geist",-apple-system,BlinkMacSystemFont,sans-serif;
+    --font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+    --font-serif: "Cormorant Garamond", "Cormorant", Garamond, serif;
+    --font-display: "Bricolage Grotesque", "Geist", -apple-system, sans-serif;
+    --font-sans: "Geist", -apple-system, BlinkMacSystemFont, sans-serif;
     --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   }
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-  html,body{background:var(--bg-1);color:var(--ink-0);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+  html,body{background:var(--bg-1);color:var(--ink-0);font-family:var(--font-sans);-webkit-font-smoothing:antialiased}
   body{min-height:100vh;display:flex;flex-direction:column}
   a{color:inherit}
 
-  /* ── Top bar ─────────────────────────────────────────────────────────── */
   .ap-top{
     position:sticky; top:0; z-index:20;
     background: rgba(11,13,16,.78); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px);
@@ -54,24 +54,24 @@
     padding: 16px clamp(20px,4vw,42px);
     display:flex; align-items:center; justify-content:space-between;
   }
-  .ap-brand{font-family:var(--serif);font-weight:500;font-size:14px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-0);text-decoration:none;display:inline-flex;align-items:center;gap:10px}
+  .ap-brand{font-family:var(--font-serif);font-weight:500;font-size:14px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-0);text-decoration:none;display:inline-flex;align-items:center;gap:10px}
   .ap-brand img{width:26px;height:26px}
-  .ap-back{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--ink-2);text-decoration:none}
+  .ap-back{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;color:var(--ink-2);text-decoration:none}
   .ap-back:hover{color:var(--ink-0)}
 
-  .wrap{max-width: 760px; margin: 0 auto; padding: 0 clamp(20px,5vw,32px);}
+  .wrap{max-width: 680px; margin: 0 auto; padding: 0 clamp(20px,5vw,32px);}
 
-  /* ── Hero ────────────────────────────────────────────────────────────── */
-  .ap-hero{padding: clamp(64px,9vw,120px) 0 clamp(48px,7vw,80px); text-align:center;}
-  .ap-kicker{font-family:var(--mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-3);margin-bottom:18px}
+  /* Hero */
+  .ap-hero{padding: clamp(64px,9vw,110px) 0 clamp(40px,6vw,64px); text-align:center;}
+  .ap-kicker{font-family:var(--font-mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-3);margin-bottom:18px}
   .ap-title{
-    font-family:var(--disp); font-weight:700;
+    font-family:var(--font-display); font-weight:700;
     font-size: clamp(54px, 10vw, 124px);
     letter-spacing:-.035em; line-height:.92;
     color: var(--ink-0);
   }
   .ap-sub{
-    font-family:var(--serif); font-weight:500; font-style:italic;
+    font-family:var(--font-serif); font-weight:500; font-style:italic;
     font-size: clamp(22px, 3.2vw, 32px); line-height:1.25;
     color: var(--ink-1); margin-top:18px;
   }
@@ -81,57 +81,52 @@
     margin-top: 28px;
     padding: 11px 22px;
     border:1px solid var(--line-2); border-radius:999px;
-    font-family:var(--mono); font-size:12px; letter-spacing:.18em;
+    font-family:var(--font-mono); font-size:12px; letter-spacing:.18em;
     color: var(--ink-1);
   }
-  .ap-lockup .nazarx{font-family:var(--disp);font-weight:800;font-style:italic;font-size:14px;letter-spacing:.06em;color:var(--ink-0)}
+  .ap-lockup .nazarx{font-family:var(--font-display);font-weight:800;font-style:italic;font-size:14px;letter-spacing:.06em;color:var(--ink-0)}
   .ap-lockup .x{color:var(--ink-3)}
   .ap-lockup img{width:22px;height:22px;display:block}
-  .ap-lockup .bc{font-family:var(--serif);font-weight:500;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-0)}
-  .ap-count{margin-top:22px;font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--ink-2)}
+  .ap-lockup .bc{font-family:var(--font-serif);font-weight:500;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-0)}
+  .ap-count{margin-top:22px;font-family:var(--font-mono);font-size:12px;letter-spacing:.1em;color:var(--ink-2)}
   .ap-count strong{color:var(--ink-0);font-weight:600}
 
-  /* ── Value tiles ─────────────────────────────────────────────────────── */
+  /* Value tiles */
   .ap-tiles{
     display:grid; grid-template-columns: repeat(4,1fr); gap:12px;
-    margin: 14px 0 clamp(48px,7vw,72px);
+    margin: 14px 0 clamp(40px,6vw,60px);
   }
   .ap-tile{
     border:1px solid var(--line-1); border-radius:12px; padding:18px 16px;
     background:var(--bg-2); text-align:center;
   }
-  .ap-tile h3{font-family:var(--disp);font-weight:700;font-size:18px;letter-spacing:-.01em;color:var(--ink-0);margin-bottom:6px}
+  .ap-tile h3{font-family:var(--font-display);font-weight:700;font-size:18px;letter-spacing:-.01em;color:var(--ink-0);margin-bottom:6px}
   .ap-tile p{font-size:12.5px;color:var(--ink-2);line-height:1.45}
   @media (max-width:720px){ .ap-tiles{grid-template-columns:repeat(2,1fr)} }
 
-  /* ── Form ────────────────────────────────────────────────────────────── */
-  .ap-form{display:flex; flex-direction:column; gap: clamp(28px,4vw,40px); padding-bottom: 80px;}
-  .ap-section{
-    border:0; padding: 0;
-    display:flex; flex-direction:column; gap:18px;
-  }
+  /* Form */
+  .ap-form{display:flex; flex-direction:column; gap: 22px; padding-bottom: 80px;}
+  .ap-section{border:0; padding: 0; display:flex; flex-direction:column; gap:18px;}
   .ap-section legend{
-    font-family:var(--mono); font-size:11.5px; letter-spacing:.18em; text-transform:uppercase;
+    font-family:var(--font-mono); font-size:11.5px; letter-spacing:.18em; text-transform:uppercase;
     color: var(--ink-3); padding-bottom:14px; margin-bottom:6px;
     border-bottom: 1px solid var(--line-1); width:100%;
   }
   .ap-section label{display:flex; flex-direction:column; gap:9px;}
   .label-row{
     display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;
-    font-family:var(--mono); font-size:11.5px; letter-spacing:.12em; text-transform:uppercase;
+    font-family:var(--font-mono); font-size:11.5px; letter-spacing:.12em; text-transform:uppercase;
     color: var(--ink-1);
   }
   .label-row em{font-style:normal; color:var(--gull); margin-left:-4px}
-  .label-row .hint{font-family:var(--sans); font-size:12px; letter-spacing:0; text-transform:none; color:var(--ink-3); font-weight:400}
-  .char-count{margin-left:auto; font-family:var(--mono); font-size:10.5px; letter-spacing:.06em; color:var(--ink-3); text-transform:none}
+  .label-row .hint{font-family:var(--font-sans); font-size:12px; letter-spacing:0; text-transform:none; color:var(--ink-3); font-weight:400}
+  .char-count{margin-left:auto; font-family:var(--font-mono); font-size:10.5px; letter-spacing:.06em; color:var(--ink-3); text-transform:none}
   .char-count.warn{color:#f0b966}
   .char-count.over{color:#ef7878}
 
-  .ap-form input[type=text],
   .ap-form input[type=email],
-  .ap-form select,
   .ap-form textarea{
-    font:inherit; font-size:15px; font-family:var(--sans);
+    font:inherit; font-size:15px; font-family:var(--font-sans);
     color: var(--ink-0);
     background: rgba(255,255,255,.04);
     border:1px solid var(--line-2);
@@ -141,27 +136,26 @@
     width:100%;
   }
   .ap-form input::placeholder, .ap-form textarea::placeholder{color:var(--ink-3)}
-  .ap-form input:focus, .ap-form select:focus, .ap-form textarea:focus{
+  .ap-form input:focus, .ap-form textarea:focus{
     outline:none; border-color: var(--gull); background: rgba(255,255,255,.07);
   }
-  .ap-form select{appearance:none; -webkit-appearance:none; background-image:
-    linear-gradient(45deg, transparent 50%, var(--ink-2) 50%),
-    linear-gradient(135deg, var(--ink-2) 50%, transparent 50%);
-    background-position: calc(100% - 22px) 19px, calc(100% - 16px) 19px;
-    background-size: 6px 6px, 6px 6px;
-    background-repeat: no-repeat;
-    padding-right: 40px;
-  }
-  .ap-form textarea{resize:vertical; min-height: 110px; line-height:1.5}
+  .ap-form textarea{resize:vertical; min-height: 140px; line-height:1.5}
 
-  label.consent{flex-direction:row !important; align-items:flex-start; gap:14px;
-    border:1px solid var(--line-1); border-radius:12px; padding:16px; background:var(--bg-2);}
-  label.consent input{width:18px;height:18px;margin-top:2px;flex-shrink:0;accent-color:var(--gull)}
-  label.consent span{font-size:14px; line-height:1.5; color: var(--ink-1)}
-  label.consent em{font-style:normal; color:var(--gull)}
+  /* File input — restyled to match the rest */
+  .ap-file{
+    display:flex; align-items:center; gap:14px;
+    border:1px dashed var(--line-2); border-radius:10px;
+    padding: 14px 16px; background: rgba(255,255,255,.02);
+    cursor:pointer; transition: border-color 180ms var(--ease-out), background 180ms var(--ease-out);
+  }
+  .ap-file:hover{border-color: var(--line-3); background: rgba(255,255,255,.04);}
+  .ap-file input[type=file]{position:absolute; opacity:0; pointer-events:none; width:1px; height:1px;}
+  .ap-file-btn{font-family:var(--font-mono); font-size:11.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-0); border:1px solid var(--line-2); padding: 8px 14px; border-radius:999px;}
+  .ap-file-name{font-size:13.5px; color:var(--ink-2); flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .ap-file-name.has{color:var(--ink-1)}
 
   .ap-submit{
-    font:inherit; font-family:var(--sans); font-weight:500; font-size:15px;
+    font:inherit; font-family:var(--font-sans); font-weight:500; font-size:15px;
     color:#000; background:var(--gull);
     border:0; border-radius:999px;
     padding: 16px 28px;
@@ -173,12 +167,12 @@
   .ap-submit:active{transform: translateY(1px)}
   .ap-submit:disabled{opacity:.5; cursor:wait}
 
-  .ap-status{font-family:var(--mono); font-size:12.5px; letter-spacing:.04em; min-height:1.2em; margin-top:-12px;}
+  .ap-status{font-family:var(--font-mono); font-size:12.5px; letter-spacing:.04em; min-height:1.2em; margin-top:-12px;}
   .ap-status.ok{color:var(--green)}
   .ap-status.bad{color:#ef7878}
   .ap-status.busy{color:var(--ink-2)}
 
-  /* ── Success state ───────────────────────────────────────────────────── */
+  /* Success state */
   .ap-success{display:none; flex-direction:column; align-items:center; text-align:center;
     padding: clamp(48px,8vw,96px) 0; gap:18px;}
   .ap-success.show{display:flex}
@@ -188,23 +182,22 @@
     display:grid; place-items:center; font-size:36px; font-weight:300;
     background: rgba(110,226,161,.06);
   }
-  .ap-success h2{font-family:var(--disp); font-weight:700; font-size: clamp(34px,5vw,52px); letter-spacing:-.02em}
+  .ap-success h2{font-family:var(--font-display); font-weight:700; font-size: clamp(34px,5vw,52px); letter-spacing:-.02em}
   .ap-success p{color:var(--ink-1); max-width:520px; line-height:1.55; font-size:15.5px}
   .ap-success p strong{color:var(--ink-0)}
   .ap-back-btn{
     margin-top: 14px;
-    font-family:var(--mono); font-size:12px; letter-spacing:.12em; text-transform:uppercase;
+    font-family:var(--font-mono); font-size:12px; letter-spacing:.12em; text-transform:uppercase;
     color: var(--ink-0); text-decoration:none;
     border:1px solid var(--line-2); padding: 12px 22px; border-radius:999px;
   }
   .ap-back-btn:hover{border-color: var(--gull)}
 
-  /* ── Footer ──────────────────────────────────────────────────────────── */
   .ap-foot{
     margin-top:auto;
     padding: 32px clamp(20px,4vw,42px);
     border-top: 1px solid var(--line-1);
-    font-family:var(--mono); font-size:11.5px; letter-spacing:.06em; color: var(--ink-3);
+    font-family:var(--font-mono); font-size:11.5px; letter-spacing:.06em; color: var(--ink-3);
     display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
   }
   .ap-foot a{color: var(--ink-2); text-decoration:none}
@@ -254,85 +247,27 @@
   <form class="ap-form" id="applyForm" autocomplete="on" novalidate>
 
     <fieldset class="ap-section">
-      <legend>Who you are</legend>
-      <label>
-        <span class="label-row">Full name <em>*</em></span>
-        <input type="text" name="full_name" required autocomplete="name" placeholder="Sharipov Komil">
-      </label>
+      <legend>Apply</legend>
+
       <label>
         <span class="label-row">Email <em>*</em></span>
         <input type="email" name="email" required autocomplete="email" placeholder="you@example.com" inputmode="email">
       </label>
-      <label>
-        <span class="label-row">Telegram <span class="hint">— optional, the cohort runs there</span></span>
-        <input type="text" name="telegram" autocomplete="off" placeholder="@username">
-      </label>
-      <label>
-        <span class="label-row">Where are you based? <em>*</em></span>
-        <input type="text" name="location" required autocomplete="address-level2" placeholder="Tashkent, Uzbekistan">
-      </label>
-    </fieldset>
 
-    <fieldset class="ap-section">
-      <legend>About you</legend>
       <label>
-        <span class="label-row">Current status <em>*</em></span>
-        <select name="background" required>
-          <option value="">choose…</option>
-          <option value="high-school">High school</option>
-          <option value="university">University</option>
-          <option value="working">Working</option>
-          <option value="solo">Building solo</option>
-          <option value="other">Other</option>
-        </select>
+        <span class="label-row">Why do you want to join? <em>*</em><span class="char-count" data-for="motivation">0 / 400</span></span>
+        <textarea name="motivation" required minlength="20" maxlength="400" rows="6" placeholder="A few honest sentences. No buzzwords needed."></textarea>
       </label>
-      <label>
-        <span class="label-row">Programming experience <em>*</em></span>
-        <select name="experience" required>
-          <option value="">choose…</option>
-          <option value="beginner">Just starting (a few lines of code)</option>
-          <option value="some">Some — I've finished a couple of small projects</option>
-          <option value="comfortable">Comfortable — I've shipped real things</option>
-          <option value="experienced">Experienced builder</option>
-        </select>
-      </label>
-    </fieldset>
 
-    <fieldset class="ap-section">
-      <legend>The application</legend>
       <label>
-        <span class="label-row">Why do you want to do Orcas v2.0? <em>*</em><span class="char-count" data-for="motivation">0 / 280</span></span>
-        <textarea name="motivation" required maxlength="280" rows="4" placeholder="A few honest sentences. No buzzwords needed."></textarea>
+        <span class="label-row">CV <span class="hint">— optional · PDF or Word, up to 10MB</span></span>
+        <div class="ap-file" id="cvDrop">
+          <input type="file" name="cv" id="cvInput" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+          <span class="ap-file-btn">Choose file</span>
+          <span class="ap-file-name" id="cvName">No file chosen</span>
+        </div>
       </label>
-      <label>
-        <span class="label-row">What would you build with real boards? <em>*</em><span class="char-count" data-for="build_idea">0 / 280</span></span>
-        <textarea name="build_idea" required maxlength="280" rows="4" placeholder="A specific project idea. Doesn't need to be polished."></textarea>
-      </label>
-      <label>
-        <span class="label-row">Any links? <span class="hint">— GitHub, LinkedIn, portfolio, anything (optional)</span></span>
-        <input type="text" name="links" autocomplete="url" placeholder="github.com/you · linkedin.com/in/you …">
-      </label>
-    </fieldset>
 
-    <fieldset class="ap-section">
-      <legend>Last bits</legend>
-      <label>
-        <span class="label-row">How did you hear about Orcas?</span>
-        <select name="heard_from">
-          <option value="">choose…</option>
-          <option value="friend">Friend / referral</option>
-          <option value="telegram">Telegram</option>
-          <option value="linkedin">LinkedIn</option>
-          <option value="instagram">Instagram</option>
-          <option value="search">Google / search</option>
-          <option value="nazarx">Nazarx Robotics</option>
-          <option value="other">Other</option>
-        </select>
-      </label>
-      <label class="consent">
-        <input type="checkbox" name="consent" required>
-        <span>I'm serious about doing all 30 days, sharing my progress in public, and respecting the cohort. <em>*</em></span>
-      </label>
     </fieldset>
 
     <button type="submit" class="ap-submit" id="appSubmit">Submit application →</button>
@@ -358,25 +293,34 @@
 <script>
 (() => {
   const CFG = window.BC_CONFIG || {};
-  const form = document.getElementById('applyForm');
-  const status = document.getElementById('appStatus');
-  const submit = document.getElementById('appSubmit');
-  const success = document.getElementById('appSuccess');
-  const countEl = document.getElementById('appCount');
+  const $ = s => document.querySelector(s);
+  const form = $('#applyForm'),
+        status = $('#appStatus'),
+        submit = $('#appSubmit'),
+        success = $('#appSuccess'),
+        countEl = $('#appCount'),
+        cvInput = $('#cvInput'),
+        cvName  = $('#cvName'),
+        cvDrop  = $('#cvDrop');
 
-  // Char counts on textareas
-  document.querySelectorAll('.char-count').forEach(c => {
-    const ta = form.querySelector(`[name="${c.dataset.for}"]`);
-    if (!ta) return;
-    const max = parseInt(ta.maxLength || 280, 10);
-    const refresh = () => {
-      const n = ta.value.length;
-      c.textContent = `${n} / ${max}`;
-      c.classList.toggle('warn', n > max * 0.85 && n <= max);
-      c.classList.toggle('over', n >= max);
-    };
-    ta.addEventListener('input', refresh);
-    refresh();
+  // Char counter
+  const ta = form.querySelector('textarea[name="motivation"]');
+  const cc = form.querySelector('.char-count');
+  const refreshChar = () => {
+    const n = ta.value.length, max = parseInt(ta.maxLength || 400, 10);
+    cc.textContent = `${n} / ${max}`;
+    cc.classList.toggle('warn', n > max * 0.85 && n <= max);
+    cc.classList.toggle('over', n >= max);
+  };
+  ta.addEventListener('input', refreshChar); refreshChar();
+
+  // File chooser display
+  cvDrop.addEventListener('click', () => cvInput.click());
+  cvInput.addEventListener('change', () => {
+    const f = cvInput.files[0];
+    if (!f) { cvName.textContent = 'No file chosen'; cvName.classList.remove('has'); return; }
+    cvName.textContent = f.name + '  ·  ' + (Math.round(f.size / 1024) + ' KB');
+    cvName.classList.add('has');
   });
 
   function setStatus(msg, cls) {
@@ -390,11 +334,7 @@
     try {
       const r = await fetch(CFG.SUPABASE_URL + '/rest/v1/rpc/applications_count', {
         method: 'POST',
-        headers: {
-          'apikey': CFG.SUPABASE_ANON_KEY,
-          'Authorization': 'Bearer ' + CFG.SUPABASE_ANON_KEY,
-          'Content-Type': 'application/json',
-        },
+        headers: { 'apikey': CFG.SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + CFG.SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
         body: '{}',
       });
       if (!r.ok) return;
@@ -407,27 +347,51 @@
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    setStatus('Sending…', 'busy');
+    if (!form.checkValidity()) { form.reportValidity(); return; }
     submit.disabled = true;
 
-    // Native browser validation
-    if (!form.checkValidity()) {
-      form.reportValidity();
-      setStatus('Please fill in the required fields.', 'bad');
-      submit.disabled = false;
-      return;
-    }
-
-    const data = Object.fromEntries(new FormData(form).entries());
-    data.consent = !!form.consent.checked;
-    data.email = (data.email || '').trim().toLowerCase();
+    const email = (form.email.value || '').trim().toLowerCase();
+    const motivation = form.motivation.value.trim();
+    const file = cvInput.files[0] || null;
 
     if (!CFG.SUPABASE_URL || !CFG.SUPABASE_ANON_KEY) {
-      setStatus('Applications aren\'t available right now — try again in a moment.', 'bad');
-      submit.disabled = false;
-      return;
+      setStatus("Applications aren't available right now — try again in a moment.", 'bad');
+      submit.disabled = false; return;
     }
 
+    let cv_path = null, cv_filename = null;
+    if (file) {
+      if (file.size > 10 * 1024 * 1024) {
+        setStatus('CV is bigger than 10MB — please attach a smaller file.', 'bad');
+        submit.disabled = false; return;
+      }
+      setStatus('Uploading your CV…', 'busy');
+      const safe = file.name.replace(/[^a-zA-Z0-9._-]+/g, '_').slice(-80);
+      const path = `${Date.now()}-${Math.random().toString(36).slice(2,8)}-${safe}`;
+      try {
+        const up = await fetch(`${CFG.SUPABASE_URL}/storage/v1/object/cvs/${encodeURIComponent(path)}`, {
+          method: 'POST',
+          headers: {
+            'apikey': CFG.SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + CFG.SUPABASE_ANON_KEY,
+            'Content-Type': file.type || 'application/octet-stream',
+            'x-upsert': 'false',
+          },
+          body: file,
+        });
+        if (!up.ok) {
+          setStatus("Couldn't upload that CV — try again, or submit without it.", 'bad');
+          submit.disabled = false; return;
+        }
+        cv_path = path;
+        cv_filename = file.name;
+      } catch (_) {
+        setStatus("Network hiccup on upload — try again.", 'bad');
+        submit.disabled = false; return;
+      }
+    }
+
+    setStatus('Sending…', 'busy');
     try {
       const r = await fetch(CFG.SUPABASE_URL + '/rest/v1/applications', {
         method: 'POST',
@@ -437,34 +401,30 @@
           'Content-Type': 'application/json',
           'Prefer': 'return=minimal',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ email, motivation, cv_path, cv_filename }),
       });
       if (r.status === 201 || r.status === 200 || r.status === 204) {
-        // success
-        document.getElementById('successEmail').textContent = data.email;
+        document.getElementById('successEmail').textContent = email;
         form.style.display = 'none';
-        success.classList.add('show');
         document.querySelector('.ap-tiles').style.display = 'none';
+        success.classList.add('show');
         success.scrollIntoView({ behavior: 'smooth', block: 'start' });
         return;
       }
-      let body = '';
-      try { body = await r.text(); } catch (_) {}
-      // Unique violation on email
+      let body = ''; try { body = await r.text(); } catch (_) {}
       if (r.status === 409 || /23505|duplicate/i.test(body)) {
-        setStatus("You've already applied with that email. We have it — we'll be in touch.", 'ok');
-        submit.disabled = false;
-        return;
+        setStatus("You've already applied with that email — we have it. We'll be in touch.", 'ok');
+      } else {
+        setStatus("Hmm, something didn't go through — please try again.", 'bad');
       }
-      setStatus('Hmm, something didn\'t go through — please try again in a moment.', 'bad');
-    } catch (err) {
-      setStatus('Network hiccup — please try again.', 'bad');
+    } catch (_) {
+      setStatus("Network hiccup — please try again.", 'bad');
     } finally {
       submit.disabled = false;
     }
   });
 
-  // Lightweight analytics: track that someone reached the apply page
+  // Lightweight pageview event
   try {
     if (window.goatcounter && window.goatcounter.count) {
       window.goatcounter.count({ path: 'evt-apply-view', title: 'apply-view', event: true });
@@ -473,8 +433,6 @@
 })();
 </script>
 
-<!-- GoatCounter — same as homepage so /apply/ pageviews + the evt-apply-view
-     event roll up into one dashboard. Endpoint comes from the global config. -->
 <script>
 (function(){
   if (!window.BC_CONFIG || !window.BC_CONFIG.ANALYTICS_GOATCOUNTER) return;

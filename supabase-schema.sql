@@ -191,3 +191,39 @@ set search_path = public
 as $$ select count(*) from public.applications $$;
 revoke all on function public.applications_count() from public;
 grant execute on function public.applications_count() to anon, authenticated;
+
+-- ── Simplify the applications form (email + motivation + optional CV).
+-- Drop the formal-application columns we no longer collect, add CV refs.
+alter table public.applications drop column if exists full_name;
+alter table public.applications drop column if exists telegram;
+alter table public.applications drop column if exists location;
+alter table public.applications drop column if exists background;
+alter table public.applications drop column if exists experience;
+alter table public.applications drop column if exists build_idea;
+alter table public.applications drop column if exists links;
+alter table public.applications drop column if exists heard_from;
+alter table public.applications drop column if exists consent;
+alter table public.applications add column if not exists cv_path     text;
+alter table public.applications add column if not exists cv_filename text;
+
+-- CV files live in a PRIVATE Storage bucket. Visitors may upload to it
+-- (anyone with the apply form), but only the signed-in admin can read
+-- the files via the dashboard or signed URLs.
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values (
+  'cvs', 'cvs', false, 10485760,
+  array['application/pdf','application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document']::text[]
+)
+on conflict (id) do nothing;
+
+drop policy if exists "cvs_public_upload" on storage.objects;
+create policy "cvs_public_upload" on storage.objects
+  for insert with check (bucket_id = 'cvs');
+
+drop policy if exists "cvs_admin_read" on storage.objects;
+create policy "cvs_admin_read" on storage.objects
+  for select to authenticated using (bucket_id = 'cvs');
+
+drop policy if exists "cvs_admin_delete" on storage.objects;
+create policy "cvs_admin_delete" on storage.objects
+  for delete to authenticated using (bucket_id = 'cvs');
