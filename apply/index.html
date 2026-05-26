@@ -260,8 +260,7 @@
         <span class="dot" aria-hidden="true"></span>
         Closes <strong>Jun 20, 2026</strong> · <span id="apDaysLeft">…</span>
       </span>
-      <span class="ap-chip"><strong>20</strong> spots</span>
-      <span class="ap-chip" id="appCount" hidden><strong id="appCountN">0</strong>&nbsp;applied so far</span>
+      <span class="ap-chip">We accept <strong>20</strong></span>
     </div>
   </section>
 
@@ -326,7 +325,6 @@
         status = $('#appStatus'),
         submit = $('#appSubmit'),
         success = $('#appSuccess'),
-        countEl = $('#appCount'),
         cvInput = $('#cvInput'),
         cvName  = $('#cvName'),
         cvDrop  = $('#cvDrop');
@@ -370,22 +368,6 @@
     if (days <= 7) chip.classList.add('urgent');
   })();
 
-  // Live count → fills the "X applied so far" chip
-  (async function refreshCount() {
-    if (!CFG.SUPABASE_URL || !CFG.SUPABASE_ANON_KEY || !countEl) return;
-    try {
-      const r = await fetch(CFG.SUPABASE_URL + '/rest/v1/rpc/applications_count', {
-        method: 'POST',
-        headers: { 'apikey': CFG.SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + CFG.SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
-        body: '{}',
-      });
-      if (!r.ok) return;
-      const n = Number((await r.text()).trim());
-      if (!Number.isFinite(n) || n <= 0) return;
-      document.getElementById('appCountN').textContent = n.toLocaleString();
-      countEl.hidden = false;
-    } catch (_) {}
-  })();
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
