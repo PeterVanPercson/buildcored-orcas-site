@@ -91,6 +91,27 @@
   .ap-count{margin-top:22px;font-family:var(--font-mono);font-size:12px;letter-spacing:.1em;color:var(--ink-2)}
   .ap-count strong{color:var(--ink-0);font-weight:600}
 
+  /* Live status strip — deadline + cohort cap + applications-so-far */
+  .ap-status-strip{
+    margin-top: 26px;
+    display:inline-flex; flex-wrap:wrap; justify-content:center; align-items:center;
+    gap: 10px;
+  }
+  .ap-chip{
+    display:inline-flex; align-items:center; gap:8px;
+    padding: 8px 14px;
+    border:1px solid var(--line-2); border-radius:999px;
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+    color: var(--ink-1);
+    background: rgba(255,255,255,.02);
+  }
+  .ap-chip strong{color:var(--ink-0);font-weight:600}
+  .ap-chip .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px rgba(110,226,161,.55)}
+  .ap-chip.urgent{border-color: rgba(240,185,102,.42); color:#f0b966}
+  .ap-chip.urgent .dot{background:#f0b966; box-shadow:0 0 8px rgba(240,185,102,.55)}
+  .ap-chip.urgent strong{color:#f5d39b}
+  @media (max-width:560px){ .ap-chip{font-size:10.5px; padding: 7px 12px} }
+
   /* Value tiles */
   .ap-tiles{
     display:grid; grid-template-columns: repeat(4,1fr); gap:12px;
@@ -234,7 +255,14 @@
       <img src="/brand/mark-white.svg" alt="" aria-hidden="true">
       <span class="bc">BUILDCORED</span>
     </div>
-    <p class="ap-count" id="appCount" hidden></p>
+    <div class="ap-status-strip" aria-label="Application status">
+      <span class="ap-chip" id="apDeadlineChip">
+        <span class="dot" aria-hidden="true"></span>
+        Closes <strong>Jun 20, 2026</strong> · <span id="apDaysLeft">…</span>
+      </span>
+      <span class="ap-chip"><strong>20</strong> spots</span>
+      <span class="ap-chip" id="appCount" hidden><strong id="appCountN">0</strong>&nbsp;applied so far</span>
+    </div>
   </section>
 
   <section class="ap-tiles" aria-label="What it is">
@@ -328,7 +356,21 @@
     status.className = 'ap-status' + (cls ? ' ' + cls : '');
   }
 
-  // Live count
+  // Deadline chip: days-left + urgency styling
+  (function deadline() {
+    const DEADLINE = new Date('2026-06-20T23:59:59+05:00');  // Tashkent (UTC+5)
+    const days = Math.ceil((DEADLINE - new Date()) / 86_400_000);
+    const daysEl = document.getElementById('apDaysLeft');
+    const chip = document.getElementById('apDeadlineChip');
+    if (!daysEl || !chip) return;
+    if (days > 1)      daysEl.textContent = days + ' days left';
+    else if (days === 1) daysEl.textContent = '1 day left';
+    else if (days === 0) daysEl.textContent = 'closes today';
+    else                 daysEl.textContent = 'closed';
+    if (days <= 7) chip.classList.add('urgent');
+  })();
+
+  // Live count → fills the "X applied so far" chip
   (async function refreshCount() {
     if (!CFG.SUPABASE_URL || !CFG.SUPABASE_ANON_KEY || !countEl) return;
     try {
@@ -340,7 +382,7 @@
       if (!r.ok) return;
       const n = Number((await r.text()).trim());
       if (!Number.isFinite(n) || n <= 0) return;
-      countEl.innerHTML = `<strong>${n.toLocaleString()}</strong> ${n === 1 ? 'person has' : 'people have'} already applied`;
+      document.getElementById('appCountN').textContent = n.toLocaleString();
       countEl.hidden = false;
     } catch (_) {}
   })();
