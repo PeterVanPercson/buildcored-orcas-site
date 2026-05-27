@@ -71,11 +71,15 @@
     color: var(--ink-0);
   }
   .ap-sub{
-    font-family:var(--font-serif); font-weight:500; font-style:italic;
-    font-size: clamp(22px, 3.2vw, 32px); line-height:1.25;
-    color: var(--ink-1); margin-top:18px;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(17px, 1.8vw, 21px);
+    line-height: 1.45;
+    color: var(--ink-2);
+    margin-top: 20px;
+    max-width: 560px; margin-left:auto; margin-right:auto;
   }
-  .ap-sub em{font-style:italic; color:var(--gull)}
+  .ap-sub strong{color:var(--ink-0); font-weight:500}
   .ap-lockup{
     display:inline-flex; align-items:center; gap:14px;
     margin-top: 28px;
@@ -88,52 +92,35 @@
   .ap-lockup .x{color:var(--ink-3)}
   .ap-lockup img{width:22px;height:22px;display:block}
   .ap-lockup .bc{font-family:var(--font-serif);font-weight:500;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-0)}
-  .ap-count{margin-top:22px;font-family:var(--font-mono);font-size:12px;letter-spacing:.1em;color:var(--ink-2)}
-  .ap-count strong{color:var(--ink-0);font-weight:600}
+  /* Single quiet deadline line — no box, no pill, just text */
+  .ap-deadline{
+    margin-top: 28px;
+    display:inline-flex; align-items:center; gap:10px;
+    font-family: var(--font-mono);
+    font-size: 12px; letter-spacing:.14em; text-transform:uppercase;
+    color: var(--ink-2);
+  }
+  .ap-deadline strong{color: var(--ink-0); font-weight: 500}
+  .ap-deadline .dot{width:7px; height:7px; border-radius:50%; background: var(--green); box-shadow: 0 0 8px rgba(110,226,161,.55)}
+  .ap-deadline.urgent{color:#f0b966}
+  .ap-deadline.urgent strong{color:#f5d39b}
+  .ap-deadline.urgent .dot{background:#f0b966; box-shadow: 0 0 8px rgba(240,185,102,.55)}
 
-  /* Live status strip — deadline + cohort cap + applications-so-far */
-  .ap-status-strip{
-    margin-top: 26px;
-    display:inline-flex; flex-wrap:wrap; justify-content:center; align-items:center;
-    gap: 10px;
+  /* Editorial meta line — replaces the boxed tiles */
+  .ap-meta{
+    text-align:center;
+    margin: clamp(46px,6vw,72px) auto clamp(36px,5vw,56px);
+    font-family: var(--font-mono);
+    font-size: 12px; letter-spacing:.16em; text-transform:uppercase;
+    color: var(--ink-3);
+    max-width: 720px; padding: 0 16px;
   }
-  .ap-chip{
-    display:inline-flex; align-items:center; gap:8px;
-    padding: 8px 14px;
-    border:1px solid var(--line-2); border-radius:999px;
-    font-family:var(--font-mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase;
-    color: var(--ink-1);
-    background: rgba(255,255,255,.02);
-  }
-  .ap-chip strong{color:var(--ink-0);font-weight:600}
-  .ap-chip .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px rgba(110,226,161,.55)}
-  .ap-chip.urgent{border-color: rgba(240,185,102,.42); color:#f0b966}
-  .ap-chip.urgent .dot{background:#f0b966; box-shadow:0 0 8px rgba(240,185,102,.55)}
-  .ap-chip.urgent strong{color:#f5d39b}
-  @media (max-width:560px){ .ap-chip{font-size:10.5px; padding: 7px 12px} }
 
-  /* Value tiles */
-  .ap-tiles{
-    display:grid; grid-template-columns: repeat(4,1fr); gap:12px;
-    margin: 14px 0 clamp(40px,6vw,60px);
-  }
-  .ap-tile{
-    border:1px solid var(--line-1); border-radius:12px; padding:18px 16px;
-    background:var(--bg-2); text-align:center;
-  }
-  .ap-tile h3{font-family:var(--font-display);font-weight:700;font-size:18px;letter-spacing:-.01em;color:var(--ink-0);margin-bottom:6px}
-  .ap-tile p{font-size:12.5px;color:var(--ink-2);line-height:1.45}
-  @media (max-width:720px){ .ap-tiles{grid-template-columns:repeat(2,1fr)} }
-
-  /* Form */
-  .ap-form{display:flex; flex-direction:column; gap: 22px; padding-bottom: 80px;}
-  .ap-section{border:0; padding: 0; display:flex; flex-direction:column; gap:18px;}
-  .ap-section legend{
-    font-family:var(--font-mono); font-size:11.5px; letter-spacing:.18em; text-transform:uppercase;
-    color: var(--ink-3); padding-bottom:14px; margin-bottom:6px;
-    border-bottom: 1px solid var(--line-1); width:100%;
-  }
-  .ap-section label{display:flex; flex-direction:column; gap:9px;}
+  /* Form — quiet, ungrouped, no card edges */
+  .ap-form{display:flex; flex-direction:column; gap: 28px; padding-bottom: 96px;}
+  .ap-section{border:0; padding: 0; display:flex; flex-direction:column; gap:28px;}
+  .ap-section legend{display:none}  /* no section headers — fewer visual containers */
+  .ap-section label{display:flex; flex-direction:column; gap:11px;}
   .label-row{
     display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;
     font-family:var(--font-mono); font-size:11.5px; letter-spacing:.12em; text-transform:uppercase;
@@ -145,35 +132,40 @@
   .char-count.warn{color:#f0b966}
   .char-count.over{color:#ef7878}
 
+  /* Inputs — minimal: no card, no fill, just an underline. Focus thickens it. */
   .ap-form input[type=email],
   .ap-form textarea{
-    font:inherit; font-size:15px; font-family:var(--font-sans);
+    font:inherit; font-size:17px; font-family:var(--font-sans);
     color: var(--ink-0);
-    background: rgba(255,255,255,.04);
-    border:1px solid var(--line-2);
-    border-radius: 10px;
-    padding: 13px 16px;
-    transition: border-color 180ms var(--ease-out), background 180ms var(--ease-out);
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--line-2);
+    border-radius: 0;
+    padding: 8px 0 12px;
+    transition: border-color 180ms var(--ease-out);
     width:100%;
   }
   .ap-form input::placeholder, .ap-form textarea::placeholder{color:var(--ink-3)}
   .ap-form input:focus, .ap-form textarea:focus{
-    outline:none; border-color: var(--gull); background: rgba(255,255,255,.07);
+    outline:none; border-bottom-color: var(--ink-0); border-bottom-width: 1.5px;
   }
-  .ap-form textarea{resize:vertical; min-height: 140px; line-height:1.5}
+  .ap-form textarea{resize:vertical; min-height: 100px; line-height:1.55}
 
-  /* File input — restyled to match the rest */
+  /* File input — flat, inline, no dashed box. Just a small button + the filename. */
   .ap-file{
     display:flex; align-items:center; gap:14px;
-    border:1px dashed var(--line-2); border-radius:10px;
-    padding: 14px 16px; background: rgba(255,255,255,.02);
-    cursor:pointer; transition: border-color 180ms var(--ease-out), background 180ms var(--ease-out);
+    padding: 2px 0;
   }
-  .ap-file:hover{border-color: var(--line-3); background: rgba(255,255,255,.04);}
   .ap-file input[type=file]{position:absolute; opacity:0; pointer-events:none; width:1px; height:1px;}
-  .ap-file-btn{font-family:var(--font-mono); font-size:11.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-0); border:1px solid var(--line-2); padding: 8px 14px; border-radius:999px;}
-  .ap-file-name{font-size:13.5px; color:var(--ink-2); flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
-  .ap-file-name.has{color:var(--ink-1)}
+  .ap-file-btn{
+    font-family:var(--font-mono); font-size:11.5px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--ink-1); background: transparent;
+    border:1px solid var(--line-2); padding: 8px 14px; border-radius:999px;
+    cursor:pointer; transition: border-color 180ms var(--ease-out), color 180ms var(--ease-out);
+  }
+  .ap-file-btn:hover{color: var(--ink-0); border-color: var(--line-3)}
+  .ap-file-name{font-size:14px; color:var(--ink-3); flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .ap-file-name.has{color:var(--ink-0)}
 
   .ap-submit{
     font:inherit; font-family:var(--font-sans); font-weight:500; font-size:15px;
@@ -248,28 +240,20 @@
   <section class="ap-hero">
     <p class="ap-kicker">Orcas v2.0 · Hardware Cohort</p>
     <h1 class="ap-title">Apply.</h1>
-    <p class="ap-sub">Nazarx Robotics × Buildcored. <em>30 days. Real boards. Free.</em></p>
+    <p class="ap-sub"><strong>Nazarx Robotics × Buildcored.</strong> A 30-day hardware cohort. Free. You build one project a day for thirty days, on real boards, in public.</p>
     <div class="ap-lockup">
       <span class="nazarx">NAZARX</span>
       <span class="x">×</span>
       <img src="/brand/mark-white.svg" alt="" aria-hidden="true">
       <span class="bc">BUILDCORED</span>
     </div>
-    <div class="ap-status-strip" aria-label="Application status">
-      <span class="ap-chip" id="apDeadlineChip">
-        <span class="dot" aria-hidden="true"></span>
-        Closes <strong>Jun 20, 2026</strong> · <span id="apDaysLeft">…</span>
-      </span>
-      <span class="ap-chip">We accept <strong>20</strong></span>
-    </div>
+    <p class="ap-deadline" id="apDeadlineChip">
+      <span class="dot" aria-hidden="true"></span>
+      Applications close <strong>June 20, 2026</strong> · <span id="apDaysLeft">…</span>
+    </p>
   </section>
 
-  <section class="ap-tiles" aria-label="What it is">
-    <div class="ap-tile"><h3>Free</h3><p>No tuition. Funded by partners.</p></div>
-    <div class="ap-tile"><h3>Hardware</h3><p>Real boards. Real sensors. Day one.</p></div>
-    <div class="ap-tile"><h3>30 days · 30 projects</h3><p>One a day. Built in public.</p></div>
-    <div class="ap-tile"><h3>Tashkent</h3><p>Summer 2026.</p></div>
-  </section>
+  <p class="ap-meta">Tashkent · Summer 2026 &nbsp;—&nbsp; Daily prompts. Hardware shipped to you. Built in public.</p>
 
   <form class="ap-form" id="applyForm" autocomplete="on" novalidate>
 
@@ -283,14 +267,19 @@
 
       <label>
         <span class="label-row">Why do you want to join? <em>*</em><span class="char-count" data-for="motivation">0 / 400</span></span>
-        <textarea name="motivation" required minlength="20" maxlength="400" rows="6" placeholder="A few honest sentences. No buzzwords needed."></textarea>
+        <textarea name="motivation" required minlength="20" maxlength="400" rows="5" placeholder="A few honest sentences. No buzzwords needed."></textarea>
+      </label>
+
+      <label>
+        <span class="label-row">Show us one thing you've made. <em>*</em><span class="char-count" data-for="last_built">0 / 300</span></span>
+        <textarea name="last_built" required minlength="3" maxlength="300" rows="3" placeholder="A link, a sentence, a screenshot URL — anything that points to something real you've actually done."></textarea>
       </label>
 
       <label>
         <span class="label-row">CV <span class="hint">— optional · PDF or Word, up to 10MB</span></span>
         <div class="ap-file" id="cvDrop">
           <input type="file" name="cv" id="cvInput" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
-          <span class="ap-file-btn">Choose file</span>
+          <button type="button" class="ap-file-btn" id="cvBtn">Choose file</button>
           <span class="ap-file-name" id="cvName">No file chosen</span>
         </div>
       </label>
@@ -329,19 +318,22 @@
         cvName  = $('#cvName'),
         cvDrop  = $('#cvDrop');
 
-  // Char counter
-  const ta = form.querySelector('textarea[name="motivation"]');
-  const cc = form.querySelector('.char-count');
-  const refreshChar = () => {
-    const n = ta.value.length, max = parseInt(ta.maxLength || 400, 10);
-    cc.textContent = `${n} / ${max}`;
-    cc.classList.toggle('warn', n > max * 0.85 && n <= max);
-    cc.classList.toggle('over', n >= max);
-  };
-  ta.addEventListener('input', refreshChar); refreshChar();
+  // Char counters — wire each textarea to its matching `data-for` counter
+  document.querySelectorAll('.char-count').forEach(cc => {
+    const ta = form.querySelector(`textarea[name="${cc.dataset.for}"]`);
+    if (!ta) return;
+    const max = parseInt(ta.maxLength || 400, 10);
+    const refresh = () => {
+      const n = ta.value.length;
+      cc.textContent = `${n} / ${max}`;
+      cc.classList.toggle('warn', n > max * 0.85 && n <= max);
+      cc.classList.toggle('over', n >= max);
+    };
+    ta.addEventListener('input', refresh); refresh();
+  });
 
-  // File chooser display
-  cvDrop.addEventListener('click', () => cvInput.click());
+  // File chooser — only the button opens the picker (clicking the filename does nothing)
+  document.getElementById('cvBtn').addEventListener('click', () => cvInput.click());
   cvInput.addEventListener('change', () => {
     const f = cvInput.files[0];
     if (!f) { cvName.textContent = 'No file chosen'; cvName.classList.remove('has'); return; }
@@ -376,6 +368,7 @@
 
     const email = (form.email.value || '').trim().toLowerCase();
     const motivation = form.motivation.value.trim();
+    const last_built = form.last_built.value.trim();
     const file = cvInput.files[0] || null;
 
     if (!CFG.SUPABASE_URL || !CFG.SUPABASE_ANON_KEY) {
@@ -425,7 +418,7 @@
           'Content-Type': 'application/json',
           'Prefer': 'return=minimal',
         },
-        body: JSON.stringify({ email, motivation, cv_path, cv_filename }),
+        body: JSON.stringify({ email, motivation, last_built, cv_path, cv_filename }),
       });
       if (r.status === 201 || r.status === 200 || r.status === 204) {
         document.getElementById('successEmail').textContent = email;

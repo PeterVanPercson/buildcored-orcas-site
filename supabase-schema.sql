@@ -227,3 +227,7 @@ create policy "cvs_admin_read" on storage.objects
 drop policy if exists "cvs_admin_delete" on storage.objects;
 create policy "cvs_admin_delete" on storage.objects
   for delete to authenticated using (bucket_id = 'cvs');
+
+-- Surface real builders: one more required textarea on /apply asking
+-- applicants to point at something they've actually made.
+alter table public.applications add column if not exists last_built text;
