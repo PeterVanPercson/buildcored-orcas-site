@@ -202,7 +202,7 @@
 
       <div class="claude-row reveal" data-delay="4">
         <div class="claude-wrap">
-          <img class="claude-walker" src="claude/claude.png" alt="" aria-hidden="true">
+          <img class="claude-walker" src="claude/claude.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
           <button class="claude-cta" type="button" id="claudeCtaBtn" aria-haspopup="dialog">
             Free Claude
           </button>
@@ -733,28 +733,19 @@
 <section class="apply" id="apply" data-screen-label="08 Apply">
   <div class="container apply-inner">
     <div class="apply-copy">
-      <span class="apply-tag">Orcas v2.0 · Hardware</span>
+      <span class="apply-tag">Orcas v2.0 · Hardware · Now open</span>
       <h2 class="apply-head">
-        Real boards.<br><em>Apply by June 20.</em>
+        Real boards.<br><em>Applications are open.</em>
       </h2>
-      <p class="apply-sub">v1.5 wrapped — 30 projects, 30 days, software only. v2.0 is shorter and sharper: <strong>10 days, real hardware, with Nazarx Robotics</strong>. Free, daily, built in public. <strong>Applications close June 20, 2026.</strong> Open the full application below, or drop your email for the waitlist.</p>
-      <form class="newsletter-form" id="newsletterForm" data-source="v2-waitlist" autocomplete="off">
-        <input type="email" name="email" placeholder="you@example.com" required aria-label="Email address" />
-        <input type="text" name="idea" maxlength="160" placeholder="What would you build with real boards? (optional)" aria-label="What would you build with real boards?" />
-        <button type="submit" class="btn-dark">
-          Join the waitlist
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-            <path d="M2.5 7H11.5M11.5 7L7 2.5M11.5 7L7 11.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-          </svg>
-        </button>
-      </form>
-      <p class="waitlist-count" id="waitlistCount" aria-live="polite" hidden></p>
-      <p class="newsletter-status" id="newsletterStatus" aria-live="polite"></p>
+      <p class="apply-sub">v1.5 wrapped — 30 projects, 30 days, software only. v2.0 is shorter and sharper: <strong>10 days, real hardware, with Nazarx Robotics</strong>. Free, daily, built in public. <strong>Applications close June 20, 2026.</strong></p>
+      <div class="apply-cta-row">
+        <a href="/apply/" class="btn-dark btn-dark-lg">Apply now
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" style="margin-left:6px;vertical-align:-2px"><path d="M2.5 7H11.5M11.5 7L7 2.5M11.5 7L7 11.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </a>
+        <span class="apply-sub-cta">Takes a few minutes. Free.</span>
+      </div>
     </div>
     <div class="apply-cta">
-      <a href="/apply/" class="btn-dark">Open the full application
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" style="margin-left:6px;vertical-align:-2px"><path d="M2.5 7H11.5M11.5 7L7 2.5M11.5 7L7 11.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-      </a>
       <a href="#projects" class="btn-outline-dark">See the v1.5 projects</a>
       <a href="https://github.com/PeterVanPercson/buildcored-orcas" class="btn-outline-dark" target="_blank" rel="noopener">View curriculum</a>
     </div>
@@ -779,7 +770,6 @@
           <li><a href="#programs">Programs</a></li>
           <li><a href="#projects">Projects</a></li>
           <li><a href="/apply/">Apply (Orcas v2.0)</a></li>
-          <li><a href="#apply">v2.0 waitlist</a></li>
           <li><a href="/verify/">Verify a certificate</a></li>
         </ul>
       </div>
