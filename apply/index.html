@@ -122,6 +122,9 @@
   .ap-deadline.urgent{color:#a05a18}
   .ap-deadline.urgent strong{color:#a05a18}
   .ap-deadline.urgent .dot{background:#cc7757; box-shadow: 0 0 8px rgba(204,119,87,.45)}
+  .ap-deadline.closed{color:#7a1d1d}
+  .ap-deadline.closed strong{color:#7a1d1d}
+  .ap-deadline.closed .dot{background:#a51d1d; box-shadow:none}
 
   /* Form — same input recipe as the homepage's .newsletter-form. */
   .ap-form{display:flex; flex-direction:column; gap: 26px; padding-bottom: clamp(64px,10vw,120px);}
@@ -309,7 +312,7 @@
   <section class="ap-success" id="appSuccess">
     <div class="success-glyph" aria-hidden="true">✓</div>
     <h2>Application <em>received.</em></h2>
-    <p>We'll read every one and email you at <strong id="successEmail"></strong> with next steps within two weeks.</p>
+    <p>We've got <strong id="successEmail"></strong> on record. Decision in two weeks after <strong>June 20</strong>.</p>
     <a href="/" class="ap-back-btn">← Back to Buildcored</a>
   </section>
 
@@ -360,22 +363,39 @@
     status.className = 'ap-status' + (cls ? ' ' + cls : '');
   }
 
-  // Deadline countdown (Tashkent EOD)
-  (function deadline() {
+  // Deadline countdown (Tashkent EOD). Past deadline → disable submission +
+  // swap the form for a "closed" panel so applications can't sneak in late.
+  const CLOSED = (function deadline() {
     const DEADLINE = new Date('2026-06-20T23:59:59+05:00');
     const days = Math.ceil((DEADLINE - new Date()) / 86_400_000);
     const daysEl = document.getElementById('apDaysLeft');
     const chip = document.getElementById('apDeadlineChip');
-    if (!daysEl || !chip) return;
-    if (days > 1)        daysEl.textContent = days + ' days left';
-    else if (days === 1) daysEl.textContent = '1 day left';
-    else if (days === 0) daysEl.textContent = 'closes today';
-    else                 daysEl.textContent = 'closed';
-    if (days <= 7) chip.classList.add('urgent');
+    if (daysEl && chip) {
+      if (days > 1)        daysEl.textContent = days + ' days left';
+      else if (days === 1) daysEl.textContent = '1 day left';
+      else if (days === 0) daysEl.textContent = 'closes today';
+      else                 daysEl.textContent = 'closed';
+      if (days <= 7 && days > 0) chip.classList.add('urgent');
+      if (days <= 0) chip.classList.add('closed');
+    }
+    return days <= 0;
   })();
+
+  if (CLOSED) {
+    submit.disabled = true;
+    submit.textContent = 'Applications closed';
+    form.querySelectorAll('input, textarea, button').forEach(el => {
+      if (el !== submit) el.disabled = true;
+    });
+    setStatus("v2.0 applications are closed. Decisions go out two weeks after June 20 — we'll email you. Watch the homepage for v3.", 'bad');
+  }
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (CLOSED) {
+      setStatus("v2.0 applications are closed.", 'bad');
+      return;
+    }
     if (!form.checkValidity()) { form.reportValidity(); return; }
     submit.disabled = true;
 

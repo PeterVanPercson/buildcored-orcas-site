@@ -26,3 +26,4 @@ uploads/*
 !uploads/d[0-9][0-9].png
 !uploads/d[0-9][0-9].webp
 !uploads/d[0-9][0-9].gif
+supabase/.temp/
