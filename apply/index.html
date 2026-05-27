@@ -418,12 +418,7 @@
           'Content-Type': 'application/json',
           'Prefer': 'return=minimal',
         },
-        // NOTE: `last_built` field is captured in the UI + validated, but
-        // we deliberately don't transmit it until you've added the column:
-        //   alter table public.applications add column if not exists last_built text;
-        // (Run that one-liner in the Supabase SQL editor, then we re-add
-        //  `last_built` to this body — single-line follow-up commit.)
-        body: JSON.stringify({ email, motivation, cv_path, cv_filename }),
+        body: JSON.stringify({ email, motivation, last_built, cv_path, cv_filename }),
       });
       if (r.status === 201 || r.status === 200 || r.status === 204) {
         document.getElementById('successEmail').textContent = email;
