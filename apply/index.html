@@ -62,7 +62,9 @@
     color:var(--ink); text-decoration:none;
     display:inline-flex; align-items:center; gap:10px;
   }
-  .ap-brand img{width:26px;height:26px}
+  /* Source PNG is 557×322 (wider than tall) — set only width so the
+     aspect ratio stays correct; 26×26 was squashing the orca. */
+  .ap-brand img{width:34px; height:auto; display:block; flex-shrink:0}
   .ap-back{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;color:var(--ink-muted);text-decoration:none}
   .ap-back:hover{color:var(--ink)}
 
