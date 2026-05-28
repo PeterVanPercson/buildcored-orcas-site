@@ -120,27 +120,11 @@
     localStorage.setItem(LS_IMG_KEY, JSON.stringify(newImages));
   }
   function merge() {
-    const projects = dbBase.projects.map(p => ({ ...p, ...(overrides[p.id] || {}) }));
-    // Count ships per builder (lowercased) — drives "· N ships" suffix on
-    // each card so the small-but-mighty v1.5 crew gets named honestly.
-    const counts = new Map();
-    for (const p of projects) {
-      if (p.shipped && p.builder) {
-        const key = p.builder.trim().toLowerCase();
-        counts.set(key, (counts.get(key) || 0) + 1);
-      }
-    }
     db = {
       version: dbBase.version,
       updatedAt: dbBase.updatedAt,
-      projects,
-      builderCounts: counts,
+      projects: dbBase.projects.map(p => ({ ...p, ...(overrides[p.id] || {}) })),
     };
-  }
-
-  function builderShips(name) {
-    if (!name || !db || !db.builderCounts) return 0;
-    return db.builderCounts.get(name.trim().toLowerCase()) || 0;
   }
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -318,7 +302,7 @@
         <p class="pcard-desc">${escapeHtml(p.description)}</p>
         ${tagPills(p.tags)}
         <div class="pcard-foot">
-          ${p.builder ? `<span class="pcard-builder">by <b>${escapeHtml(p.builder)}</b>${builderShips(p.builder) > 1 ? ` · ${builderShips(p.builder)} ships` : ''}</span>` : `<span class="pcard-builder pcard-builder-empty">${escapeHtml(p.category)}</span>`}
+          ${p.builder ? `<span class="pcard-builder">by <b>${escapeHtml(p.builder)}</b></span>` : `<span class="pcard-builder pcard-builder-empty">${escapeHtml(p.category)}</span>`}
           ${(isShipped && (p.githubUrl || p.demoUrl))
             ? `<span class="pcard-links">
                 ${p.githubUrl ? `<a class="pcard-link" href="${escapeHtml(p.githubUrl)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" aria-label="GitHub repo"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 1.5A10.5 10.5 0 0 0 1.5 12c0 4.64 3 8.58 7.18 9.97.53.1.72-.23.72-.5 0-.25-.01-1.09-.01-1.98-2.92.63-3.54-1.24-3.54-1.24-.48-1.21-1.17-1.53-1.17-1.53-.96-.65.07-.64.07-.64 1.06.07 1.62 1.09 1.62 1.09.95 1.6 2.48 1.14 3.08.87.1-.68.37-1.14.67-1.4-2.33-.27-4.78-1.17-4.78-5.2 0-1.15.4-2.09 1.08-2.83-.11-.27-.47-1.34.1-2.78 0 0 .88-.28 2.88 1.08a9.7 9.7 0 0 1 5.24 0c2-1.36 2.88-1.08 2.88-1.08.57 1.44.21 2.51.1 2.78.68.74 1.08 1.68 1.08 2.83 0 4.04-2.46 4.93-4.8 5.19.38.33.72.96.72 1.95 0 1.41-.01 2.55-.01 2.89 0 .28.19.61.73.5A10.51 10.51 0 0 0 22.5 12 10.5 10.5 0 0 0 12 1.5Z"/></svg> Repo</a>` : ''}
