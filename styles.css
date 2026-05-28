@@ -1503,10 +1503,22 @@ section { position: relative; }
   font-family: var(--font-mono);
   font-size: 12px;
   letter-spacing: 0.04em;
-  color: var(--ink-2);
+  color: var(--ink-1);
 }
-.pcard-builder b { color: var(--gull); font-weight: 500; }
-.pcard-builder-empty { color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.12em; }
+.pcard-builder b { color: var(--gull); font-weight: 500; font-style: normal; }
+.pcard-builder-empty { color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.12em; font-weight: 400; }
+
+/* Projects section subtitle — names the v1.5-truth ("10 builders, 30 ships")
+   so the receipt can't be misread as "1500 different people shipped." */
+.projects-receipt {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  line-height: 1.55;
+  color: var(--ink-2);
+  margin-top: 18px;
+  max-width: 38em;
+}
 .pcard-links { display: flex; gap: 12px; align-items: center; }
 .pcard-link {
   display: inline-flex;
