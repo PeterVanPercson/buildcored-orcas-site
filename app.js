@@ -54,6 +54,8 @@
   const BASE_OG = { title: ogEl('title')?.content || BASE_TITLE, url: ogEl('url')?.content || location.href };
   const projectUrl = id => location.origin + location.pathname + '#p/' + encodeURIComponent(id);
   let routing = false;   // guard so programmatic nav doesn't re-enter route()
+  let modalCurrentId = null;   // project id shown in the modal (drives prev/next)
+  let modalReturnFocus = null; // element to restore focus to on modal close
 
   // ─────────────────────────────────────────────────────────────────────────
   // Boot
@@ -334,6 +336,13 @@
     for (const p of projects) frag.appendChild(createCard(p));
     host.appendChild(frag);
     bindLazyCovers(host);
+    // Announce the count to SR users instead of re-reading every card
+    // (the grid is no longer an aria-live region).
+    const status = document.getElementById('projectsStatus');
+    if (status) {
+      const where = activeFilter === 'all' ? '' : ` from Week ${activeFilter}`;
+      status.textContent = `Showing ${projects.length} project${projects.length === 1 ? '' : 's'}${where}.`;
+    }
   }
 
   // Animated SVG covers are heavy (each is a live document). We hold the src
@@ -422,7 +431,7 @@
             <span class="pmodal-day">Day ${p.day} · Week ${p.week}</span>
             <span class="pcard-cat">${escapeHtml(p.category)}</span>
           </div>
-          <h2 class="pmodal-title">${escapeHtml(p.title)}</h2>
+          <h2 class="pmodal-title" id="pmodalTitle">${escapeHtml(p.title)}</h2>
           <div class="pmodal-actions">
             <button type="button" class="pmodal-share" id="pmodalShare" aria-label="Share this project">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 13.5l6-3.5M9 14a2.5 2.5 0 1 1-2.5-2.5A2.5 2.5 0 0 1 9 14Zm0-4a2.5 2.5 0 1 0-2.5 2.5h0M15 7.5A2.5 2.5 0 1 0 17.5 5 2.5 2.5 0 0 0 15 7.5Zm0 9a2.5 2.5 0 1 0 2.5-2.5 2.5 2.5 0 0 0-2.5 2.5Zm0 0-6-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -448,9 +457,17 @@
         </div>
       </div>`;
     const modal = document.getElementById('projectModal');
+    // Remember who opened it so focus can return there on close.
+    if (!modal.classList.contains('open')) {
+      modalReturnFocus = document.activeElement;
+    }
     modal.classList.add('open');
     modal.setAttribute('aria-hidden', 'false');
     document.body.classList.add('modal-open');
+    modalCurrentId = id;
+    updateModalArrows();
+    // Move focus into the dialog (close button) for keyboard + SR users.
+    requestAnimationFrame(() => document.getElementById('projectModalClose')?.focus());
     track('project-open-' + id);
 
     // Shareable identity: title, OG, and a #p/<id> URL (back button closes).
@@ -482,6 +499,7 @@
     modal.classList.remove('open');
     modal.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('modal-open');
+    modalCurrentId = null;
     document.title = BASE_TITLE;
     if (ogEl('title')) ogEl('title').content = BASE_OG.title;
     if (ogEl('url'))   ogEl('url').content   = BASE_OG.url;
@@ -491,14 +509,64 @@
       history.replaceState({}, '', location.pathname + location.search);
       routing = false;
     }
+    // Return focus to whatever opened the modal (the card).
+    if (modalReturnFocus && typeof modalReturnFocus.focus === 'function') {
+      modalReturnFocus.focus();
+    }
+    modalReturnFocus = null;
   }
+
+  // Current filtered + sorted gallery order — drives prev/next.
+  function currentOrder() {
+    if (!db || !db.projects) return [];
+    return db.projects
+      .filter(p => activeFilter === 'all' || String(p.week) === activeFilter)
+      .sort((a, b) => a.day - b.day);
+  }
+  function siblingId(dir) {
+    const order = currentOrder();
+    const i = order.findIndex(p => p.id === modalCurrentId);
+    if (i === -1) return null;
+    const j = i + dir;
+    if (j < 0 || j >= order.length) return null;
+    return order[j].id;
+  }
+  function updateModalArrows() {
+    const prev = document.getElementById('projectModalPrev');
+    const next = document.getElementById('projectModalNext');
+    if (prev) prev.disabled = !siblingId(-1);
+    if (next) next.disabled = !siblingId(1);
+  }
+  function stepModal(dir) {
+    const sib = siblingId(dir);
+    if (sib) openModal(sib);
+  }
+
   function bindModal() {
     // Wrap in arrow fns — passing the listener directly would feed the click
     // event in as closeModal()'s `viaRoute` arg and skip the URL cleanup.
     document.getElementById('projectModalClose')?.addEventListener('click', () => closeModal());
     document.getElementById('projectModalBackdrop')?.addEventListener('click', () => closeModal());
+    document.getElementById('projectModalPrev')?.addEventListener('click', () => stepModal(-1));
+    document.getElementById('projectModalNext')?.addEventListener('click', () => stepModal(1));
+
     document.addEventListener('keydown', e => {
-      if (e.key === 'Escape' && document.getElementById('projectModal')?.classList.contains('open')) closeModal();
+      const modal = document.getElementById('projectModal');
+      if (!modal?.classList.contains('open')) return;
+      if (e.key === 'Escape')      { closeModal(); return; }
+      if (e.key === 'ArrowLeft')   { stepModal(-1); return; }
+      if (e.key === 'ArrowRight')  { stepModal(1);  return; }
+      // Focus trap: keep Tab inside the dialog.
+      if (e.key === 'Tab') {
+        const focusables = modal.querySelectorAll(
+          'a[href], button:not([disabled]), input, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        if (!focusables.length) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
     });
   }
 

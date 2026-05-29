@@ -54,6 +54,7 @@
 
   .ap-top{
     padding: 22px clamp(20px,4vw,42px);
+    padding-top: calc(22px + env(safe-area-inset-top, 0px));
     display:flex; align-items:center; justify-content:space-between;
   }
   .ap-brand{
@@ -228,6 +229,7 @@
   .ap-foot{
     margin-top: auto;
     padding: 28px clamp(20px,4vw,42px);
+    padding-bottom: calc(28px + env(safe-area-inset-bottom, 0px));
     border-top: 1px solid var(--line-soft);
     font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .06em;
     color: var(--ink-dim);
@@ -235,6 +237,11 @@
   }
   .ap-foot a{color: var(--ink-muted); text-decoration: none}
   .ap-foot a:hover{color: var(--ink)}
+
+  /* Keyboard focus — scoped page, so it ships its own ring (WCAG 2.4.7).
+     Covers Submit, Attach file, Back, lockup, links. */
+  :focus-visible{ outline: 2px solid var(--slate); outline-offset: 3px; border-radius: 6px; }
+  .ap-submit:focus-visible, .ap-file-btn:focus-visible{ outline-offset: 4px; }
 
   @media (max-width:560px){
     .ap-top{padding: 16px 18px}
@@ -415,39 +422,23 @@
       submit.disabled = false; return;
     }
 
+    // We name the CV path up front (client-controlled) so the row can
+    // reference it, but we DON'T upload yet. The row is inserted first;
+    // the file is uploaded only after the insert commits. A duplicate
+    // (409) therefore never leaves an orphaned resume in storage.
     let cv_path = null, cv_filename = null;
     if (file) {
       if (file.size > 10 * 1024 * 1024) {
         setStatus('CV is bigger than 10MB — please attach a smaller file.', 'bad');
         submit.disabled = false; return;
       }
-      setStatus('Uploading your CV…', 'busy');
       const safe = file.name.replace(/[^a-zA-Z0-9._-]+/g, '_').slice(-80);
-      const path = `${Date.now()}-${Math.random().toString(36).slice(2,8)}-${safe}`;
-      try {
-        const up = await fetch(`${CFG.SUPABASE_URL}/storage/v1/object/cvs/${encodeURIComponent(path)}`, {
-          method: 'POST',
-          headers: {
-            'apikey': CFG.SUPABASE_ANON_KEY,
-            'Authorization': 'Bearer ' + CFG.SUPABASE_ANON_KEY,
-            'Content-Type': file.type || 'application/octet-stream',
-            'x-upsert': 'false',
-          },
-          body: file,
-        });
-        if (!up.ok) {
-          setStatus("Couldn't upload that CV — try again, or submit without it.", 'bad');
-          submit.disabled = false; return;
-        }
-        cv_path = path;
-        cv_filename = file.name;
-      } catch (_) {
-        setStatus("Network hiccup on upload — try again.", 'bad');
-        submit.disabled = false; return;
-      }
+      cv_path = `${Date.now()}-${Math.random().toString(36).slice(2,8)}-${safe}`;
+      cv_filename = file.name;
     }
 
     setStatus('Sending…', 'busy');
+    let inserted = false;
     try {
       const r = await fetch(CFG.SUPABASE_URL + '/rest/v1/applications', {
         method: 'POST',
@@ -460,23 +451,44 @@
         body: JSON.stringify({ email, motivation, last_built, cv_path, cv_filename }),
       });
       if (r.status === 201 || r.status === 200 || r.status === 204) {
-        document.getElementById('successEmail').textContent = email;
-        form.style.display = 'none';
-        success.classList.add('show');
-        success.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        return;
-      }
-      let body = ''; try { body = await r.text(); } catch (_) {}
-      if (r.status === 409 || /23505|duplicate/i.test(body)) {
-        setStatus("You've already applied with that email — we have it. We'll be in touch.", 'ok');
+        inserted = true;
       } else {
-        setStatus("Hmm, something didn't go through — please try again.", 'bad');
+        let body = ''; try { body = await r.text(); } catch (_) {}
+        if (r.status === 409 || /23505|duplicate/i.test(body)) {
+          setStatus("You've already applied with that email — we have it. We'll be in touch.", 'ok');
+        } else {
+          setStatus("Hmm, something didn't go through — please try again.", 'bad');
+        }
+        submit.disabled = false; return;
       }
     } catch (_) {
       setStatus("Network hiccup — please try again.", 'bad');
-    } finally {
-      submit.disabled = false;
+      submit.disabled = false; return;
     }
+
+    // Row committed. Upload the CV now (best-effort — a failed upload leaves
+    // a row whose cv link is missing, never an orphaned file). Don't block
+    // the success screen on it.
+    if (inserted && file && cv_path) {
+      setStatus('Uploading your CV…', 'busy');
+      try {
+        await fetch(`${CFG.SUPABASE_URL}/storage/v1/object/cvs/${encodeURIComponent(cv_path)}`, {
+          method: 'POST',
+          headers: {
+            'apikey': CFG.SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + CFG.SUPABASE_ANON_KEY,
+            'Content-Type': file.type || 'application/octet-stream',
+            'x-upsert': 'false',
+          },
+          body: file,
+        });
+      } catch (_) { /* row already saved; CV is optional */ }
+    }
+
+    document.getElementById('successEmail').textContent = email;
+    form.style.display = 'none';
+    success.classList.add('show');
+    success.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 
   try {
