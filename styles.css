@@ -2432,6 +2432,31 @@ body.admin-open { overflow: hidden; }
 .apply-head em { font-style: italic; color: var(--slate); font-weight: 400; }
 .apply-sub { font-size: 16px; color: rgba(0, 0, 0, 0.62); margin-top: 16px; }
 
+/* Live deadline chip on the gull panel — mirrors /apply's .ap-deadline */
+.apply-deadline-line {
+  margin-top: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.6);
+}
+.apply-deadline-line strong { color: #000; font-weight: 500; }
+.apply-deadline-line .apply-deadline-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #3a8a5f;
+  box-shadow: 0 0 8px rgba(58, 138, 95, 0.45);
+}
+.apply-deadline-line.urgent { color: #a05a18; }
+.apply-deadline-line.urgent strong { color: #a05a18; }
+.apply-deadline-line.urgent .apply-deadline-dot { background: #cc7757; box-shadow: 0 0 8px rgba(204,119,87,.45); }
+.apply-deadline-line.closed { color: #7a1d1d; }
+.apply-deadline-line.closed strong { color: #7a1d1d; }
+.apply-deadline-line.closed .apply-deadline-dot { background: #a51d1d; box-shadow: none; }
+
 .apply-cta { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
 
 /* Primary "Apply now" row on the homepage Apply panel (replaces the old

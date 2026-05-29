@@ -187,17 +187,17 @@
       </h1>
 
       <p class="hero-sub reveal" data-delay="2">
-        Build projects. Learn by doing. Join a community of creative engineers shipping real work.
+        We don't teach. We ship — daily, in public. A community of creative engineers building real things.
       </p>
 
       <div class="hero-actions reveal" data-delay="3">
-        <a href="#programs" class="btn btn-primary">
-          See the Orcas program
+        <a href="/apply/" class="btn btn-primary">
+          Apply to Orcas v2.0
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-            <path d="M3.5 5L7 8.5L10.5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2.5 7H11.5M11.5 7L7 2.5M11.5 7L7 11.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
           </svg>
         </a>
-        <a href="#projects" class="btn btn-ghost">Browse 30 projects</a>
+        <a href="#programs" class="btn btn-ghost">See the program</a>
       </div>
 
       <div class="claude-row reveal" data-delay="4">
@@ -758,11 +758,15 @@
 <section class="apply" id="apply" data-screen-label="08 Apply">
   <div class="container apply-inner">
     <div class="apply-copy">
-      <span class="apply-tag">Orcas v2.0 · Hardware · Now open</span>
+      <span class="apply-tag">Orcas v2.0 · Hardware · with Nazarx Robotics</span>
       <h2 class="apply-head">
-        Real boards.<br><em>Applications are open.</em>
+        Real boards.<br><em>Ten days.</em>
       </h2>
-      <p class="apply-sub">v1.5 wrapped — 30 projects, 30 days, software only. v2.0 is shorter and sharper: <strong>10 days, real hardware, with Nazarx Robotics</strong>. Free, daily, built in public. <strong>Applications close June 20, 2026.</strong></p>
+      <p class="apply-sub">v1.5 was 30 projects in 30 days, software only. v2.0 is shorter and sharper: <strong>10 days, real hardware, free</strong>. A kit, a prompt every morning, something shipped by night.</p>
+      <p class="apply-deadline-line" id="applyDeadlineLine">
+        <span class="apply-deadline-dot" aria-hidden="true"></span>
+        Applications close <strong>June 20, 2026</strong> · <span id="applyDaysLeft">…</span>
+      </p>
       <div class="apply-cta-row">
         <a href="/apply/" class="btn-dark btn-dark-lg">Apply now
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" style="margin-left:6px;vertical-align:-2px"><path d="M2.5 7H11.5M11.5 7L7 2.5M11.5 7L7 11.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
@@ -877,6 +881,20 @@
   (function () {
     const y = document.getElementById('footerYear');
     if (y) y.textContent = new Date().getFullYear();
+  })();
+
+  // Apply-panel deadline countdown (mirrors /apply, Tashkent EOD).
+  (function () {
+    const daysEl = document.getElementById('applyDaysLeft');
+    const line = document.getElementById('applyDeadlineLine');
+    if (!daysEl || !line) return;
+    const DEADLINE = new Date('2026-06-20T23:59:59+05:00');
+    const days = Math.ceil((DEADLINE - new Date()) / 86400000);
+    if (days > 1)        daysEl.textContent = days + ' days left';
+    else if (days === 1) daysEl.textContent = '1 day left';
+    else if (days === 0) daysEl.textContent = 'closes today';
+    else { daysEl.textContent = 'closed'; line.classList.add('closed'); }
+    if (days <= 7 && days > 0) line.classList.add('urgent');
   })();
 
   // Respect the OS "reduce motion" setting across intro, reveals, orca.
