@@ -31,6 +31,7 @@
   --slate:       #3D4E63;      /* slate-blue from the wordmark */
   --slate-soft:  rgba(61, 78, 99, 0.16);
   --paper:       #efedeb;      /* off-white, brand "paper" tone */
+  --green:       #6ee2a1;      /* live / shipped / open accent */
 
   /* Hairlines */
   --line-1: rgba(255, 255, 255, 0.06);
@@ -1078,7 +1079,39 @@ section { position: relative; }
   color: var(--ink-1);
   margin-bottom: 4px;
 }
-.future-program-desc { font-size: 13.5px; color: var(--ink-3); }
+.future-program-desc { font-size: 13.5px; color: var(--ink-2); }
+
+/* Applications-open state: solid border (not dashed), gull-soft glow, clickable */
+.future-program-open {
+  border-style: solid;
+  border-color: var(--line-3);
+  background: var(--gull-soft);
+  text-decoration: none;
+  transition: border-color 200ms var(--ease-out), background 200ms var(--ease-out), transform 200ms var(--ease-out);
+}
+.future-program-open:hover {
+  border-color: var(--gull);
+  background: rgba(214, 222, 224, 0.06);
+  transform: translateY(-2px);
+}
+.label-open {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--gull);
+  white-space: nowrap;
+}
+.label-open .open-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--green, #6ee2a1);
+  box-shadow: 0 0 10px rgba(110, 226, 161, 0.55);
+  animation: pulse 1.8s ease-in-out infinite;
+  flex-shrink: 0;
+}
+@media (max-width: 560px) {
+  .future-program-open { flex-direction: column; align-items: flex-start; gap: 14px; }
+  .label-open { white-space: normal; }
+}
 
 /* ═══ Projects (curriculum breakdown) ════════════════════════════════════ */
 .projects { background: var(--bg-1); }

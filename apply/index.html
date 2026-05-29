@@ -105,10 +105,15 @@
     border:1px solid var(--line-soft); border-radius:999px;
     font-family:var(--font-mono); font-size:11.5px; letter-spacing:.16em;
     color: var(--ink-muted); background: rgba(255,255,255,.08);
+    text-decoration:none;
+    transition: border-color 180ms var(--ease-out), background 180ms var(--ease-out);
   }
+  .ap-lockup:hover{ border-color: var(--ink); background: rgba(255,255,255,.18); }
   .ap-lockup .nz{font-family:var(--font-display);font-weight:800;font-style:italic;font-size:13px;letter-spacing:.05em;color:var(--ink)}
-  .ap-lockup .x{color:var(--ink-dim)}
+  .ap-lockup .x{color:var(--ink-muted)}
   .ap-lockup .bc{font-family:var(--font-serif);font-weight:500;font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink)}
+  .ap-lockup .lockup-ext{color:var(--ink-dim); margin-left:2px}
+  .ap-lockup:hover .lockup-ext{color:var(--ink)}
 
   .ap-deadline{
     margin-top: 26px;
@@ -257,11 +262,12 @@
     <span class="ap-tag">Orcas v2.0 · Hardware</span>
     <h1 class="ap-head">Real boards.<br><em>Ten days.</em></h1>
     <p class="ap-sub">Nazarx Robotics × Buildcored. Free. You get a kit, a prompt every morning, and ship something by the end of the day. Ten in a row.</p>
-    <div class="ap-lockup">
+    <a class="ap-lockup" href="https://www.instagram.com/nazarxuz/" target="_blank" rel="noopener" aria-label="Nazarx Robotics on Instagram (opens in new tab)">
       <span class="nz">NAZARX</span>
       <span class="x">×</span>
       <span class="bc">BUILDCORED</span>
-    </div>
+      <svg class="lockup-ext" width="11" height="11" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 11L11 3M11 3H4.5M11 3V9.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
     <p class="ap-deadline" id="apDeadlineChip">
       <span class="dot" aria-hidden="true"></span>
       Applications close <strong>June 20, 2026</strong> · <span id="apDaysLeft">…</span>

@@ -382,13 +382,13 @@
       </div>
     </article>
 
-    <div class="future-program reveal" data-delay="2">
+    <a href="/apply/" class="future-program future-program-open reveal" data-delay="2">
       <div>
         <div class="future-program-title serif italic">Orcas v2.0 · Hardware</div>
-        <div class="future-program-desc">Same cadence, real boards. In design.</div>
+        <div class="future-program-desc">Same cadence, real boards, with Nazarx Robotics. 10 days, free.</div>
       </div>
-      <span class="label">Coming soon</span>
-    </div>
+      <span class="label label-open"><span class="open-dot" aria-hidden="true"></span>Applications open · closes June 20</span>
+    </a>
   </div>
 </section>
 
@@ -634,20 +634,20 @@
     </div>
 
     <div class="posts">
-      <a href="https://buildcorednotes.substack.com" class="post reveal" target="_blank" rel="noopener">
-        <div class="post-meta">No. 014 · This week</div>
-        <p class="post-excerpt">On reading codebases — the part nobody teaches.</p>
-        <h4 class="post-title">How to read 10,000 lines of someone else's code without breaking your brain.</h4>
+      <a href="https://buildcorednotes.substack.com/p/how-nurislombek-mahkamjonkhojizoda" class="post reveal" target="_blank" rel="noopener">
+        <div class="post-meta">Interview · President Tech Award '24</div>
+        <p class="post-excerpt">On agency — and building painkillers, not vitamins.</p>
+        <h4 class="post-title">How Nurislombek Mahkamjonkhojizoda thinks about agency.</h4>
       </a>
-      <a href="https://buildcorednotes.substack.com" class="post reveal" data-delay="1" target="_blank" rel="noopener">
-        <div class="post-meta">No. 013 · Last week</div>
-        <p class="post-excerpt">Why "I'll learn it when I need it" is mostly correct, and the one time it isn't.</p>
-        <h4 class="post-title">Just-in-time learning has one failure mode.</h4>
+      <a href="https://buildcorednotes.substack.com/p/how-shokhinabonu-tojieva-thinks-about" class="post reveal" data-delay="1" target="_blank" rel="noopener">
+        <div class="post-meta">Interview · YouTube</div>
+        <p class="post-excerpt">Getting into Google when there's no pipeline to it.</p>
+        <h4 class="post-title">How Shokhinabonu Tojieva thinks about breaking in.</h4>
       </a>
-      <a href="https://buildcorednotes.substack.com" class="post reveal" data-delay="2" target="_blank" rel="noopener">
-        <div class="post-meta">No. 012 · Two weeks ago</div>
-        <p class="post-excerpt">The shape of a good engineering question, and the shape of a bad one.</p>
-        <h4 class="post-title">Senior engineers don't ask "how" — they ask "what fails."</h4>
+      <a href="https://buildcorednotes.substack.com/p/how-rustam-zokirov-thinks-about-engineering" class="post reveal" data-delay="2" target="_blank" rel="noopener">
+        <div class="post-meta">Interview · Google · 5 yrs</div>
+        <p class="post-excerpt">What a long engineering career actually compounds into.</p>
+        <h4 class="post-title">How Rustam Zokirov thinks about engineering careers.</h4>
       </a>
     </div>
 
@@ -809,7 +809,7 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <div>© 2025 Buildcored · Open source under MIT</div>
+      <div>© <span id="footerYear">2026</span> Buildcored · Open source under MIT</div>
       <div>Built in public</div>
     </div>
   </div>
@@ -873,6 +873,12 @@
 <script src="supabase-config.js"></script>
 <script src="app.js"></script>
 <script>
+  // Footer year — never let the copyright go stale.
+  (function () {
+    const y = document.getElementById('footerYear');
+    if (y) y.textContent = new Date().getFullYear();
+  })();
+
   // Respect the OS "reduce motion" setting across intro, reveals, orca.
   const REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
