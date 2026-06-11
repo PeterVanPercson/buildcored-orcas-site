@@ -2589,7 +2589,7 @@ body.admin-open { overflow: hidden; }
   justify-self: end;
   border-radius: 50%;
   overflow: hidden;
-  border: 1px solid rgba(0, 0, 0, 0.15);
+  border: 6px solid #0b0d10;
   box-shadow: 0 24px 60px -30px rgba(0, 0, 0, 0.35);
 }
 @media (max-width: 760px) {
