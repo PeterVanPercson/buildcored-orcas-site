@@ -609,7 +609,12 @@ body.drawer-open { overflow: hidden; }
   opacity: 0;
   transform: translateY(0.4em);
   /* Sheen lives on the glyphs: a slate glare band sweeps across the
-     lettering itself (background-clip: text), not a box behind it. */
+     lettering itself (background-clip: text), not a box behind it.
+     The tight negative tracking shrinks each word's background box,
+     so the trailing glyph (e in creative, g in engineering) painted
+     past the box edge and went transparent ("cut"). Pad the box out
+     and pull it back with a matching negative margin so the right
+     edge — and word 2's right alignment — stays put. */
   color: transparent;
   -webkit-text-fill-color: transparent;
   background-image:
@@ -620,6 +625,8 @@ body.drawer-open { overflow: hidden; }
   background-repeat: no-repeat;
   -webkit-background-clip: text;
           background-clip: text;
+  padding-right: 0.14em;
+  margin-right: -0.14em;
   animation:
     heroWordRise 900ms var(--ease-out) forwards,
     heroTextShine 6.5s 2.2s ease-in-out infinite;
