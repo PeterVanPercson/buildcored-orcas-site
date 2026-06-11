@@ -49,7 +49,21 @@
     background:var(--gull); color:var(--ink);
     font-family:var(--font-sans); -webkit-font-smoothing:antialiased;
   }
-  body{min-height:100vh;display:flex;flex-direction:column}
+  body{min-height:100vh;display:flex;flex-direction:column;position:relative}
+  /* Light source: a soft white glow under the headline + a whisper-faint
+     engineering grid, both fading out at the edges. Gives the flat gull
+     surface depth without ever looking busy. */
+  body::before{
+    content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:
+      radial-gradient(ellipse 90% 55% at 50% 0%, rgba(255,255,255,.5), transparent 60%),
+      linear-gradient(rgba(0,0,0,.022) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,0,0,.022) 1px, transparent 1px);
+    background-size: 100% 100%, 64px 64px, 64px 64px;
+    -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, #000 35%, transparent 78%);
+            mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, #000 35%, transparent 78%);
+  }
+  .ap-top, .wrap, .ap-foot{ position:relative; z-index:1; }
   a{color:inherit}
 
   .ap-top{
@@ -116,12 +130,18 @@
   .ap-partner-label::after{
     content:""; width:38px; height:1px; background:var(--line-soft);
   }
-  .ap-partner-logos{ display:flex; align-items:center; gap: clamp(20px, 4vw, 34px); }
+  .ap-partner-logos{ display:flex; align-items:center; gap: clamp(24px, 5vw, 44px); }
   .ap-partner-logos img{ display:block; width:auto; transition: transform 200ms var(--ease-out); }
-  .ap-partner-logos .bc{ height:48px; }
-  .ap-partner-logos .nz{ height:44px; }
-  .ap-partner-logos .x{ font-family:var(--font-mono); font-size:15px; color:var(--ink-dim); }
+  /* Sized so the readable BUILDCORED curve and the NAZARX wordmark carry
+     equal optical weight — the Nazarx orbit padding means it must run larger. */
+  .ap-partner-logos .bc{ height:40px; }
+  .ap-partner-logos .nz{ height:54px; }
+  .ap-partner-logos .x{ font-family:var(--font-mono); font-size:16px; color:var(--ink-dim); }
   .ap-partner:hover .ap-partner-logos img{ transform: translateY(-2px); }
+  .ap-partner-note{
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--ink-dim);
+  }
 
   .ap-deadline{
     margin-top: 26px;
@@ -287,6 +307,11 @@
     .ap-top{padding: 16px 18px}
     .ap-foot{flex-direction:column}
     .ap-form input[type=email]{padding: 13px 18px}
+    /* Let the deadline read as flowing text, not a shattered flex row */
+    .ap-deadline{
+      display:block; text-align:center; line-height:1.7;
+    }
+    .ap-deadline .dot{ display:inline-block; vertical-align:middle; margin-right:7px }
   }
   @media (prefers-reduced-motion: reduce){
     *{ transition-duration:.001ms !important; animation-duration:.001ms !important }
@@ -313,10 +338,11 @@
     <a class="ap-partner" href="https://www.instagram.com/p/DYz0HeSvuBr/" target="_blank" rel="noopener" aria-label="Nazarx × Buildcored partnership announcement on Instagram, opens in new tab">
       <span class="ap-partner-label">In partnership</span>
       <span class="ap-partner-logos">
-        <img class="bc" src="/brand/mark-slate-trim.png" alt="Buildcored">
+        <img class="bc" src="/brand/mark-black-trim.png" alt="Buildcored">
         <span class="x" aria-hidden="true">×</span>
         <img class="nz" src="/brand/nazarx-ink.png" alt="Nazarx Robotics">
       </span>
+      <span class="ap-partner-note">Robotics kits, provided for the cohort</span>
     </a>
 
     <p class="ap-deadline" id="apDeadlineChip">
