@@ -189,6 +189,8 @@
 </head>
 <body>
 
+<div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
 <!-- ═══ Brand intro overlay (2.3s, mirrors buildcored.com splash) ═════════ -->
 <div class="intro" id="intro" aria-hidden="false">
   <div class="intro-stage">
@@ -1076,6 +1078,26 @@
   (function () {
     const y = document.getElementById('footerYear');
     if (y) y.textContent = new Date().getFullYear();
+  })();
+
+  // Scroll progress line. The page may scroll at the viewport OR on <body>
+  // (body{overflow-x:hidden} can make body the scroll container), so read
+  // whichever moved and listen in capture phase to catch both.
+  (function () {
+    const bar = document.getElementById('scrollProgress');
+    if (!bar) return;
+    let ticking = false;
+    const update = () => {
+      const d = document.documentElement, b = document.body;
+      const pos = Math.max(window.scrollY || 0, d.scrollTop, b.scrollTop);
+      const max = Math.max(d.scrollHeight, b.scrollHeight) - innerHeight;
+      bar.style.transform = 'scaleX(' + (max > 0 ? Math.min(pos / max, 1) : 0) + ')';
+      ticking = false;
+    };
+    const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+    document.addEventListener('scroll', onScroll, { passive: true, capture: true });
+    addEventListener('resize', onScroll, { passive: true });
+    update();
   })();
 
   // Apply-panel deadline countdown (mirrors /apply, Tashkent EOD).

@@ -57,6 +57,18 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 
+/* Scroll progress — thin gull line at the very top, grows as you read */
+.scroll-progress {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--gull);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  z-index: 300;
+  pointer-events: none;
+}
+
 /* Screen-reader-only (visually hidden, still announced) */
 .sr-only {
   position: absolute !important;
@@ -2603,7 +2615,8 @@ body.admin-open { overflow: hidden; }
 .faq-item p a:hover { border-color: var(--gull); }
 
 /* ═══ Founder — compact profile row ══════════════════════════════════════ */
-.founder { background: var(--bg-1); }
+.founder { background: var(--bg-1); padding: clamp(40px, 6vw, 72px) 0; }
+.founder .section-head { margin-bottom: 32px; }
 .founder-row {
   display: flex;
   align-items: center;
