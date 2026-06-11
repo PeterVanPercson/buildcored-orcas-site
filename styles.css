@@ -2604,17 +2604,61 @@ body.admin-open { overflow: hidden; }
 
 /* ═══ Founder — the social-project note ═════════════════════════════════ */
 .founder { background: var(--bg-1); }
-.founder-note {
-  max-width: 640px;
+.founder-card {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: clamp(32px, 5vw, 64px);
+  align-items: start;
 }
-.founder-note p {
-  font-size: 17px;
+@media (max-width: 760px) {
+  .founder-card { grid-template-columns: 1fr; gap: 32px; }
+}
+.founder-photo {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--line-2);
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 0%, rgba(214,222,224,0.06), transparent 70%),
+    var(--bg-3);
+  display: grid;
+  place-items: center;
+}
+@media (max-width: 760px) {
+  .founder-photo { max-width: 220px; }
+}
+.founder-photo img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.founder-photo-fallback {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 56px;
+  color: var(--ink-3);
+  letter-spacing: 0.02em;
+}
+.founder-body { max-width: 560px; }
+.founder-lead {
+  font-family: var(--font-serif);
+  font-size: clamp(21px, 2.4vw, 26px);
+  line-height: 1.45;
+  color: var(--gull);
+  margin-bottom: 22px;
+}
+.founder-body p {
+  font-size: 16px;
   line-height: 1.7;
   color: var(--ink-1);
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 .founder-sig {
-  margin-top: 36px;
+  margin-top: 30px;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -2623,16 +2667,17 @@ body.admin-open { overflow: hidden; }
   font-family: var(--font-serif);
   font-style: italic;
   font-weight: 500;
-  font-size: 30px;
+  font-size: 28px;
   letter-spacing: 0.01em;
   color: var(--gull);
 }
 .founder-role {
   font-family: var(--font-mono);
   font-size: 11.5px;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--ink-3);
+  line-height: 1.6;
 }
 .founder-role a {
   color: var(--ink-2);
