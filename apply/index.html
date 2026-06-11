@@ -239,6 +239,38 @@
   .ap-foot a{color: var(--ink-muted); text-decoration: none}
   .ap-foot a:hover{color: var(--ink)}
 
+  /* FAQ accordion — same recipe as the homepage .faq-list, on gull */
+  .ap-faq{ padding: 0 0 clamp(64px,10vw,120px); }
+  .ap-faq-title{
+    font-family: var(--font-serif);
+    font-size: clamp(28px,4vw,40px); font-weight: 500;
+    letter-spacing: -0.005em; color: var(--ink);
+    margin-bottom: 18px;
+  }
+  .ap-faq-list{ border-top: 1px solid var(--line-soft); }
+  .ap-faq-item{ border-bottom: 1px solid var(--line-soft); }
+  .ap-faq-item summary{
+    display:flex; align-items:center; justify-content:space-between; gap:20px;
+    padding: 19px 0; cursor:pointer;
+    font-size: 15.5px; font-weight: 500; color: var(--ink);
+    list-style:none; transition: color 160ms;
+  }
+  .ap-faq-item summary::-webkit-details-marker{ display:none; }
+  .ap-faq-item summary:hover{ color: var(--slate); }
+  .ap-faq-icon{
+    flex-shrink:0; width:28px; height:28px;
+    display:grid; place-items:center;
+    border:1px solid var(--line-soft); border-radius:999px;
+    font-size:15px; font-weight:300; color: var(--ink-muted);
+    transition: transform 220ms var(--ease-out);
+  }
+  .ap-faq-item[open] .ap-faq-icon{ transform: rotate(45deg); }
+  .ap-faq-item p{
+    padding: 0 42px 22px 0;
+    font-size: 14.5px; line-height: 1.65;
+    color: var(--ink-muted); max-width: 60ch;
+  }
+
   /* Keyboard focus — scoped page, so it ships its own ring (WCAG 2.4.7).
      Covers Submit, Attach file, Back, lockup, links. */
   :focus-visible{ outline: 2px solid var(--slate); outline-offset: 3px; border-radius: 6px; }
@@ -328,6 +360,40 @@
     <h2>Application <em>received.</em></h2>
     <p>We've got <strong id="successEmail"></strong> on record. Decision in two weeks after <strong>June 20</strong>.</p>
     <a href="/" class="ap-back-btn">← Back to Buildcored</a>
+  </section>
+
+  <section class="ap-faq" aria-label="Frequently asked questions">
+    <h2 class="ap-faq-title">Questions</h2>
+    <div class="ap-faq-list">
+      <details class="ap-faq-item">
+        <summary>When and where does it happen?<span class="ap-faq-icon" aria-hidden="true">+</span></summary>
+        <p>August 15–25, 2026, at the Turin Polytechnic Lyceum in Tashkent. Full days, every day.</p>
+      </details>
+      <details class="ap-faq-item">
+        <summary>How much does it cost?<span class="ap-faq-icon" aria-hidden="true">+</span></summary>
+        <p>Nothing. The cohort is free.</p>
+      </details>
+      <details class="ap-faq-item">
+        <summary>Do I need my own hardware?<span class="ap-faq-icon" aria-hidden="true">+</span></summary>
+        <p>No. Nazarx provides the robotics kits and components. Bring a laptop.</p>
+      </details>
+      <details class="ap-faq-item">
+        <summary>Do I keep the kit?<span class="ap-faq-icon" aria-hidden="true">+</span></summary>
+        <p>No, the kits go back to Nazarx at the end. The code and everything you learned stay yours.</p>
+      </details>
+      <details class="ap-faq-item">
+        <summary>Do I need experience?<span class="ap-faq-icon" aria-hidden="true">+</span></summary>
+        <p>You need a laptop and the will to show up all ten days. Some of our v1.5 builders started barely knowing a for loop. Curiosity beats credentials here.</p>
+      </details>
+      <details class="ap-faq-item">
+        <summary>What about the CV?<span class="ap-faq-icon" aria-hidden="true">+</span></summary>
+        <p>Optional. The "show us one thing you've made" field matters more to us.</p>
+      </details>
+      <details class="ap-faq-item">
+        <summary>When do I hear back?<span class="ap-faq-icon" aria-hidden="true">+</span></summary>
+        <p>Applications close June 20. We read every one and email a decision within two weeks after that.</p>
+      </details>
+    </div>
   </section>
 
 </main>
