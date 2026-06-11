@@ -2552,6 +2552,7 @@ body.admin-open { overflow: hidden; }
 }
 .faq-item summary::-webkit-details-marker { display: none; }
 .faq-item summary:hover { color: var(--gull); }
+.faq-q { font: inherit; font-weight: inherit; color: inherit; margin: 0; }
 .faq-icon {
   flex-shrink: 0;
   width: 30px;

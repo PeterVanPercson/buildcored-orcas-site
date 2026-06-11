@@ -256,6 +256,7 @@
     list-style:none; transition: color 160ms;
   }
   .ap-faq-item summary::-webkit-details-marker{ display:none; }
+  .ap-faq-q{ font:inherit; font-weight:inherit; color:inherit; margin:0; }
   .ap-faq-item summary:hover{ color: var(--slate); }
   .ap-faq-icon{
     flex-shrink:0; width:28px; height:28px;
@@ -301,7 +302,7 @@
   <section class="ap-hero">
     <span class="ap-tag">Orcas v2.0 · Hardware</span>
     <h1 class="ap-head">Real boards.<br><em>Ten days.</em></h1>
-    <p class="ap-sub">Nazarx Robotics × Buildcored. <strong>August 15–25</strong> at the Turin Polytechnic Lyceum in Tashkent. Ten full days of building with real robotics kits. Nazarx brings the hardware, you bring a laptop. Free.</p>
+    <p class="ap-sub">Nazarx Robotics × Buildcored. <strong>August 15–25</strong> at the Turin Polytechnic Lyceum in Tashkent. Full days of building with real robotics kits. Nazarx brings the hardware, you bring a laptop. Free.</p>
     <a class="ap-lockup" href="https://www.instagram.com/p/DYz0HeSvuBr/" target="_blank" rel="noopener" aria-label="Nazarx × Buildcored announcement on Instagram (opens in new tab)">
       <span class="nz">NAZARX</span>
       <span class="x">×</span>
@@ -335,7 +336,7 @@
       </label>
 
       <label>
-        <span class="label-row">CV <span class="hint">— optional · PDF or Word, up to 10MB</span></span>
+        <span class="label-row">CV <span class="hint">optional · PDF or Word, up to 10MB</span></span>
         <div class="ap-file" id="cvDrop">
           <input type="file" name="cv" id="cvInput" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
           <button type="button" class="ap-file-btn" id="cvBtn">Attach file</button>
@@ -362,35 +363,35 @@
     <a href="/" class="ap-back-btn">← Back to Buildcored</a>
   </section>
 
-  <section class="ap-faq" aria-label="Frequently asked questions">
-    <h2 class="ap-faq-title">Questions</h2>
+  <section class="ap-faq" aria-labelledby="apFaqTitle">
+    <h2 class="ap-faq-title" id="apFaqTitle">Questions</h2>
     <div class="ap-faq-list">
       <details class="ap-faq-item">
-        <summary>When and where does it happen?<span class="ap-faq-icon" aria-hidden="true">+</span></summary>
+        <summary><h3 class="ap-faq-q">When and where does it happen?</h3><span class="ap-faq-icon" aria-hidden="true">+</span></summary>
         <p>August 15–25, 2026, at the Turin Polytechnic Lyceum in Tashkent. Full days, every day.</p>
       </details>
       <details class="ap-faq-item">
-        <summary>How much does it cost?<span class="ap-faq-icon" aria-hidden="true">+</span></summary>
+        <summary><h3 class="ap-faq-q">How much does it cost?</h3><span class="ap-faq-icon" aria-hidden="true">+</span></summary>
         <p>Nothing. The cohort is free.</p>
       </details>
       <details class="ap-faq-item">
-        <summary>Do I need my own hardware?<span class="ap-faq-icon" aria-hidden="true">+</span></summary>
-        <p>No. Nazarx provides the robotics kits and components. Bring a laptop.</p>
+        <summary><h3 class="ap-faq-q">Do I need my own hardware?</h3><span class="ap-faq-icon" aria-hidden="true">+</span></summary>
+        <p>No. Nazarx provides the robotics kits. Bring a laptop.</p>
       </details>
       <details class="ap-faq-item">
-        <summary>Do I keep the kit?<span class="ap-faq-icon" aria-hidden="true">+</span></summary>
+        <summary><h3 class="ap-faq-q">Do I keep the kit?</h3><span class="ap-faq-icon" aria-hidden="true">+</span></summary>
         <p>No, the kits go back to Nazarx at the end. The code and everything you learned stay yours.</p>
       </details>
       <details class="ap-faq-item">
-        <summary>Do I need experience?<span class="ap-faq-icon" aria-hidden="true">+</span></summary>
-        <p>You need a laptop and the will to show up all ten days. Some of our v1.5 builders started barely knowing a for loop. Curiosity beats credentials here.</p>
+        <summary><h3 class="ap-faq-q">Do I need experience?</h3><span class="ap-faq-icon" aria-hidden="true">+</span></summary>
+        <p>You need a laptop and the will to show up every day. Some of our v1.5 builders started barely knowing a for loop.</p>
       </details>
       <details class="ap-faq-item">
-        <summary>What about the CV?<span class="ap-faq-icon" aria-hidden="true">+</span></summary>
+        <summary><h3 class="ap-faq-q">What about the CV?</h3><span class="ap-faq-icon" aria-hidden="true">+</span></summary>
         <p>Optional. The "show us one thing you've made" field matters more to us.</p>
       </details>
       <details class="ap-faq-item">
-        <summary>When do I hear back?<span class="ap-faq-icon" aria-hidden="true">+</span></summary>
+        <summary><h3 class="ap-faq-q">When do I hear back?</h3><span class="ap-faq-icon" aria-hidden="true">+</span></summary>
         <p>Applications close June 20. We read every one and email a decision within two weeks after that.</p>
       </details>
     </div>
@@ -467,7 +468,7 @@
     form.querySelectorAll('input, textarea, button').forEach(el => {
       if (el !== submit) el.disabled = true;
     });
-    setStatus("v2.0 applications are closed. Decisions go out two weeks after June 20 — we'll email you. Watch the homepage for v3.", 'bad');
+    setStatus("v2.0 applications are closed. We email every decision within two weeks after June 20.", 'bad');
   }
 
   form.addEventListener('submit', async (e) => {
@@ -485,7 +486,7 @@
     const file = cvInput.files[0] || null;
 
     if (!CFG.SUPABASE_URL || !CFG.SUPABASE_ANON_KEY) {
-      setStatus("Applications aren't available right now — try again in a moment.", 'bad');
+      setStatus("Applications aren't available right now. Try again in a moment.", 'bad');
       submit.disabled = false; return;
     }
 
@@ -496,7 +497,7 @@
     let cv_path = null, cv_filename = null;
     if (file) {
       if (file.size > 10 * 1024 * 1024) {
-        setStatus('CV is bigger than 10MB — please attach a smaller file.', 'bad');
+        setStatus('CV is bigger than 10MB. Please attach a smaller file.', 'bad');
         submit.disabled = false; return;
       }
       const safe = file.name.replace(/[^a-zA-Z0-9._-]+/g, '_').slice(-80);
@@ -522,14 +523,14 @@
       } else {
         let body = ''; try { body = await r.text(); } catch (_) {}
         if (r.status === 409 || /23505|duplicate/i.test(body)) {
-          setStatus("You've already applied with that email — we have it. We'll be in touch.", 'ok');
+          setStatus("You've already applied with that email. We have it, and we'll be in touch.", 'ok');
         } else {
-          setStatus("Hmm, something didn't go through — please try again.", 'bad');
+          setStatus("Something didn't go through. Please try again.", 'bad');
         }
         submit.disabled = false; return;
       }
     } catch (_) {
-      setStatus("Network hiccup — please try again.", 'bad');
+      setStatus("Network hiccup. Please try again.", 'bad');
       submit.disabled = false; return;
     }
 
