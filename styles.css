@@ -2632,6 +2632,8 @@ body.admin-open { overflow: hidden; }
   width: 100%;
   height: 100%;
   object-fit: cover;
+  /* landscape source: keep the face, not the chest, in the circle */
+  object-position: 50% 22%;
 }
 .founder-photo-fallback {
   font-family: var(--font-serif);
