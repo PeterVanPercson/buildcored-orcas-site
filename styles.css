@@ -2550,31 +2550,58 @@ body.admin-open { overflow: hidden; }
 .faq-item p a { color: var(--ink-0); text-decoration: none; border-bottom: 1px solid var(--line-3); }
 .faq-item p a:hover { border-color: var(--gull); }
 
-/* ═══ Founder — compact profile row ══════════════════════════════════════ */
+/* ═══ Founder — gull band, serif statement + portrait ════════════════════ */
 .faq { padding-bottom: clamp(36px, 4vw, 56px); }
-.founder { background: var(--bg-1); padding: clamp(16px, 2vw, 28px) 0 clamp(48px, 5vw, 72px); }
-.founder .section-head { margin-bottom: 28px; }
-.founder-row {
-  display: flex;
-  align-items: center;
-  gap: clamp(24px, 4vw, 44px);
+.founder {
+  background: var(--gull);
+  color: #0b0d10;
+  padding: clamp(56px, 8vw, 96px) 0;
 }
-@media (max-width: 560px) {
-  .founder-row { flex-direction: column; align-items: flex-start; gap: 22px; }
+.founder-grid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: clamp(32px, 6vw, 80px);
+  align-items: center;
+}
+@media (max-width: 760px) {
+  .founder-grid { grid-template-columns: 1fr; gap: 32px; }
+}
+.founder-kicker {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.45);
+  margin-bottom: 22px;
+}
+.founder-statement {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(26px, 3.4vw, 42px);
+  line-height: 1.22;
+  letter-spacing: -0.005em;
+  color: #0b0d10;
+  max-width: 24ch;
+}
+.founder-statement em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--slate);
 }
 .founder-photo {
   position: relative;
-  width: clamp(110px, 12vw, 150px);
+  width: clamp(140px, 16vw, 200px);
   aspect-ratio: 1;
   flex-shrink: 0;
+  justify-self: end;
   border-radius: 50%;
   overflow: hidden;
-  border: 1px solid var(--line-2);
-  background:
-    radial-gradient(ellipse 70% 50% at 50% 0%, rgba(214,222,224,0.06), transparent 70%),
-    var(--bg-3);
-  display: grid;
-  place-items: center;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 0 24px 60px -30px rgba(0, 0, 0, 0.35);
+}
+@media (max-width: 760px) {
+  .founder-photo { justify-self: start; width: 132px; }
 }
 .founder-photo img {
   position: absolute;
@@ -2585,46 +2612,32 @@ body.admin-open { overflow: hidden; }
   /* landscape source: keep the face, not the chest, in the circle */
   object-position: 50% 22%;
 }
-.founder-photo-fallback {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-size: 34px;
-  color: var(--ink-3);
-  letter-spacing: 0.02em;
-}
 .founder-sig {
   display: flex;
   flex-direction: column;
   gap: 8px;
-}
-.founder-name {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-weight: 500;
-  font-size: 28px;
-  letter-spacing: 0.01em;
-  color: var(--gull);
+  margin-top: 30px;
 }
 .founder-role {
   font-family: var(--font-mono);
   font-size: 11.5px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--ink-3);
+  color: rgba(0, 0, 0, 0.55);
   line-height: 1.6;
 }
 .founder-links {
   font-family: var(--font-mono);
   font-size: 11.5px;
   letter-spacing: 0.12em;
-  color: var(--ink-3);
+  color: rgba(0, 0, 0, 0.45);
 }
 .founder-links a {
-  color: var(--ink-2);
+  color: rgba(0, 0, 0, 0.7);
   text-decoration: none;
-  border-bottom: 1px solid var(--line-2);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
 }
-.founder-links a:hover { color: var(--ink-0); border-color: var(--gull); }
+.founder-links a:hover { color: #000; border-color: #000; }
 
 /* ═══ Apply bar (full-bleed gull) ════════════════════════════════════════ */
 .apply {
