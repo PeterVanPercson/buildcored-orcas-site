@@ -100,22 +100,28 @@
     max-width: 520px;
   }
   .ap-sub strong{color: var(--ink); font-weight: 500}
-  .ap-lockup{
-    display:inline-flex; align-items:center; gap:12px;
-    margin-top: 28px;
-    padding: 9px 18px;
-    border:1px solid var(--line-soft); border-radius:999px;
-    font-family:var(--font-mono); font-size:11.5px; letter-spacing:.16em;
-    color: var(--ink-muted); background: rgba(255,255,255,.08);
+  /* Partnership block — label with hairlines, then the two real logos.
+     Whole block links to the announcement post. */
+  .ap-partner{
+    display:flex; flex-direction:column; align-items:center; gap:20px;
+    margin-top: 38px;
     text-decoration:none;
-    transition: border-color 180ms var(--ease-out), background 180ms var(--ease-out);
   }
-  .ap-lockup:hover{ border-color: var(--ink); background: rgba(255,255,255,.18); }
-  .ap-lockup .nz{font-family:var(--font-display);font-weight:800;font-style:italic;font-size:13px;letter-spacing:.05em;color:var(--ink)}
-  .ap-lockup .x{color:var(--ink-muted)}
-  .ap-lockup .bc{font-family:var(--font-serif);font-weight:500;font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink)}
-  .ap-lockup .lockup-ext{color:var(--ink-dim); margin-left:2px}
-  .ap-lockup:hover .lockup-ext{color:var(--ink)}
+  .ap-partner-label{
+    display:flex; align-items:center; gap:14px;
+    font-family:var(--font-mono); font-size:10.5px; letter-spacing:.24em;
+    text-transform:uppercase; color: var(--ink-dim);
+  }
+  .ap-partner-label::before,
+  .ap-partner-label::after{
+    content:""; width:38px; height:1px; background:var(--line-soft);
+  }
+  .ap-partner-logos{ display:flex; align-items:center; gap: clamp(20px, 4vw, 34px); }
+  .ap-partner-logos img{ display:block; width:auto; transition: transform 200ms var(--ease-out); }
+  .ap-partner-logos .bc{ height:48px; }
+  .ap-partner-logos .nz{ height:44px; }
+  .ap-partner-logos .x{ font-family:var(--font-mono); font-size:15px; color:var(--ink-dim); }
+  .ap-partner:hover .ap-partner-logos img{ transform: translateY(-2px); }
 
   .ap-deadline{
     margin-top: 26px;
@@ -302,13 +308,17 @@
   <section class="ap-hero">
     <span class="ap-tag">Orcas v2.0 · Hardware</span>
     <h1 class="ap-head">Real boards.<br><em>Ten days.</em></h1>
-    <p class="ap-sub">Nazarx Robotics × Buildcored. <strong>August 15–25</strong> at the Turin Polytechnic Lyceum in Tashkent. Full days of building with real robotics kits. Nazarx brings the hardware, you bring a laptop. Free.</p>
-    <a class="ap-lockup" href="https://www.instagram.com/p/DYz0HeSvuBr/" target="_blank" rel="noopener" aria-label="Nazarx × Buildcored announcement on Instagram (opens in new tab)">
-      <span class="nz">NAZARX</span>
-      <span class="x">×</span>
-      <span class="bc">BUILDCORED</span>
-      <svg class="lockup-ext" width="11" height="11" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 11L11 3M11 3H4.5M11 3V9.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <p class="ap-sub"><strong>August 15–25</strong> · Tashkent · Free</p>
+
+    <a class="ap-partner" href="https://www.instagram.com/p/DYz0HeSvuBr/" target="_blank" rel="noopener" aria-label="Nazarx × Buildcored partnership announcement on Instagram, opens in new tab">
+      <span class="ap-partner-label">In partnership</span>
+      <span class="ap-partner-logos">
+        <img class="bc" src="/brand/mark-slate-trim.png" alt="Buildcored">
+        <span class="x" aria-hidden="true">×</span>
+        <img class="nz" src="/brand/nazarx-ink.png" alt="Nazarx Robotics">
+      </span>
     </a>
+
     <p class="ap-deadline" id="apDeadlineChip">
       <span class="dot" aria-hidden="true"></span>
       Applications close <strong>June 20, 2026</strong> · <span id="apDaysLeft">…</span>
