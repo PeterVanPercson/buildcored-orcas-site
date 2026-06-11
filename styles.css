@@ -476,6 +476,31 @@ body.drawer-open { overflow: hidden; }
   pointer-events: none;
 }
 
+/* The breach — a B&W orca mid-jump, faded into the hero floor like a
+   watermark. All edges dissolve via the radial mask so it reads as
+   atmosphere first, photo second. Sits under ::before and the type. */
+.hero-orca {
+  position: absolute;
+  top: 0;
+  right: clamp(-120px, -6vw, 0px);
+  height: 112%;
+  width: auto;
+  max-width: none;
+  object-fit: cover;
+  opacity: 0.34;
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(ellipse 62% 58% at 52% 42%, #000 32%, transparent 74%);
+          mask-image: radial-gradient(ellipse 62% 58% at 52% 42%, #000 32%, transparent 74%);
+}
+.hero .container { position: relative; z-index: 1; }
+@media (max-width: 860px) {
+  .hero-orca {
+    right: -30vw;
+    height: 90%;
+    opacity: 0.26;
+  }
+}
+
 .hero-stack {
   position: relative;
   text-align: center;
