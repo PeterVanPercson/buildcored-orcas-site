@@ -3071,6 +3071,20 @@ body.intro-done .hero-stack { opacity: 1; }
    VOICES — testimonials from v1.5 builders
    One huge editorial pull-quote + a 3-up grid of longer quotes.
    ═════════════════════════════════════════════════════════════════════════ */
+/* Projects teaser — the gallery lives at /projects/ now */
+.projects-teaser-cta {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.projects-teaser-note {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--ink-2);
+}
+
 .voices { background: var(--bg-0); padding: clamp(80px, 12vw, 150px) 0; }
 
 .voices-feature {

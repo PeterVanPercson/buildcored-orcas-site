@@ -186,7 +186,7 @@
         projects: (data || []).map(rowToProject),
       };
     } else {
-      const r = await fetch('projects.json?t=' + Date.now(), { cache: 'no-cache' });
+      const r = await fetch('/projects.json?t=' + Date.now(), { cache: 'no-cache' });
       if (!r.ok) throw new Error('projects.json missing');
       dbBase = await r.json();
     }
@@ -208,7 +208,7 @@
     //  `content-security-policy: default-src 'none'; sandbox` on SVGs,
     //  which blocks their fonts/animations and inline-document rendering.)
     if (/\.svg$/i.test(project.image)) {
-      return `covers/${project.image}${ver}`;
+      return `/covers/${project.image}${ver}`;
     }
     // Raster uploads (admin GIF/PNG/JPG) live in Supabase Storage
     if (sb) {

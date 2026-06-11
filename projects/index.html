@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Projects · Buildcored — 30 builds from Orcas v1.5</title>
+<meta name="description" content="All 30 projects from Orcas v1.5, one shipped per day. Every card has the builder's name and a link to its GitHub repo.">
+<link rel="canonical" href="https://buildcored.com/projects/">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="theme-color" content="#0b0d10">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Buildcored">
+<meta property="og:title" content="Projects · Buildcored">
+<meta property="og:description" content="All 30 projects from Orcas v1.5, one shipped per day. Builder names, repos, demos.">
+<meta property="og:url" content="https://buildcored.com/projects/">
+<meta property="og:image" content="https://buildcored.com/logo/orca-1200-og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" type="image/svg+xml" href="/logo/orca.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/logo/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/logo/apple-touch-icon.png">
+
+<link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/geist-v5-gyByhwUxId8gMEwcGFWNOITd.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/bricolagegrotesque-v9-3y9K6as8bTXq_nANBjzKo3IeZx8z6up5BeSl9D4dj_x9PpZBMlGIInHWVyNJ.woff2">
+<link rel="stylesheet" href="/fonts.css">
+<link rel="stylesheet" href="/styles.css">
+<style>
+  /* Subpage: no hero, so the gallery clears the fixed nav itself */
+  .projects { padding-top: clamp(120px, 16vw, 170px); }
+</style>
+</head>
+<body class="intro-done">
+
+<div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+<!-- ═══ Nav ═══════════════════════════════════════════════════════════════ -->
+<nav class="nav" id="nav" aria-label="Primary">
+  <div class="container nav-inner">
+    <a href="/" class="brand" aria-label="Buildcored home">
+      <img class="brand-mark" src="/brand/mark-white-trim.png" alt="" aria-hidden="true">
+      <span class="brand-name">Buildcored</span>
+    </a>
+    <div class="nav-links">
+      <a href="/#programs">Orcas</a>
+      <a href="/projects/" aria-current="page">Showcase</a>
+      <a href="/#about">About</a>
+      <a href="/#notes">Notes</a>
+    </div>
+    <a href="/apply/" class="btn btn-primary nav-cta">
+      Apply
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+        <path d="M2.5 7H11.5M11.5 7L7 2.5M11.5 7L7 11.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+      </svg>
+    </a>
+    <button class="nav-toggle" id="navToggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileDrawer">
+      <span class="nav-toggle-bar"></span>
+      <span class="nav-toggle-bar"></span>
+      <span class="nav-toggle-bar"></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ═══ Mobile drawer ════════════════════════════════════════════════════ -->
+<div class="mobile-drawer" id="mobileDrawer" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Site menu">
+  <nav class="mobile-drawer-inner" aria-label="Mobile primary">
+    <a href="/#programs" class="mobile-link">Orcas</a>
+    <a href="/projects/" class="mobile-link">Showcase</a>
+    <a href="/#about" class="mobile-link">About</a>
+    <a href="/#notes" class="mobile-link">Notes</a>
+    <a href="/apply/" class="btn btn-primary mobile-cta">
+      Apply
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+        <path d="M2.5 7H11.5M11.5 7L7 2.5M11.5 7L7 11.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+      </svg>
+    </a>
+  </nav>
+</div>
+
+<!-- ═══ Projects (the 30 daily builds — live database) ═══════════════════ -->
+<section class="section projects" id="projects">
+  <div class="container">
+    <header class="section-head reveal in">
+      <div class="section-num">/ — <strong>Project DB</strong></div>
+      <div>
+        <h2 class="h-1 serif">
+          Thirty projects.<br>
+          <span class="italic" style="color: var(--gull)">One a day, all shipped.</span>
+        </h2>
+        <p class="projects-receipt">v1.5 was 10 builders and 30 projects.<br>v2.0 is open to anyone — <a href="/apply/" style="color: var(--ink-0); border-bottom: 1px solid var(--line-3); text-decoration: none;">apply here</a>.</p>
+      </div>
+    </header>
+
+    <div class="db-toolbar reveal in">
+      <div class="db-filters" role="tablist" aria-label="Filter projects by week">
+        <button class="db-filter is-active" data-week="all" type="button">All <span class="db-filter-count" data-count="all">30</span></button>
+        <button class="db-filter" data-week="1" type="button">W·01 · Body <span class="db-filter-count" data-count="1">7</span></button>
+        <button class="db-filter" data-week="2" type="button">W·02 · Local AI <span class="db-filter-count" data-count="2">7</span></button>
+        <button class="db-filter" data-week="3" type="button">W·03 · Signals <span class="db-filter-count" data-count="3">7</span></button>
+        <button class="db-filter" data-week="4" type="button">W·04 · Full <span class="db-filter-count" data-count="4">9</span></button>
+      </div>
+      <div class="db-meta">
+        <span id="dbShippedCount">0</span><span class="db-meta-dim"> / 30 shipped</span>
+      </div>
+    </div>
+
+    <p class="sr-only" id="projectsStatus" aria-live="polite"></p>
+    <div class="projects-db" id="projectsDB">
+      <!-- cards rendered by app.js -->
+      <div class="db-empty">Loading projects…</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ Project detail modal ══════════════════════════════════════════════ -->
+<div class="project-modal" id="projectModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="pmodalTitle">
+  <button class="project-modal-backdrop" id="projectModalBackdrop" type="button" aria-label="Close"></button>
+  <div class="project-modal-inner">
+    <div class="project-modal-nav">
+      <button class="project-modal-arrow" id="projectModalPrev" type="button" aria-label="Previous project">
+        <svg width="16" height="16" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M9 2.5L4.5 7L9 11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="project-modal-arrow" id="projectModalNext" type="button" aria-label="Next project">
+        <svg width="16" height="16" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M5 2.5L9.5 7L5 11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="project-modal-close" id="projectModalClose" type="button" aria-label="Close">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <path d="M3 3L11 11M11 3L3 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <div id="projectModalBody"></div>
+  </div>
+</div>
+
+<!-- ═══ Footer ════════════════════════════════════════════════════════════ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-bottom" style="border-top: 0; margin-top: 0; padding-top: 0;">
+      <div>© <span id="footerYear">2026</span> Buildcored · Open source under MIT</div>
+      <div><a href="/" style="color: inherit; text-decoration: none;">← buildcored.com</a></div>
+    </div>
+  </div>
+</footer>
+
+<script src="/supabase-config.js"></script>
+<script src="/app.js"></script>
+<script>
+  // Footer year
+  (function () {
+    const y = document.getElementById('footerYear');
+    if (y) y.textContent = new Date().getFullYear();
+  })();
+
+  // Scroll progress line (same recipe as the homepage)
+  (function () {
+    const bar = document.getElementById('scrollProgress');
+    if (!bar) return;
+    let ticking = false;
+    const update = () => {
+      const d = document.documentElement, b = document.body;
+      const pos = Math.max(window.scrollY || 0, d.scrollTop, b.scrollTop);
+      const max = Math.max(d.scrollHeight, b.scrollHeight) - innerHeight;
+      bar.style.transform = 'scaleX(' + (max > 0 ? Math.min(pos / max, 1) : 0) + ')';
+      ticking = false;
+    };
+    const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+    document.addEventListener('scroll', onScroll, { passive: true, capture: true });
+    addEventListener('resize', onScroll, { passive: true });
+    update();
+  })();
+
+  // Nav backdrop on scroll
+  (function () {
+    const nav = document.getElementById('nav');
+    const onScroll = () => {
+      if (window.scrollY > 24) nav.classList.add('scrolled');
+      else nav.classList.remove('scrolled');
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
+
+  // Mobile drawer (same behavior as the homepage)
+  (function () {
+    const navToggle = document.getElementById('navToggle');
+    const mobileDrawer = document.getElementById('mobileDrawer');
+    if (!navToggle || !mobileDrawer) return;
+    const drawerFocusables = () =>
+      [...mobileDrawer.querySelectorAll('a[href], button:not([disabled])')];
+    let drawerLastFocus = null;
+    const openMenu = () => {
+      drawerLastFocus = document.activeElement;
+      navToggle.classList.add('open');
+      navToggle.setAttribute('aria-expanded', 'true');
+      navToggle.setAttribute('aria-label', 'Close menu');
+      mobileDrawer.classList.add('open');
+      mobileDrawer.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('drawer-open');
+      requestAnimationFrame(() => drawerFocusables()[0]?.focus());
+    };
+    const closeMenu = () => {
+      navToggle.classList.remove('open');
+      navToggle.setAttribute('aria-expanded', 'false');
+      navToggle.setAttribute('aria-label', 'Open menu');
+      mobileDrawer.classList.remove('open');
+      mobileDrawer.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('drawer-open');
+      (drawerLastFocus && drawerLastFocus.focus ? drawerLastFocus : navToggle).focus();
+    };
+    navToggle.addEventListener('click', () => {
+      mobileDrawer.classList.contains('open') ? closeMenu() : openMenu();
+    });
+    mobileDrawer.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+    mobileDrawer.addEventListener('click', (e) => { if (e.target === mobileDrawer) closeMenu(); });
+    document.addEventListener('keydown', (e) => {
+      if (!mobileDrawer.classList.contains('open')) return;
+      if (e.key === 'Escape') { closeMenu(); return; }
+      if (e.key === 'Tab') {
+        const f = drawerFocusables();
+        if (!f.length) return;
+        const first = f[0], last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    });
+    window.matchMedia('(min-width: 861px)').addEventListener('change', (m) => {
+      if (m.matches && mobileDrawer.classList.contains('open')) closeMenu();
+    });
+  })();
+</script>
+
+</body>
+</html>

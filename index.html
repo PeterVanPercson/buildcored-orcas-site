@@ -156,7 +156,7 @@
         {
           "@type": "Question",
           "name": "Are the projects real?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Yes. All 30 v1.5 projects are in the gallery at buildcored.com, each with the builder's name and a link to its GitHub repo." }
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. All 30 v1.5 projects are at buildcored.com/projects, each with the builder's name and a link to its GitHub repo." }
         },
         {
           "@type": "Question",
@@ -185,6 +185,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap">
 
+<script>
+  // Per-project deep links moved with the gallery to /projects/.
+  if (/^#p\//.test(location.hash)) location.replace('/projects/' + location.hash);
+</script>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -210,7 +214,7 @@
     </a>
     <div class="nav-links">
       <a href="#programs">Orcas</a>
-      <a href="#projects">Showcase</a>
+      <a href="/projects/">Showcase</a>
       <a href="#about">About</a>
       <a href="#notes">Notes</a>
     </div>
@@ -232,7 +236,7 @@
 <div class="mobile-drawer" id="mobileDrawer" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Site menu">
   <nav class="mobile-drawer-inner" aria-label="Mobile primary">
     <a href="#programs" class="mobile-link">Orcas</a>
-    <a href="#projects" class="mobile-link">Showcase</a>
+    <a href="/projects/" class="mobile-link">Showcase</a>
     <a href="#about" class="mobile-link">About</a>
     <a href="#notes" class="mobile-link">Notes</a>
     <a href="/apply/" class="btn btn-primary mobile-cta">
@@ -491,51 +495,21 @@
           Thirty projects.<br>
           <span class="italic" style="color: var(--gull)">One a day, all shipped.</span>
         </h2>
-        <p class="projects-receipt">v1.5 was 10 builders and 30 projects.<br>v2.0 is open to anyone.</p>
+        <p class="projects-receipt">v1.5 was 10 builders and 30 projects, every one with its repo and builder's name.<br>v2.0 is open to anyone.</p>
       </div>
     </header>
 
-    <div class="db-toolbar reveal" data-delay="1">
-      <div class="db-filters" role="tablist" aria-label="Filter projects by week">
-        <button class="db-filter is-active" data-week="all" type="button">All <span class="db-filter-count" data-count="all">30</span></button>
-        <button class="db-filter" data-week="1" type="button">W·01 · Body <span class="db-filter-count" data-count="1">7</span></button>
-        <button class="db-filter" data-week="2" type="button">W·02 · Local AI <span class="db-filter-count" data-count="2">7</span></button>
-        <button class="db-filter" data-week="3" type="button">W·03 · Signals <span class="db-filter-count" data-count="3">7</span></button>
-        <button class="db-filter" data-week="4" type="button">W·04 · Full <span class="db-filter-count" data-count="4">9</span></button>
-      </div>
-      <div class="db-meta">
-        <span id="dbShippedCount">0</span><span class="db-meta-dim"> / 30 shipped</span>
-      </div>
-    </div>
-
-    <p class="sr-only" id="projectsStatus" aria-live="polite"></p>
-    <div class="projects-db" id="projectsDB">
-      <!-- cards rendered by app.js -->
-      <div class="db-empty">Loading projects…</div>
+    <div class="projects-teaser-cta reveal" data-delay="1">
+      <a href="/projects/" class="btn btn-primary">
+        Browse the 30 projects
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <path d="M2.5 7H11.5M11.5 7L7 2.5M11.5 7L7 11.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+      </a>
+      <span class="projects-teaser-note">Filters by week, demos, every repo.</span>
     </div>
   </div>
 </section>
-
-<!-- ═══ Project detail modal ══════════════════════════════════════════════ -->
-<div class="project-modal" id="projectModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="pmodalTitle">
-  <button class="project-modal-backdrop" id="projectModalBackdrop" type="button" aria-label="Close"></button>
-  <div class="project-modal-inner">
-    <div class="project-modal-nav">
-      <button class="project-modal-arrow" id="projectModalPrev" type="button" aria-label="Previous project">
-        <svg width="16" height="16" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M9 2.5L4.5 7L9 11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <button class="project-modal-arrow" id="projectModalNext" type="button" aria-label="Next project">
-        <svg width="16" height="16" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M5 2.5L9.5 7L5 11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <button class="project-modal-close" id="projectModalClose" type="button" aria-label="Close">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-          <path d="M3 3L11 11M11 3L3 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
-      </button>
-    </div>
-    <div id="projectModalBody"></div>
-  </div>
-</div>
 
 <!-- ═══ Admin panel (only shown when URL hash = #admin) ═════════════════ -->
 <div class="admin" id="adminPanel" hidden>
@@ -915,7 +889,7 @@
       </details>
       <details class="faq-item">
         <summary><h3 class="faq-q">Are the projects real?</h3><span class="faq-icon" aria-hidden="true">+</span></summary>
-        <p>Yes. All 30 v1.5 projects are in the <a href="#projects">gallery</a>, each with the builder's name and a link to its GitHub repo. You can read every line of code.</p>
+        <p>Yes. All 30 v1.5 projects are at <a href="/projects/">buildcored.com/projects</a>, each with the builder's name and a link to its GitHub repo. You can read every line of code.</p>
       </details>
       <details class="faq-item">
         <summary><h3 class="faq-q">What's the certificate?</h3><span class="faq-icon" aria-hidden="true">+</span></summary>
@@ -950,7 +924,7 @@
       </div>
     </div>
     <div class="apply-cta">
-      <a href="#projects" class="btn-outline-dark">See the v1.5 projects</a>
+      <a href="/projects/" class="btn-outline-dark">See the v1.5 projects</a>
       <a href="https://github.com/PeterVanPercson/buildcored-orcas" class="btn-outline-dark" target="_blank" rel="noopener">View curriculum</a>
     </div>
   </div>
@@ -972,7 +946,7 @@
         <ul>
           <li><a href="#about">About</a></li>
           <li><a href="#programs">Programs</a></li>
-          <li><a href="#projects">Projects</a></li>
+          <li><a href="/projects/">Projects</a></li>
           <li><a href="/apply/">Apply (Orcas v2.0)</a></li>
           <li><a href="/verify/">Verify a certificate</a></li>
         </ul>
