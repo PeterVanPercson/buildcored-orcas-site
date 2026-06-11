@@ -482,22 +482,22 @@ body.drawer-open { overflow: hidden; }
 .hero-orca {
   position: absolute;
   top: 0;
-  right: clamp(-120px, -6vw, 0px);
+  left: clamp(-120px, -6vw, 0px);
   height: 112%;
   width: auto;
   max-width: none;
   object-fit: cover;
-  opacity: 0.34;
+  opacity: 0.2;
   pointer-events: none;
-  -webkit-mask-image: radial-gradient(ellipse 62% 58% at 52% 42%, #000 32%, transparent 74%);
-          mask-image: radial-gradient(ellipse 62% 58% at 52% 42%, #000 32%, transparent 74%);
+  -webkit-mask-image: radial-gradient(ellipse 62% 58% at 48% 42%, #000 32%, transparent 74%);
+          mask-image: radial-gradient(ellipse 62% 58% at 48% 42%, #000 32%, transparent 74%);
 }
 .hero .container { position: relative; z-index: 1; }
 @media (max-width: 860px) {
   .hero-orca {
-    right: -30vw;
+    left: -30vw;
     height: 90%;
-    opacity: 0.26;
+    opacity: 0.15;
   }
 }
 
