@@ -652,11 +652,30 @@ body.drawer-open { overflow: hidden; }
 }
 
 
-.hero-sub {
-  max-width: 52ch;
-  font-size: clamp(16px, 1.3vw, 19px);
-  line-height: 1.55;
-  color: var(--ink-1);
+/* Mirrors the "— open source for" eyebrow, flipped to the right with a
+   trailing dash, so the two lines bracket the headline. Sits inside
+   .hero-headline so it aligns to "engineering"'s right edge. */
+.hero-tag {
+  align-self: flex-end;
+  margin-top: clamp(8px, 1vw, 16px);
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(15px, 1.7vw, 24px);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--ink-2);
+  opacity: 0.55;
+}
+.hero-tag::after {
+  content: "";
+  display: inline-block;
+  width: clamp(24px, 4vw, 64px);
+  height: 1px;
+  background: var(--ink-3);
+  flex-shrink: 0;
 }
 
 .hero-actions {
