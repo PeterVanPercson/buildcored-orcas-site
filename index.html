@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Buildcored · Open source for creative engineering · Orcas</title>
-<meta name="description" content="Buildcored is a builder community. Orcas v1.5 shipped 30 projects in 30 days. v2.0 is a 10-day in-person hardware cohort with Nazarx Robotics. Free.">
+<meta name="description" content="Buildcored is a builder community. Orcas v1.5 shipped 30 projects in 30 days. v2.0 is an in-person hardware cohort with Nazarx Robotics, August 15–25 in Tashkent. Free.">
 
 <link rel="canonical" href="https://buildcored.com/">
 
@@ -31,7 +31,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Buildcored">
 <meta property="og:title" content="Buildcored · Open source for creative engineering">
-<meta property="og:description" content="A builder community. Orcas v1.5 shipped 30 projects in 30 days, all open source. v2.0 is a 10-day in-person hardware cohort with Nazarx Robotics.">
+<meta property="og:description" content="A builder community. Orcas v2.0 is an in-person hardware cohort with Nazarx Robotics. August 15–25, Tashkent. Free. Applications close June 20.">
 <meta property="og:url" content="https://buildcored.com/">
 <meta property="og:image" content="https://buildcored.com/logo/orca-1200-og.jpg">
 <meta property="og:image:secure_url" content="https://buildcored.com/logo/orca-1200-og.jpg">
@@ -43,7 +43,7 @@
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Buildcored · Open source for creative engineering">
-<meta name="twitter:description" content="A builder community. Orcas v1.5 shipped 30 projects in 30 days, all open source. v2.0 is a 10-day in-person hardware cohort with Nazarx Robotics.">
+<meta name="twitter:description" content="A builder community. Orcas v2.0 is an in-person hardware cohort with Nazarx Robotics. August 15–25, Tashkent. Free. Applications close June 20.">
 <meta name="twitter:image" content="https://buildcored.com/logo/orca-1200-og.jpg">
 <meta name="twitter:image:alt" content="Buildcored — Open source for creative engineering">
 
@@ -89,15 +89,45 @@
     {
       "@type": "EducationalOrganization",
       "@id": "https://buildcored.com/#orcas",
-      "name": "Orcas — Buildcored's 30-day engineering challenge",
+      "name": "Orcas — Buildcored's engineering challenge",
       "url": "https://buildcored.com/#programs",
       "parentOrganization": { "@id": "https://buildcored.com/#org" },
-      "description": "Orcas: a 30-day, ship-one-project-per-day creative engineering challenge. v1.5 wrapped with 30 projects shipped. Next: v2.0 with hardware.",
+      "description": "Orcas: Buildcored's ship-a-project-a-day engineering challenge. v1.5 shipped 30 projects in 30 days. v2.0 is an in-person hardware cohort.",
       "address": {
         "@type": "PostalAddress",
         "addressLocality": "Tashkent",
         "addressCountry": "UZ"
       }
+    },
+    {
+      "@type": "Event",
+      "@id": "https://buildcored.com/#orcas-v2",
+      "name": "Orcas v2.0 Hardware Cohort — Nazarx Robotics × Buildcored",
+      "startDate": "2026-08-15",
+      "endDate": "2026-08-25",
+      "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+      "eventStatus": "https://schema.org/EventScheduled",
+      "location": {
+        "@type": "Place",
+        "name": "Turin Polytechnic Lyceum",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Tashkent",
+          "addressCountry": "UZ"
+        }
+      },
+      "description": "A 10-day in-person hardware cohort for students. Build with real robotics kits provided by Nazarx Robotics, full days, in one room. Free. Applications close June 20, 2026.",
+      "organizer": { "@id": "https://buildcored.com/#org" },
+      "isAccessibleForFree": true,
+      "offers": {
+        "@type": "Offer",
+        "url": "https://buildcored.com/apply/",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock",
+        "validThrough": "2026-06-20T23:59:59+05:00"
+      },
+      "image": "https://buildcored.com/logo/orca-1200-og.jpg"
     }
   ]
 }
@@ -217,11 +247,11 @@
   <div class="marquee-track">
     <span>v1.5 — 30 projects shipped</span>
     <span>v2.0 — applications open</span>
-    <span>10 days. real boards. free.</span>
+    <span>aug 15–25 · tashkent · real boards · free</span>
     <span>built in public</span>
     <span>v1.5 — 30 projects shipped</span>
     <span>v2.0 — applications open</span>
-    <span>10 days. real boards. free.</span>
+    <span>aug 15–25 · tashkent · real boards · free</span>
     <span>built in public</span>
   </div>
 </div>
@@ -381,13 +411,35 @@
       </div>
     </article>
 
-    <a href="/apply/" class="future-program future-program-open reveal" data-delay="2">
-      <div>
-        <div class="future-program-title serif italic">Orcas v2.0 · Hardware</div>
-        <div class="future-program-desc">Same cadence, real boards, with Nazarx Robotics. 10 days, free.</div>
+    <article class="v2-card reveal" data-delay="2" id="v2">
+      <div class="v2-head">
+        <div>
+          <div class="program-id">Orcas <strong>v2.0</strong> · Hardware · In person</div>
+          <h3 class="v2-name">Real boards.<br><em>Ten days in one room.</em></h3>
+        </div>
+        <span class="label label-open"><span class="open-dot" aria-hidden="true"></span>Applications open</span>
       </div>
-      <span class="label label-open"><span class="open-dot" aria-hidden="true"></span>Applications open · closes June 20</span>
-    </a>
+
+      <p class="v2-sub">A Nazarx Robotics × Buildcored cohort. You build with real hardware every day, in the same room as everyone else. Robotics kits are provided by Nazarx — you bring a laptop and show up.</p>
+
+      <div class="v2-meta">
+        <span>Dates<strong>August 15–25, 2026</strong></span>
+        <span>Where<strong>Turin Polytechnic Lyceum, Tashkent</strong></span>
+        <span>Format<strong>Full days</strong></span>
+        <span>Who<strong>Students</strong></span>
+        <span>Cost<strong>Free</strong></span>
+      </div>
+
+      <div class="v2-foot">
+        <a href="/apply/" class="btn btn-primary">
+          Apply now
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M2.5 7H11.5M11.5 7L7 2.5M11.5 7L7 11.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </a>
+        <span class="v2-deadline">Applications close June 20, 2026</span>
+      </div>
+    </article>
   </div>
 </section>
 
@@ -770,7 +822,7 @@
       <h2 class="apply-head">
         Real boards.<br><em>Ten days.</em>
       </h2>
-      <p class="apply-sub">v1.5 was 30 projects in 30 days, all software. v2.0 is <strong>in person</strong>: 10 days, real hardware, free. We build it together in one room.</p>
+      <p class="apply-sub">v1.5 was 30 projects in 30 days, all software. v2.0 is <strong>in person</strong>: <strong>August 15–25 in Tashkent</strong>, real hardware, free. We build it together in one room.</p>
       <p class="apply-deadline-line" id="applyDeadlineLine">
         <span class="apply-deadline-dot" aria-hidden="true"></span>
         Applications close <strong>June 20, 2026</strong> · <span id="applyDaysLeft">…</span>

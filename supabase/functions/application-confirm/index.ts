@@ -35,10 +35,10 @@ const html = (email: string) => `<!doctype html>
   </div>
   <p style="margin: 0 0 18px;">Thanks for applying. <strong>${email}</strong> on record.</p>
   <p style="margin: 0 0 18px;">Decision in two weeks after <strong>June 20</strong>.</p>
-  <p style="margin: 0 0 18px;">The 10 days run sometime in summer 2026 — exact dates announced once we lock the room.</p>
+  <p style="margin: 0 0 18px;">The cohort runs <strong>August 15–25</strong> at Turin Polytechnic Lyceum, Tashkent.</p>
   <p style="margin: 0 0 18px;">Past projects: <a href="https://buildcored.com/#projects" style="color: #06070a; border-bottom: 1px solid #ccc; text-decoration: none;">buildcored.com</a>.</p>
   <hr style="border: none; border-top: 1px solid #eee; margin: 36px 0 20px;">
-  <p style="color: #898f97; font-size: 12px; margin: 0;">Questions? <a href="mailto:team@buildcored.com" style="color: #898f97; text-decoration: underline;">team@buildcored.com</a> — replies hit us.</p>
+  <p style="color: #898f97; font-size: 12px; margin: 0;">Questions? <a href="mailto:team@buildcored.com" style="color: #898f97; text-decoration: underline;">team@buildcored.com</a>. Replies reach us.</p>
 </body>
 </html>`;
 
@@ -49,12 +49,11 @@ Thanks for applying. ${email} on record.
 
 Decision in two weeks after June 20.
 
-The 10 days run sometime in summer 2026 — exact dates announced once we lock the room.
+The cohort runs August 15–25 at Turin Polytechnic Lyceum, Tashkent.
 
 Past projects: https://buildcored.com/#projects
 
-—
-Questions? team@buildcored.com — replies hit us.`;
+Questions? team@buildcored.com. Replies reach us.`;
 
 // Claim the row idempotently. Returns true if THIS invocation should send;
 // false if another retry already won the race (or the row vanished).
