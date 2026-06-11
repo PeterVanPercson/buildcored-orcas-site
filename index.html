@@ -994,28 +994,6 @@
   </div>
 </footer>
 
-<!-- Project-gallery ambience: autostarts when the Project DB is in view,
-     fades out when you scroll above it, keeps playing inside a project modal -->
-<audio id="bgAudio" preload="none" playsinline>
-  <source src="audio/orcas-theme.opus" type="audio/ogg; codecs=opus">
-  <source src="audio/orcas-theme.m4a" type="audio/mp4; codecs=mp4a.40.2">
-</audio>
-
-<!-- Visible control for the gallery ambience: appears with the Project DB,
-     lets anyone mute/unmute (or start it, under reduce-motion / no-autoplay) -->
-<button class="sound-toggle" id="soundToggle" type="button" hidden
-        aria-pressed="false" aria-label="Play gallery sound" title="Gallery sound">
-  <svg class="ico-on"  width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-    <path d="M11 5 6 9H3v6h3l5 4V5Z" fill="currentColor"/>
-    <path d="M15.5 8.5a5 5 0 0 1 0 7M18 6a8.5 8.5 0 0 1 0 12" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
-  </svg>
-  <svg class="ico-off" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-    <path d="M11 5 6 9H3v6h3l5 4V5Z" fill="currentColor"/>
-    <path d="m16 9 5 6m0-6-5 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
-  </svg>
-  <span class="sound-toggle-label">Sound</span>
-</button>
-
 <!-- ═══ Free Claude — chooser modal (lifted from husanmavlonov.com) ════════ -->
 <div class="cc-backdrop" id="ccBackdrop" aria-hidden="true">
   <div class="cc-modal" role="dialog" aria-modal="true" aria-label="Pick Claude Code or Claude Cowork">

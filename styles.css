@@ -2829,45 +2829,6 @@ body.intro-done .hero-stack { opacity: 1; }
 .pmodal-share svg { width: 14px; height: 14px; }
 .pmodal-share.is-copied { color: #6ee2a1; border-color: rgba(110, 226, 161, 0.45); }
 
-/* ═══ Visible gallery-sound toggle ═══════════════════════════════════════ */
-.sound-toggle {
-  position: fixed;
-  right: clamp(16px, 3vw, 28px);
-  bottom: clamp(16px, 3vw, 28px);
-  z-index: 95;
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  padding: 11px 16px;
-  border-radius: 999px;
-  border: 1px solid var(--line-2);
-  background: rgba(11, 13, 16, 0.72);
-  -webkit-backdrop-filter: blur(16px) saturate(160%);
-  backdrop-filter: blur(16px) saturate(160%);
-  color: var(--ink-2);
-  font-family: var(--font-mono);
-  font-size: 11.5px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  cursor: pointer;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(10px);
-  transition: opacity 360ms var(--ease-out), transform 360ms var(--ease-out),
-              color 220ms var(--ease-out), border-color 220ms var(--ease-out);
-}
-.sound-toggle.show { opacity: 1; visibility: visible; transform: none; }
-.sound-toggle:hover { color: var(--ink-0); border-color: var(--line-3); }
-.sound-toggle svg { width: 18px; height: 18px; display: block; }
-.sound-toggle .ico-on  { display: none; }
-.sound-toggle .ico-off { display: block; color: var(--ink-3); }
-.sound-toggle.is-on { color: var(--gull); }
-.sound-toggle.is-on .ico-on  { display: block; color: #6ee2a1; }
-.sound-toggle.is-on .ico-off { display: none; }
-@media (max-width: 560px) {
-  .sound-toggle { padding: 11px; }
-  .sound-toggle-label { display: none; }
-}
 
 /* ═══ Honor "reduce motion" — kill ambient/decorative animation ══════════ */
 @media (prefers-reduced-motion: reduce) {
@@ -2880,7 +2841,6 @@ body.intro-done .hero-stack { opacity: 1; }
   .reveal { opacity: 1 !important; transform: none !important; }
   .hero-stack { opacity: 1 !important; }
   .intro { animation: none !important; }
-  .sound-toggle { transition: opacity 0.001ms !important; }
   /* keep the difficulty light readable (solid, not frozen mid-pulse) */
   .pcard-diff { animation: none !important; opacity: 1 !important; transform: none !important; box-shadow: none !important; }
 }
