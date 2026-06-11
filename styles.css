@@ -1133,7 +1133,7 @@ section { position: relative; }
 }
 
 /* ═══ Projects (curriculum breakdown) ════════════════════════════════════ */
-.projects { background: var(--bg-1); }
+.projects { background: var(--bg-2); }
 
 .projects-grid {
   display: grid;
