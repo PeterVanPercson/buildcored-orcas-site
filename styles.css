@@ -1127,20 +1127,7 @@ section { position: relative; }
   max-width: 620px;
   margin-top: 18px;
 }
-.v2-meta {
-  display: flex;
-  gap: 18px 32px;
-  flex-wrap: wrap;
-  margin-top: 26px;
-  padding-top: 22px;
-  border-top: 1px solid var(--line-1);
-  font-family: var(--font-mono);
-  font-size: 11.5px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--ink-3);
-}
-.v2-meta span strong { color: var(--ink-0); font-weight: 400; margin-left: 6px; }
+.v2-sub strong { color: var(--ink-0); font-weight: 500; }
 .v2-foot {
   display: flex;
   align-items: center;
