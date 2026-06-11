@@ -660,38 +660,6 @@ body.drawer-open { overflow: hidden; }
   justify-content: center;
 }
 
-/* ═══ Marquee ════════════════════════════════════════════════════════════ */
-.marquee {
-  border-top: 1px solid var(--line-1);
-  border-bottom: 1px solid var(--line-1);
-  overflow: hidden;
-  padding: 18px 0;
-  background: var(--bg-1);
-}
-.marquee-track {
-  display: flex;
-  gap: 56px;
-  animation: marquee 42s linear infinite;
-  width: max-content;
-  font-family: var(--font-mono);
-  font-size: 12.5px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--ink-2);
-}
-.marquee-track span { display: inline-flex; align-items: center; gap: 28px; }
-.marquee-track span::after {
-  content: "";
-  width: 5px; height: 5px;
-  border-radius: 50%;
-  background: var(--gull);
-  display: inline-block;
-}
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-
 /* ═══ Section common ═════════════════════════════════════════════════════ */
 section { position: relative; }
 .section { padding: clamp(80px, 12vw, 140px) 0; }
@@ -718,7 +686,7 @@ section { position: relative; }
   .section-head { grid-template-columns: 1fr; gap: 20px; }
 }
 
-/* ═══ Numbers strip — receipts (between marquee + about) ═══════════════ */
+/* ═══ Numbers strip — receipts (between hero + founder) ════════════════ */
 .numbers {
   padding: clamp(72px, 10vw, 120px) 0;
   border-top: 1px solid var(--line-2);
@@ -2908,7 +2876,6 @@ body.intro-done .hero-stack { opacity: 1; }
   .reveal { opacity: 1 !important; transform: none !important; }
   .hero-stack { opacity: 1 !important; }
   .intro { animation: none !important; }
-  .marquee-track { animation: none !important; }
   .sound-toggle { transition: opacity 0.001ms !important; }
   /* keep the difficulty light readable (solid, not frozen mid-pulse) */
   .pcard-diff { animation: none !important; opacity: 1 !important; transform: none !important; box-shadow: none !important; }
