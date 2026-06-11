@@ -2602,22 +2602,22 @@ body.admin-open { overflow: hidden; }
 .faq-item p a { color: var(--ink-0); text-decoration: none; border-bottom: 1px solid var(--line-3); }
 .faq-item p a:hover { border-color: var(--gull); }
 
-/* ═══ Founder — the social-project note ═════════════════════════════════ */
+/* ═══ Founder — compact profile row ══════════════════════════════════════ */
 .founder { background: var(--bg-1); }
-.founder-card {
-  display: grid;
-  grid-template-columns: 260px 1fr;
-  gap: clamp(32px, 5vw, 64px);
-  align-items: start;
+.founder-row {
+  display: flex;
+  align-items: center;
+  gap: clamp(24px, 4vw, 44px);
 }
-@media (max-width: 760px) {
-  .founder-card { grid-template-columns: 1fr; gap: 32px; }
+@media (max-width: 560px) {
+  .founder-row { flex-direction: column; align-items: flex-start; gap: 22px; }
 }
 .founder-photo {
   position: relative;
-  width: 100%;
-  aspect-ratio: 4 / 5;
-  border-radius: 16px;
+  width: clamp(110px, 12vw, 150px);
+  aspect-ratio: 1;
+  flex-shrink: 0;
+  border-radius: 50%;
   overflow: hidden;
   border: 1px solid var(--line-2);
   background:
@@ -2625,9 +2625,6 @@ body.admin-open { overflow: hidden; }
     var(--bg-3);
   display: grid;
   place-items: center;
-}
-@media (max-width: 760px) {
-  .founder-photo { max-width: 220px; }
 }
 .founder-photo img {
   position: absolute;
@@ -2639,26 +2636,11 @@ body.admin-open { overflow: hidden; }
 .founder-photo-fallback {
   font-family: var(--font-serif);
   font-style: italic;
-  font-size: 56px;
+  font-size: 34px;
   color: var(--ink-3);
   letter-spacing: 0.02em;
 }
-.founder-body { max-width: 560px; }
-.founder-lead {
-  font-family: var(--font-serif);
-  font-size: clamp(21px, 2.4vw, 26px);
-  line-height: 1.45;
-  color: var(--gull);
-  margin-bottom: 22px;
-}
-.founder-body p {
-  font-size: 16px;
-  line-height: 1.7;
-  color: var(--ink-1);
-  margin-bottom: 18px;
-}
 .founder-sig {
-  margin-top: 30px;
   display: flex;
   flex-direction: column;
   gap: 8px;
