@@ -657,22 +657,23 @@ body.drawer-open { overflow: hidden; }
    .hero-headline so it aligns to "engineering"'s right edge. */
 .hero-tag {
   align-self: flex-end;
-  margin-top: clamp(8px, 1vw, 16px);
+  margin-top: clamp(4px, 0.5vw, 8px);
   display: inline-flex;
   align-items: center;
   gap: 14px;
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(15px, 1.7vw, 24px);
-  letter-spacing: -0.02em;
+  font-size: clamp(22px, 3.2vw, 52px);
+  letter-spacing: -0.025em;
   line-height: 1;
+  text-transform: none;
   color: var(--ink-2);
   opacity: 0.55;
 }
 .hero-tag::after {
   content: "";
   display: inline-block;
-  width: clamp(24px, 4vw, 64px);
+  width: clamp(28px, 4vw, 64px);
   height: 1px;
   background: var(--ink-3);
   flex-shrink: 0;
