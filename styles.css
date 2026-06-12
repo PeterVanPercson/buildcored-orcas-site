@@ -1159,6 +1159,22 @@ section { position: relative; }
   .label-open { white-space: normal; }
 }
 
+/* ═══ Light (gull) text sections — About, Projects teaser ════════════════ */
+.section.section-light { background: var(--gull); color: #0b0d10; }
+.section-light .section-num { color: rgba(0, 0, 0, 0.45); }
+.section-light .section-num strong { color: var(--slate); }
+.section-light .about-quote { color: #0b0d10; }
+.section-light .about-quote .strong { color: var(--slate); }
+.section-light .h-1 { color: #0b0d10; }
+.section-light .h-1 .italic { color: var(--slate); }
+.section-light .principle-n { color: rgba(0, 0, 0, 0.4); }
+.section-light .principle h4 { color: #0b0d10; }
+.section-light .principle p { color: rgba(0, 0, 0, 0.62); }
+.section-light .projects-receipt { color: rgba(0, 0, 0, 0.6); }
+.section-light .projects-teaser-note { color: rgba(0, 0, 0, 0.55); }
+.section-light .btn-primary { background: #0b0d10; color: var(--gull); }
+.section-light .btn-primary:hover { background: #1a1d20; }
+
 /* ═══ Projects (curriculum breakdown) ════════════════════════════════════ */
 .projects { background: var(--bg-2); }
 
