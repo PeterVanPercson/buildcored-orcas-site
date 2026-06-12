@@ -64,6 +64,16 @@
             mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, #000 35%, transparent 78%);
   }
   .ap-top, .wrap, .ap-foot{ position:relative; z-index:1; }
+  /* Brand watermark: the orca mark, huge and barely-there, anchored to the
+     right edge. Fixed so it sits like a pressed seal as you scroll. */
+  body::after{
+    content:""; position:fixed; z-index:0; pointer-events:none;
+    right: clamp(-180px, -10vw, -60px); top: 22%;
+    width: clamp(420px, 44vw, 680px); aspect-ratio: 557 / 322;
+    background: url('/brand/mark-black-trim.png') no-repeat center / contain;
+    opacity: 0.05;
+    transform: rotate(-7deg);
+  }
   a{color:inherit}
 
   /* Scroll progress — thin slate line at the very top, grows as you read */

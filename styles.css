@@ -3083,6 +3083,14 @@ body.intro-done .hero-stack { opacity: 1; }
       color: var(--dim);
     }
 
+.cc-note {
+  margin-top: 18px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+}
+
     /* ---- the three Claude sprites ---- */
     .cc-sprite {
       position: absolute;
