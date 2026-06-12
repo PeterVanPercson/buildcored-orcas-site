@@ -64,16 +64,6 @@
             mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, #000 35%, transparent 78%);
   }
   .ap-top, .wrap, .ap-foot{ position:relative; z-index:1; }
-  /* Brand watermark: the orca mark, huge and barely-there, anchored to the
-     right edge. Fixed so it sits like a pressed seal as you scroll. */
-  body::after{
-    content:""; position:fixed; z-index:0; pointer-events:none;
-    right: clamp(-140px, -7vw, -30px); top: clamp(-90px, -5vw, -30px);
-    width: clamp(340px, 36vw, 560px); aspect-ratio: 1;
-    background: url('/logo/orca-1024.png') no-repeat center / contain;
-    opacity: 0.06;
-    transform: rotate(-7deg);
-  }
   a{color:inherit}
 
   /* Scroll progress — thin slate line at the very top, grows as you read */
@@ -272,6 +262,38 @@
   .ap-foot a{color: var(--ink-muted); text-decoration: none}
   .ap-foot a:hover{color: var(--ink)}
 
+  /* Snapshot of the v1.5 cohort — small, tilted, grows on hover */
+  .ap-snapshot{
+    width: min(300px, 78vw);
+    margin: 0 auto clamp(40px,5vw,56px);
+    position: relative;
+    z-index: 2;
+    transform: rotate(-2deg);
+    transition: transform 260ms var(--ease-out);
+  }
+  .ap-snapshot:hover{ transform: rotate(0deg) scale(2.1); z-index: 50; }
+  .ap-snapshot img{
+    display:block; width:100%; height:auto;
+    border-radius: 10px;
+    border: 1px solid var(--line-soft);
+    box-shadow: 0 18px 50px -22px rgba(0,0,0,.45);
+    background:#fff;
+  }
+  .ap-snapshot figcaption{
+    margin-top: 10px;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 11px; letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+  @media (max-width: 700px){
+    .ap-snapshot:hover{ transform: rotate(0deg) scale(1.25); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .ap-snapshot, .ap-snapshot:hover{ transform: none; }
+  }
+
   /* Mentor card — compact, light card on the gull surface */
   .ap-mentor{
     display:flex; align-items:center; gap:20px;
@@ -441,6 +463,11 @@
     <p>We've got <strong id="successEmail"></strong> on record. Decision within two weeks after <strong>June 20</strong>.</p>
     <a href="/" class="ap-back-btn">← Back to Buildcored</a>
   </section>
+
+  <figure class="ap-snapshot">
+    <img src="/art/cohort-v1.jpg" alt="A video call from the first Orcas cohort: nine builders on a Google Meet grid" loading="lazy" decoding="async">
+    <figcaption>Our first cohort, held online.</figcaption>
+  </figure>
 
   <aside class="ap-mentor">
     <img class="ap-mentor-photo" src="/art/husan.jpg" alt="Husan Mavlonov" loading="lazy" decoding="async">
