@@ -264,14 +264,26 @@
 
   /* Snapshot of the v1.5 cohort — small, tilted, grows on hover */
   .ap-snapshot{
-    width: min(300px, 78vw);
-    margin: 0 auto clamp(40px,5vw,56px);
+    width: min(210px, 62vw);
+    margin: 4px auto 26px;
     position: relative;
     z-index: 2;
     transform: rotate(-2deg);
     transition: transform 260ms var(--ease-out);
   }
   .ap-snapshot:hover{ transform: rotate(0deg) scale(2.1); z-index: 50; }
+  @media (min-width: 1150px){
+    .ap-snapshot{
+      position: absolute;
+      top: 120px;
+      right: clamp(24px, 3.5vw, 64px);
+      width: 230px;
+      margin: 0;
+      transform: rotate(3deg);
+      transform-origin: top right;
+    }
+    .ap-snapshot:hover{ transform: rotate(0deg) scale(2.3); }
+  }
   .ap-snapshot img{
     display:block; width:100%; height:auto;
     border-radius: 10px;
@@ -403,6 +415,11 @@
   <a class="ap-back" href="/">← Back to site</a>
 </header>
 
+  <figure class="ap-snapshot">
+    <img src="/art/cohort-v1.jpg" alt="A video call from the first Orcas cohort: nine builders on a Google Meet grid" loading="lazy" decoding="async">
+    <figcaption>Our first cohort, held online.</figcaption>
+  </figure>
+
 <main class="wrap">
 
   <section class="ap-hero">
@@ -463,11 +480,6 @@
     <p>We've got <strong id="successEmail"></strong> on record. Decision within two weeks after <strong>June 20</strong>.</p>
     <a href="/" class="ap-back-btn">← Back to Buildcored</a>
   </section>
-
-  <figure class="ap-snapshot">
-    <img src="/art/cohort-v1.jpg" alt="A video call from the first Orcas cohort: nine builders on a Google Meet grid" loading="lazy" decoding="async">
-    <figcaption>Our first cohort, held online.</figcaption>
-  </figure>
 
   <aside class="ap-mentor">
     <img class="ap-mentor-photo" src="/art/husan.jpg" alt="Husan Mavlonov" loading="lazy" decoding="async">
