@@ -1009,13 +1009,10 @@
         if (error) return;                 // RPC missing → just stay hidden
         const n = Number(data);
         if (!Number.isFinite(n)) return;
-        // Only show the actual number once it's flattering. Below the
-        // threshold a tiny "2 builders" reads as "nobody's here", so show
-        // motivating qualitative copy instead (no number).
+        // Only show the count once it clears the floor; below it, stay hidden.
         const COUNT_MIN = 25;
-        countEl.innerHTML = n >= COUNT_MIN
-          ? `<strong>${n.toLocaleString()}</strong> builders on the v2.0 waitlist`
-          : 'v2.0 invites go out in waves — early signups go first.';
+        if (n < COUNT_MIN) return;
+        countEl.innerHTML = `<strong>${n.toLocaleString()}</strong> builders on the v2.0 waitlist`;
         countEl.hidden = false;
       } catch (_) { /* offline / not deployed — leave hidden */ }
     }
@@ -1043,14 +1040,14 @@
       if (error) {
         // 23505 = unique violation
         if (error.code === '23505') {
-          status.textContent = 'You\'re already on the waitlist — see you in v2.0.';
+          status.textContent = 'You\'re already on the waitlist.';
         } else {
           status.textContent = 'Hmm: ' + error.message;
         }
         return;
       }
       form.reset();
-      status.textContent = 'You\'re on the waitlist. We\'ll email the first v2.0 invite.';
+      status.textContent = 'You\'re on the waitlist. We\'ll email you about v2.0.';
       track('waitlist-signup');
       refreshCount();
     });
