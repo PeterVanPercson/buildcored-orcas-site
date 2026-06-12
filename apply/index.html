@@ -429,7 +429,7 @@
 
     <p class="ap-deadline" id="apDeadlineChip">
       <span class="dot" aria-hidden="true"></span>
-      Applications close <strong>June 20</strong> <span style="white-space:nowrap">· <span id="apDaysLeft">…</span></span>
+      Applications close <strong>June 20</strong> <span style="white-space:nowrap">· <span id="apDaysLeft">…</span></span> <span style="white-space:nowrap">· Tashkent time</span>
     </p>
   </section>
 
@@ -603,7 +603,7 @@
       else if (days === 1) daysEl.textContent = '1 day left';
       else if (days === 0) daysEl.textContent = 'closes today';
       else                 daysEl.textContent = 'closed';
-      if (days <= 7 && days > 0) chip.classList.add('urgent');
+      if (days <= 10 && days > 0) chip.classList.add('urgent');
       if (days <= 0) chip.classList.add('closed');
     }
     return days <= 0;
@@ -669,6 +669,7 @@
         inserted = true;
       } else {
         let body = ''; try { body = await r.text(); } catch (_) {}
+        try { window.goatcounter?.count({ path: 'evt-apply-error', title: 'apply-error', event: true }); } catch (_) {}
         if (r.status === 409 || /23505|duplicate/i.test(body)) {
           setStatus("You've already applied with that email. We have it, and we'll be in touch.", 'ok');
         } else {
@@ -704,6 +705,7 @@
     form.style.display = 'none';
     success.classList.add('show');
     success.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    try { window.goatcounter?.count({ path: 'evt-apply-submit', title: 'apply-submit', event: true }); } catch (_) {}
   });
 
   try {

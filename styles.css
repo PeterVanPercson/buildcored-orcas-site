@@ -454,7 +454,7 @@ body.drawer-open { overflow: hidden; }
 
 @media (max-width: 860px) {
   .nav-links { display: none; }
-  .nav-cta { display: none; }
+  .nav-cta { padding: 9px 15px; font-size: 12.5px; margin-left: auto; margin-right: 12px; }
   .nav-toggle { display: flex; }
   .brand-name { font-size: 13px; letter-spacing: 0.05em; }
 }
@@ -678,6 +678,16 @@ body.drawer-open { overflow: hidden; }
   background: var(--ink-3);
   flex-shrink: 0;
 }
+
+.hero-deadline {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.hero-deadline strong { color: var(--ink-0); font-weight: 500; }
+.hero-deadline.urgent, .hero-deadline.urgent strong { color: #d99a6c; }
 
 .hero-actions {
   display: flex;

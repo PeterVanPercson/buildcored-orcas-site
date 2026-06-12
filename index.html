@@ -266,8 +266,10 @@
             <path d="M2.5 7H11.5M11.5 7L7 2.5M11.5 7L7 11.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
           </svg>
         </a>
-        <a href="#programs" class="btn btn-ghost">See the program</a>
+        <a href="#v2" class="btn btn-ghost">See the program</a>
       </div>
+
+      <p class="hero-deadline reveal" data-delay="4">Applications close <strong>June 20</strong> <span style="white-space:nowrap">· <span id="heroDaysLeft">…</span></span> · Tashkent time</p>
 
       <div class="claude-row reveal" data-delay="4">
         <div class="claude-wrap">
@@ -359,12 +361,34 @@
     <header class="section-head reveal">
       <div class="section-num">/ 02 — <strong>Programs</strong></div>
       <h2 class="h-1 serif">
-        One program live.<br>
-        <span class="italic" style="color: var(--ink-2)">More on the way.</span>
+        One program open.<br>
+        <span class="italic" style="color: var(--ink-2)">One wrapped, below.</span>
       </h2>
     </header>
 
-    <article class="program-card reveal" data-delay="1">
+    <article class="v2-card reveal" data-delay="1" id="v2">
+      <div class="v2-head">
+        <div>
+          <div class="program-id">Orcas <strong>v2.0</strong> · Hardware · In person</div>
+          <h3 class="v2-name">Real boards.<br><em>Ten days in one room.</em></h3>
+        </div>
+        <span class="label label-open"><span class="open-dot" aria-hidden="true"></span>Applications open</span>
+      </div>
+
+      <p class="v2-sub">A Nazarx Robotics × Buildcored cohort. <strong>August 15–24</strong> at the Turin Polytechnic Lyceum in Tashkent. Full days of building with real robotics kits, everyone in the same room. Nazarx brings the hardware, you bring a laptop. Free.</p>
+
+      <div class="v2-foot">
+        <a href="/apply/" class="btn btn-primary">
+          Apply now
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M2.5 7H11.5M11.5 7L7 2.5M11.5 7L7 11.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </a>
+        <span class="v2-deadline">Applications close June 20, 2026</span>
+      </div>
+    </article>
+
+    <article class="program-card reveal" data-delay="2">
       <div class="program-grid">
         <div>
           <div class="program-id">Orcas <strong>v1.5</strong> · 30 Days · Wrapped</div>
@@ -411,7 +435,7 @@
         </div>
         <div class="week">
           <div class="week-n"><span class="a">Week 03</span><span class="b">Days 15 – 21</span></div>
-          <div class="week-desc">How real hardware works. FFTs, oscilloscopes, signals, busses, all in software.</div>
+          <div class="week-desc">How real hardware works. FFTs, oscilloscopes, signals, buses, all in software.</div>
           <h4 class="week-title">Signals &amp; Systems</h4>
         </div>
         <div class="week">
@@ -433,28 +457,6 @@
             <path d="M3 11L11 3M11 3H4.5M11 3V9.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </a>
-      </div>
-    </article>
-
-    <article class="v2-card reveal" data-delay="2" id="v2">
-      <div class="v2-head">
-        <div>
-          <div class="program-id">Orcas <strong>v2.0</strong> · Hardware · In person</div>
-          <h3 class="v2-name">Real boards.<br><em>Ten days in one room.</em></h3>
-        </div>
-        <span class="label label-open"><span class="open-dot" aria-hidden="true"></span>Applications open</span>
-      </div>
-
-      <p class="v2-sub">A Nazarx Robotics × Buildcored cohort. <strong>August 15–24</strong> at the Turin Polytechnic Lyceum in Tashkent. Full days of building with real robotics kits, everyone in the same room. Nazarx brings the hardware, you bring a laptop. Free.</p>
-
-      <div class="v2-foot">
-        <a href="/apply/" class="btn btn-primary">
-          Apply now
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-            <path d="M2.5 7H11.5M11.5 7L7 2.5M11.5 7L7 11.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-          </svg>
-        </a>
-        <span class="v2-deadline">Applications close June 20, 2026</span>
       </div>
     </article>
   </div>
@@ -1007,18 +1009,24 @@
     update();
   })();
 
-  // Apply-panel deadline countdown (mirrors /apply, Tashkent EOD).
+  // Deadline countdowns (hero + apply panel), Tashkent EOD.
   (function () {
-    const daysEl = document.getElementById('applyDaysLeft');
-    const line = document.getElementById('applyDeadlineLine');
-    if (!daysEl || !line) return;
     const DEADLINE = new Date('2026-06-20T23:59:59+05:00');
     const days = Math.ceil((DEADLINE - new Date()) / 86400000);
-    if (days > 1)        daysEl.textContent = days + ' days left';
-    else if (days === 1) daysEl.textContent = '1 day left';
-    else if (days === 0) daysEl.textContent = 'closes today';
-    else { daysEl.textContent = 'closed'; line.classList.add('closed'); }
-    if (days <= 7 && days > 0) line.classList.add('urgent');
+    const label = days > 1 ? days + ' days left'
+                : days === 1 ? '1 day left'
+                : days === 0 ? 'closes today' : 'closed';
+    for (const id of ['applyDaysLeft', 'heroDaysLeft']) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = label;
+    }
+    const line = document.getElementById('applyDeadlineLine');
+    if (line) {
+      if (days < 0) line.classList.add('closed');
+      else if (days <= 10) line.classList.add('urgent');
+    }
+    const hero = document.querySelector('.hero-deadline');
+    if (hero && days <= 10 && days >= 0) hero.classList.add('urgent');
   })();
 
   // Respect the OS "reduce motion" setting across intro, reveals, orca.
@@ -1041,14 +1049,14 @@
     skip.addEventListener('click', (e) => { e.stopPropagation(); done(); });
     intro.addEventListener('click', done);
 
-    // Reduced-motion or already seen this session → skip the splash entirely.
-    if (REDUCE || sessionStorage.getItem('bc-intro-played')) {
+    // Skip the splash for reduced-motion, repeat visits, and anyone arriving
+    // from elsewhere (Telegram/IG traffic shouldn't pay a brand toll).
+    const external = document.referrer && !document.referrer.startsWith(location.origin);
+    if (REDUCE || external || sessionStorage.getItem('bc-intro-played')) {
       intro.style.transition = 'none';
       done();
     } else {
-      // Short brand beat then reveal. Capped at 1.4s so the hero (the LCP
-      // element) paints inside Google's "good" window even on slow mobile.
-      setTimeout(done, 1400);
+      setTimeout(done, 800);
     }
 
     // Preload the orca animation in the background (used when its section enters viewport)
