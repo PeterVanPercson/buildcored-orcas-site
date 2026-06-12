@@ -269,7 +269,7 @@
     position: relative;
     z-index: 2;
     transform: rotate(-2deg);
-    transition: transform 600ms var(--ease-out), box-shadow 600ms var(--ease-out);
+    transition: transform 950ms var(--ease-out), box-shadow 950ms var(--ease-out);
   }
   .ap-snapshot:hover{ transform: rotate(0deg) scale(1.04); z-index: 50; }
   @media (min-width: 1150px){
@@ -319,21 +319,29 @@
     to{ transform: scale(1); }
   }
   .ap-snapshot.zoomed{
-    animation: lbIn 420ms var(--ease-out);
+    animation: lbIn 500ms var(--ease-out);
     position: fixed; inset: 0; z-index: 400;
     width: auto; margin: 0;
     transform: none;
     display: flex; flex-direction: column;
     align-items: center; justify-content: center; gap: 16px;
     padding: 5vh 5vw;
-    background: var(--gull);
+    background: #c4cdd0;
     cursor: zoom-out;
+  }
+  @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))){
+    .ap-snapshot.zoomed{
+      background: rgba(196, 205, 208, 0.72);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+    }
   }
   .ap-snapshot.zoomed:hover{ transform: none; }
   .ap-snapshot.zoomed img{
-    animation: lbImgIn 420ms var(--ease-out);
+    animation: lbImgIn 500ms var(--ease-out);
     width: auto; max-width: min(880px, 74vw); max-height: 64vh;
-    border-radius: 12px; border: 0;
+    border-radius: 12px;
+    border: 1px solid #0b0d10;
     box-shadow: 0 30px 90px -30px rgba(0,0,0,.35);
   }
   body.snapshot-open{ overflow: hidden; }
