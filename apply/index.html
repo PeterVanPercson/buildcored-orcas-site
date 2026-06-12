@@ -269,9 +269,9 @@
     position: relative;
     z-index: 2;
     transform: rotate(-2deg);
-    transition: transform 260ms var(--ease-out);
+    transition: transform 600ms var(--ease-out), box-shadow 600ms var(--ease-out);
   }
-  .ap-snapshot:hover{ transform: rotate(0deg) scale(2.1); z-index: 50; }
+  .ap-snapshot:hover{ transform: rotate(0deg) scale(1.04); z-index: 50; }
   @media (min-width: 1150px){
     .ap-snapshot{
       position: absolute;
@@ -282,7 +282,7 @@
       transform: rotate(3deg);
       transform-origin: top right;
     }
-    .ap-snapshot:hover{ transform: rotate(0deg) scale(2.3); }
+    .ap-snapshot:hover{ transform: rotate(0deg) scale(1.05); }
   }
   .ap-snapshot img{
     display:block; width:100%; height:auto;
@@ -294,13 +294,10 @@
   .ap-snapshot figcaption{
     margin-top: 10px;
     text-align: center;
-    font-family: var(--font-mono);
-    font-size: 11px; letter-spacing: .1em;
-    text-transform: uppercase;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    letter-spacing: 0;
     color: var(--ink-muted);
-  }
-  @media (max-width: 700px){
-    .ap-snapshot:hover{ transform: rotate(0deg) scale(1.25); }
   }
   @media (prefers-reduced-motion: reduce){
     .ap-snapshot, .ap-snapshot:hover{ transform: none; }
@@ -313,7 +310,16 @@
   .ap-snapshot-link:hover{ border-color: var(--ink); }
   /* Click-to-fullscreen: the figure becomes a fixed lightbox; click again
      (or Escape) restores it. */
+  @keyframes lbIn{
+    from{ opacity: 0; }
+    to{ opacity: 1; }
+  }
+  @keyframes lbImgIn{
+    from{ transform: scale(0.94); }
+    to{ transform: scale(1); }
+  }
   .ap-snapshot.zoomed{
+    animation: lbIn 420ms var(--ease-out);
     position: fixed; inset: 0; z-index: 400;
     width: auto; margin: 0;
     transform: none;
@@ -325,6 +331,7 @@
   }
   .ap-snapshot.zoomed:hover{ transform: none; }
   .ap-snapshot.zoomed img{
+    animation: lbImgIn 420ms var(--ease-out);
     width: auto; max-width: min(1100px, 92vw); max-height: 80vh;
     border-radius: 12px; border: 0;
     box-shadow: 0 40px 120px -40px rgba(0,0,0,.8);
