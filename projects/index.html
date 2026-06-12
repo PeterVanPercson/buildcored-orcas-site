@@ -30,14 +30,33 @@
 <link rel="stylesheet" href="/styles.css">
 <style>
   /* Subpage: no hero, so the gallery clears the fixed nav itself */
-  .projects { padding-top: clamp(120px, 16vw, 170px); }
-  .pg-orca {
-    width: clamp(96px, 11vw, 160px);
-    height: auto;
-    margin-top: 30px;
-    opacity: 0.95;
+  .projects { padding-top: calc(clamp(120px, 16vw, 170px) + env(safe-area-inset-top, 0px)); }
+  /* Colophon — printer's-mark sign-off after the 30 cards */
+  .db-colophon {
+    margin-top: clamp(64px, 9vw, 96px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
   }
-  @media (max-width: 860px) { .pg-orca { display: none; } }
+  .db-colophon::before {
+    content: "";
+    width: 1px;
+    height: 44px;
+    background: var(--line-2);
+  }
+  .db-colophon img {
+    width: 44px;
+    height: auto;
+    opacity: 0.92;
+  }
+  .db-colophon-label {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
 </style>
 </head>
 <body class="intro-done">
@@ -91,16 +110,13 @@
 <section class="section projects" id="projects">
   <div class="container">
     <header class="section-head reveal in">
+      <div class="section-num">/ v1.5 — <strong>Project DB</strong></div>
       <div>
-        <div class="section-num">/ — <strong>Project DB</strong></div>
-        <img class="pg-orca" src="/logo/orca-512.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-      </div>
-      <div>
-        <h2 class="h-1 serif">
+        <h1 class="h-1 serif">
           Thirty projects.<br>
           <span class="italic" style="color: var(--gull)">One a day, all shipped.</span>
-        </h2>
-        <p class="projects-receipt">v1.5 was 10 builders and 30 projects.<br>v2.0 is open to anyone — <a href="/apply/" style="color: var(--ink-0); border-bottom: 1px solid var(--line-3); text-decoration: none;">apply here</a>.</p>
+        </h1>
+        <p class="projects-receipt">v1.5 was 10 builders and 30 projects.<br>v2.0 is open to anyone — <a href="/apply/">apply here</a>.</p>
       </div>
     </header>
 
@@ -121,6 +137,12 @@
     <div class="projects-db" id="projectsDB">
       <!-- cards rendered by app.js -->
       <div class="db-empty">Loading projects…</div>
+    </div>
+
+    <!-- Colophon — the orca signs the archive off -->
+    <div class="db-colophon" aria-hidden="true">
+      <img src="/logo/orca-256.png" alt="" width="44" height="44" loading="lazy" decoding="async">
+      <span class="db-colophon-label">buildcored / orcas</span>
     </div>
   </div>
 </section>
@@ -147,11 +169,11 @@
 </div>
 
 <!-- ═══ Footer ════════════════════════════════════════════════════════════ -->
-<footer class="footer">
+<footer class="footer footer-slim">
   <div class="container">
-    <div class="footer-bottom" style="border-top: 0; margin-top: 0; padding-top: 0;">
+    <div class="footer-bottom">
       <div>© <span id="footerYear">2026</span> Buildcored · Open source under MIT</div>
-      <div><a href="/" style="color: inherit; text-decoration: none;">← buildcored.com</a></div>
+      <div><a href="/">← buildcored.com</a></div>
     </div>
   </div>
 </footer>

@@ -1624,6 +1624,13 @@ section { position: relative; }
   margin-top: 18px;
   max-width: 38em;
 }
+.projects-receipt a {
+  color: var(--ink-0);
+  text-decoration: none;
+  border-bottom: 1px solid var(--line-3);
+  transition: color 180ms var(--ease-out), border-color 180ms var(--ease-out);
+}
+.projects-receipt a:hover { color: var(--gull); border-color: var(--gull); }
 .pcard-links { display: flex; gap: 12px; align-items: center; }
 .pcard-link {
   display: inline-flex;
@@ -1700,9 +1707,6 @@ section { position: relative; }
 .project-modal-close:hover,
 .project-modal-arrow:hover { background: rgba(255, 255, 255, 0.06); border-color: var(--line-3); color: var(--ink-0); }
 .project-modal-arrow:disabled { opacity: 0.3; cursor: default; pointer-events: none; }
-@media (max-width: 560px) {
-  .project-modal-arrow { display: none; } /* swipe/space is enough; keep close only */
-}
 body.modal-open { overflow: hidden; }
 
 .pmodal-grid {
@@ -2840,6 +2844,16 @@ body.admin-open { overflow: hidden; }
   letter-spacing: 0.08em;
   color: var(--ink-3);
 }
+
+/* Slim footer (sub-pages): single bottom row, no grid */
+.footer-slim { padding: 36px 0; }
+.footer-slim .footer-bottom { border-top: 0; padding-top: 0; }
+.footer-slim .footer-bottom a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 180ms var(--ease-out);
+}
+.footer-slim .footer-bottom a:hover { color: var(--gull); }
 
 /* ═══ Reveal on scroll ═══════════════════════════════════════════════════ */
 .reveal {

@@ -261,6 +261,8 @@
     </div>`;
   }
 
+  const TROPHY_SVG = '<svg width="11" height="11" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M4.5 2h5v3.2a2.5 2.5 0 0 1-5 0V2ZM4.5 3H2.8c.1 1.7.9 2.5 1.9 2.7M9.5 3h1.7c-.1 1.7-.9 2.5-1.9 2.7M7 7.7V10M4.8 11.5h4.4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
   function createCard(p) {
     const isShipped = !!p.shipped;
     const img = resolveImage(p);
@@ -290,7 +292,7 @@
           ? `<span class="pcard-featured"><svg width="11" height="11" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 .5l1.94 4.13 4.56.6-3.36 3.13.85 4.49L7 10.65 2.99 12.85l.85-4.49L.5 5.23l4.56-.6L7 .5z"/></svg> Featured</span>`
           : `<span class="pcard-day">D·${String(p.day).padStart(2, '0')}</span>`}
         ${isShipped
-          ? (p.winner ? `<span class="pcard-ship pcard-ship-winner">🏆 Day ${p.day} Winner</span>` : `<span class="pcard-ship">Shipped</span>`)
+          ? (p.winner ? `<span class="pcard-ship pcard-ship-winner">${TROPHY_SVG} Day ${p.day} Winner</span>` : `<span class="pcard-ship">Shipped</span>`)
           : `<span class="pcard-ship pcard-ship-pending">Awaiting submission</span>`}
       </div>
       <div class="pcard-body">
@@ -440,7 +442,7 @@
           ${p.builder
             ? `<div class="pmodal-builder-line">by ${p.builderUrl ? `<a href="${escapeHtml(p.builderUrl)}" target="_blank" rel="noopener">${escapeHtml(p.builder)}</a>` : escapeHtml(p.builder)}</div>`
             : ''}
-          ${p.winner ? `<div class="pmodal-winner">Day ${p.day} Winner <span aria-hidden="true">🏆</span></div>` : ''}
+          ${p.winner ? `<div class="pmodal-winner">Day ${p.day} Winner <span aria-hidden="true">${TROPHY_SVG}</span></div>` : ''}
           <p class="pmodal-desc">${escapeHtml(p.description)}</p>
           ${Array.isArray(p.tags) && p.tags.length
             ? `<div class="pmodal-tags">${p.tags.map(t => `<span class="pcard-tag">${escapeHtml(t)}</span>`).join('')}</div>`
