@@ -31,6 +31,13 @@
 <style>
   /* Subpage: no hero, so the gallery clears the fixed nav itself */
   .projects { padding-top: clamp(120px, 16vw, 170px); }
+  .pg-orca {
+    width: clamp(96px, 11vw, 160px);
+    height: auto;
+    margin-top: 30px;
+    opacity: 0.95;
+  }
+  @media (max-width: 860px) { .pg-orca { display: none; } }
 </style>
 </head>
 <body class="intro-done">
@@ -84,7 +91,10 @@
 <section class="section projects" id="projects">
   <div class="container">
     <header class="section-head reveal in">
-      <div class="section-num">/ — <strong>Project DB</strong></div>
+      <div>
+        <div class="section-num">/ — <strong>Project DB</strong></div>
+        <img class="pg-orca" src="/logo/orca-512.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+      </div>
       <div>
         <h2 class="h-1 serif">
           Thirty projects.<br>

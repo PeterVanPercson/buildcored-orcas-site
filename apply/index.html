@@ -305,6 +305,33 @@
   @media (prefers-reduced-motion: reduce){
     .ap-snapshot, .ap-snapshot:hover{ transform: none; }
   }
+  .ap-snapshot{ cursor: zoom-in; }
+  .ap-snapshot-link{
+    color: var(--ink); text-decoration: none;
+    border-bottom: 1px solid rgba(0,0,0,.3);
+  }
+  .ap-snapshot-link:hover{ border-color: var(--ink); }
+  /* Click-to-fullscreen: the figure becomes a fixed lightbox; click again
+     (or Escape) restores it. */
+  .ap-snapshot.zoomed{
+    position: fixed; inset: 0; z-index: 400;
+    width: auto; margin: 0;
+    transform: none;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 16px;
+    padding: 5vh 5vw;
+    background: rgba(11, 13, 16, 0.88);
+    cursor: zoom-out;
+  }
+  .ap-snapshot.zoomed:hover{ transform: none; }
+  .ap-snapshot.zoomed img{
+    width: auto; max-width: min(1100px, 92vw); max-height: 80vh;
+    border-radius: 12px; border: 0;
+    box-shadow: 0 40px 120px -40px rgba(0,0,0,.8);
+  }
+  .ap-snapshot.zoomed figcaption{ color: var(--gull); }
+  .ap-snapshot.zoomed .ap-snapshot-link{ color: #fff; border-color: rgba(255,255,255,.4); }
+  body.snapshot-open{ overflow: hidden; }
 
   /* Mentor card — compact, light card on the gull surface */
   .ap-mentor{
@@ -415,9 +442,9 @@
   <a class="ap-back" href="/">← Back to site</a>
 </header>
 
-  <figure class="ap-snapshot">
+  <figure class="ap-snapshot" id="apSnapshot" tabindex="0" role="button" aria-label="Photo of our first cohort. Click to view full screen">
     <img src="/art/cohort-v1.jpg" alt="A video call from the first Orcas cohort: nine builders on a Google Meet grid" loading="lazy" decoding="async">
-    <figcaption>Our first cohort, held online.</figcaption>
+    <figcaption>Our first cohort, held online. <a href="/projects/" class="ap-snapshot-link">See the projects →</a></figcaption>
   </figure>
 
 <main class="wrap">
@@ -550,6 +577,27 @@
   document.addEventListener('scroll', onScroll, { passive: true, capture: true });
   addEventListener('resize', onScroll, { passive: true });
   update();
+})();
+</script>
+<script>
+// Cohort snapshot: click to expand to a fullscreen lightbox, click/Escape to close.
+(() => {
+  const fig = document.getElementById('apSnapshot');
+  if (!fig) return;
+  const toggle = () => {
+    fig.classList.toggle('zoomed');
+    document.body.classList.toggle('snapshot-open', fig.classList.contains('zoomed'));
+  };
+  fig.addEventListener('click', (e) => {
+    if (e.target.closest('a')) return;   // the "See the projects" link still navigates
+    toggle();
+  });
+  fig.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && fig.classList.contains('zoomed')) toggle();
+  });
 })();
 </script>
 <script>
