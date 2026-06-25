@@ -346,10 +346,12 @@
   }
   body.snapshot-open{ overflow: hidden; }
 
+  /* Team — Husan + Operations, stacked light cards on the gull surface */
+  .ap-team{ display:flex; flex-direction:column; gap:14px; margin: 0 0 clamp(32px,4vw,48px); }
   /* Mentor card — compact, light card on the gull surface */
   .ap-mentor{
     display:flex; align-items:center; gap:20px;
-    margin: 0 0 clamp(32px,4vw,48px);
+    margin: 0;
     padding: 20px 24px;
     border:1px solid var(--line-soft); border-radius:18px;
     background: rgba(255,255,255,.28);
@@ -521,15 +523,26 @@
     <a href="/" class="ap-back-btn">← Back to Buildcored</a>
   </section>
 
-  <aside class="ap-mentor">
-    <img class="ap-mentor-photo" src="/art/husan.jpg" alt="Husan Mavlonov" loading="lazy" decoding="async">
-    <div class="ap-mentor-text">
-      <span class="ap-mentor-kicker">Your mentor</span>
-      <span class="ap-mentor-name">Husan Mavlonov</span>
-      <span class="ap-mentor-role">Founder @buildcored · Engineer @ University of Michigan and Shanghai Jiao Tong. In the room with you, all ten days.</span>
-      <a class="ap-mentor-link" href="https://husanmavlonov.com" target="_blank" rel="noopener">husanmavlonov.com ↗</a>
-    </div>
-  </aside>
+  <div class="ap-team">
+    <aside class="ap-mentor">
+      <img class="ap-mentor-photo" src="/art/husan.jpg" alt="Husan Mavlonov" loading="lazy" decoding="async">
+      <div class="ap-mentor-text">
+        <span class="ap-mentor-kicker">Your mentor</span>
+        <span class="ap-mentor-name">Husan Mavlonov</span>
+        <span class="ap-mentor-role">Founder @buildcored · Engineer @ University of Michigan and Shanghai Jiao Tong. In the room with you, all ten days.</span>
+        <a class="ap-mentor-link" href="https://husanmavlonov.com" target="_blank" rel="noopener">husanmavlonov.com ↗</a>
+      </div>
+    </aside>
+    <aside class="ap-mentor">
+      <img class="ap-mentor-photo" src="/art/mubinabonu.jpg" alt="Mubinabonu Boboeva" loading="lazy" decoding="async">
+      <div class="ap-mentor-text">
+        <span class="ap-mentor-kicker">Operations</span>
+        <span class="ap-mentor-name">Mubinabonu Boboeva</span>
+        <span class="ap-mentor-role">Operations Coordinator @ Buildcored Orcas. Keeps the cohort running.</span>
+        <a class="ap-mentor-link" href="https://www.linkedin.com/in/mubinabonu-b-4577b6361/" target="_blank" rel="noopener">LinkedIn ↗</a>
+      </div>
+    </aside>
+  </div>
 
   <section class="ap-faq" aria-labelledby="apFaqTitle">
     <h2 class="ap-faq-title" id="apFaqTitle">Questions</h2>
