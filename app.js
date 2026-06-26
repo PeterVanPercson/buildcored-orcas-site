@@ -66,6 +66,7 @@
     bindAdminForm();
     bindRouting();
     bindNewsletter();
+    bindSignupForms();
     loadAnalytics();
     // Intent signal: clicking either hero CTA toward the gallery/program.
     document.querySelectorAll('.hero-actions a').forEach(a =>
@@ -1050,6 +1051,40 @@
       status.textContent = 'You\'re on the waitlist. We\'ll email you about v2.0.';
       track('waitlist-signup');
       refreshCount();
+    });
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Generic pre-order / signup forms (shop, etc.) — same Supabase table as the
+  // waitlist, tagged by the form's data-source. Markup contract:
+  //   <form data-signup data-source="..." data-success="..." data-dup="...">
+  //     <input name="email"> … <p class="signup-status" data-status></p>
+  // ─────────────────────────────────────────────────────────────────────────
+  function bindSignupForms() {
+    document.querySelectorAll('form[data-signup]').forEach(form => {
+      const status = form.querySelector('[data-status]');
+      const set = (msg, state) => {
+        if (!status) return;
+        status.textContent = msg;
+        status.className = 'signup-status' + (state ? ' is-' + state : '');
+      };
+      form.addEventListener('submit', async e => {
+        e.preventDefault();
+        const email = ((form.email && form.email.value) || '').trim();
+        if (!email) return;
+        if (!sb) { set('Not set up yet — try again soon.', 'error'); return; }
+        set('One sec…', '');
+        const { error } = await sb.from('newsletter_signups')
+          .insert({ email, source: form.dataset.source || 'site' });
+        if (error) {
+          if (error.code === '23505') set(form.dataset.dup || 'You\'re already on the list.', 'dup');
+          else set('Hmm — ' + error.message, 'error');
+          return;
+        }
+        form.reset();
+        set(form.dataset.success || 'You\'re on the list.', 'success');
+        track('signup-' + (form.dataset.source || 'site'));
+      });
     });
   }
 })();

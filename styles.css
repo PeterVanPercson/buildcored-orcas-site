@@ -3235,3 +3235,81 @@ body.intro-done .hero-stack { opacity: 1; }
   text-transform: uppercase;
   color: var(--ink-3);
 }
+
+/* ═══ Shop — orca sticker pre-order (minimal) ═══════════════════════════ */
+.shop-min { max-width: 760px; margin: 0 auto; }
+
+.shop-media {
+  margin: 0 0 30px;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid var(--line-2);
+  background: var(--bg-3);
+  box-shadow: 0 24px 60px -32px rgba(0, 0, 0, 0.7);
+}
+.shop-photo {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  height: auto;
+  object-fit: cover;
+  object-position: center;
+}
+
+.shop-line {
+  text-align: center;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--ink-1);
+}
+.shop-line strong { color: var(--ink-0); font-weight: 500; }
+
+.shop-form { margin-top: 18px; }
+.shop-form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  max-width: 480px;
+  margin: 14px auto 0;
+}
+.shop-form input[type="email"] {
+  flex: 1 1 220px;
+  min-width: 0;
+  font: inherit;
+  font-size: 15px;
+  color: var(--ink-0);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--line-3);
+  border-radius: 999px;
+  padding: 13px 20px;
+  transition: border-color 160ms var(--ease-out), background 160ms var(--ease-out), box-shadow 160ms var(--ease-out);
+}
+.shop-form input[type="email"]::placeholder { color: var(--ink-3); }
+.shop-form input[type="email"]:hover { border-color: var(--ink-2); }
+.shop-form input[type="email"]:focus {
+  outline: none;
+  border-color: var(--gull);
+  background: rgba(255, 255, 255, 0.08);
+}
+.shop-form input[type="email"]:focus-visible {
+  border-color: var(--gull);
+  box-shadow: 0 0 0 3px var(--gull-soft);
+}
+.shop-form .btn-primary { flex: 0 0 auto; }
+
+.signup-status {
+  margin: 12px auto 0;
+  min-height: 1.2em;
+  font-size: 13.5px;
+  line-height: 1.5;
+  text-align: center;
+  color: var(--ink-2);
+}
+.signup-status.is-success { color: var(--green); }
+.signup-status.is-dup,
+.signup-status.is-error { color: var(--gull); }
+
+@media (max-width: 460px) {
+  .shop-form .btn-primary { width: 100%; justify-content: center; }
+}
