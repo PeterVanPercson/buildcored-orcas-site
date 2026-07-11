@@ -58,12 +58,12 @@ Buildcored Orcas`,
     subject: 'Your Orcas v2.0 decision',
     html: (g: string) => wrap(`
         <p style="margin:0 0 18px;">Hi ${g},</p>
-        <p style="margin:0 0 18px;">Thank you for applying to Orcas v2.0. This time we couldn&rsquo;t offer you a seat. The cohort is twenty people, and we had twice as many applications as seats.</p>
+        <p style="margin:0 0 18px;">Thank you for applying to Orcas v2.0. This time we couldn&rsquo;t offer you a seat. We had considerably more applications than seats.</p>
         <p style="margin:0 0 18px;">The full curriculum and all thirty v1.5 projects are public at <a href="https://buildcored.com" style="color:#3D4E63;">buildcored.com</a>, and the community on Telegram is open to everyone. Building in the open is the strongest application for the next cohort, and there will be a next cohort.</p>
         <p style="margin:0 0 26px;">Thanks for the time you put in.</p>`),
     text: (g: string) => `Hi ${g},
 
-Thank you for applying to Orcas v2.0. This time we couldn't offer you a seat. The cohort is twenty people, and we had twice as many applications as seats.
+Thank you for applying to Orcas v2.0. This time we couldn't offer you a seat. We had considerably more applications than seats.
 
 The full curriculum and all thirty v1.5 projects are public at buildcored.com, and the community on Telegram is open to everyone. Building in the open is the strongest application for the next cohort, and there will be a next cohort.
 
