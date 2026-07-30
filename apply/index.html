@@ -346,9 +346,9 @@
   }
   body.snapshot-open{ overflow: hidden; }
 
-  /* Team — Husan + Operations, stacked light cards on the gull surface */
+  /* Team — stacked cards on the gull surface, alternating gray / black down the stack */
   .ap-team{ display:flex; flex-direction:column; gap:14px; margin: 0 0 clamp(32px,4vw,48px); }
-  /* Mentor card — compact, light card on the gull surface */
+  /* Mentor card — compact card; odd = light on gull, even = ink */
   .ap-mentor{
     display:flex; align-items:center; gap:20px;
     margin: 0;
@@ -356,6 +356,16 @@
     border:1px solid var(--line-soft); border-radius:18px;
     background: rgba(255,255,255,.28);
   }
+  .ap-team .ap-mentor:nth-child(even){
+    background: var(--slate);
+    border-color: rgba(255,255,255,.16);
+  }
+  .ap-team .ap-mentor:nth-child(even) .ap-mentor-photo{ border-color: rgba(255,255,255,.85); }
+  .ap-team .ap-mentor:nth-child(even) .ap-mentor-kicker{ color: rgba(255,255,255,.55); }
+  .ap-team .ap-mentor:nth-child(even) .ap-mentor-name{ color: #fff; }
+  .ap-team .ap-mentor:nth-child(even) .ap-mentor-role{ color: rgba(255,255,255,.78); }
+  .ap-team .ap-mentor:nth-child(even) .ap-mentor-link{ color: rgba(255,255,255,.78); }
+  .ap-team .ap-mentor:nth-child(even) .ap-mentor-link:hover{ color: #fff; }
   .ap-mentor-photo{
     width:72px; height:72px; flex-shrink:0;
     border-radius:50%; object-fit:cover;
@@ -529,8 +539,16 @@
       <div class="ap-mentor-text">
         <span class="ap-mentor-kicker">Your mentor</span>
         <span class="ap-mentor-name">Husan Mavlonov</span>
-        <span class="ap-mentor-role">Founder @buildcored · Engineer @ University of Michigan and Shanghai Jiao Tong. In the room with you, all ten days.</span>
+        <span class="ap-mentor-role">Founder of buildcored.com and defex.app. In the room with you, all ten days.</span>
         <a class="ap-mentor-link" href="https://husanmavlonov.com" target="_blank" rel="noopener">husanmavlonov.com ↗</a>
+      </div>
+    </aside>
+    <aside class="ap-mentor">
+      <img class="ap-mentor-photo" src="/art/akbarkhuja.jpg" alt="Akbarkhuja Murodjonov" loading="lazy" decoding="async">
+      <div class="ap-mentor-text">
+        <span class="ap-mentor-kicker">Team</span>
+        <span class="ap-mentor-name">Akbarkhuja Murodjonov</span>
+        <span class="ap-mentor-role">Junior @ University of Michigan and Shanghai Jiao Tong.</span>
       </div>
     </aside>
     <aside class="ap-mentor">
@@ -540,6 +558,13 @@
         <span class="ap-mentor-name">Mubinabonu Boboeva</span>
         <span class="ap-mentor-role">Operations Coordinator @buildcored.</span>
         <a class="ap-mentor-link" href="https://www.linkedin.com/in/mubinabonu-b-4577b6361/" target="_blank" rel="noopener">LinkedIn ↗</a>
+      </div>
+    </aside>
+    <aside class="ap-mentor">
+      <img class="ap-mentor-photo" src="/art/shabnam.jpg" alt="Shabnam Khodjieva" loading="lazy" decoding="async">
+      <div class="ap-mentor-text">
+        <span class="ap-mentor-kicker">Team</span>
+        <span class="ap-mentor-name">Shabnam Khodjieva</span>
       </div>
     </aside>
   </div>
